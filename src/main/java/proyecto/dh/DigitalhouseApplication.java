@@ -8,6 +8,7 @@ public class DigitalhouseApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(DigitalhouseApplication.class, args);
+		asfasfa
 	}
 
 }
