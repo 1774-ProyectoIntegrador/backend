@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto.dh.resources.product.entity.Product;
+import proyecto.dh.common.enums.Role;
 
 import java.util.List;
 
@@ -34,7 +34,4 @@ public class User {
 
     @OneToOne
     private Profile profile;
-
-    @OneToMany(mappedBy = "user")
-    private List<Product> productList;
 }
