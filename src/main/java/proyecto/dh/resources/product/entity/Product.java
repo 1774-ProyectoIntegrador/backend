@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import proyecto.dh.resources.users.entity.User;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,5 +23,17 @@ public class Product {
 
     @Column(nullable = false)
     private String description;
+
+    @Column
+    private String image;
+
+    @Column(nullable = false)
+    private double price;
+
+    @Column(nullable = false)
+    private int quantity;
+
+    @ManyToOne
+    private User user;
 
 }
