@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto.dh.common.enums.PriceType;
-import proyecto.dh.resources.users.entity.User;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,12 +23,7 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
-    @Column
-    private String image;
-
     @Column(nullable = false)
-    private double price;
+    private Double price;
 
-    @Column(nullable = false)
-    private PriceType priceType;
 }

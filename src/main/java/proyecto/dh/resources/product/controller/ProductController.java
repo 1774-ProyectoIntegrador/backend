@@ -1,46 +1,36 @@
 package proyecto.dh.resources.product.controller;
 
-import org.aspectj.weaver.ast.Not;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import proyecto.dh.exceptions.handler.NotFoundException;
-import proyecto.dh.resources.product.entity.Product;
-import proyecto.dh.resources.product.service.ProductService;
 
 import java.util.List;
-import java.util.Optional;
 
+@CrossOrigin("*")
+@AllArgsConstructor
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/api/products")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private IProductService iProductService;
 
     @PostMapping
-    public Product create(@RequestBody Product userObject) {
-        return productService.save(userObject);
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto productDto){
+        ProductDto savedProduct = iProductService.createProduct(productDto);
+        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 
-    @PutMapping("{id}")
-    public Product update(@PathVariable Long id, @RequestBody Product userObject) throws NotFoundException {
-        return productService.update(id, userObject);
+    @GetMapping("{id}")
+    public ResponseEntity<ProductDto> getProduct(@PathVariable("id") Long productId){
+        ProductDto productDto = iProductService.getProduct(productId);
+        return ResponseEntity.ok(productDto);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) throws NotFoundException {
-        productService.delete(id);
-        return ResponseEntity.ok("Producto eliminado correctamente");
-    }
 
     @GetMapping
-    public List<Product> findAll() {
-        return productService.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public Product findById(@PathVariable Long id) throws NotFoundException {
-        return productService.findById(id);
+    public ResponseEntity<List<ProductDto>> getAllProducts(){
+        List<ProductDto> products = iProductService.getAllProducts();
+        return ResponseEntity.ok(products);
     }
 }
