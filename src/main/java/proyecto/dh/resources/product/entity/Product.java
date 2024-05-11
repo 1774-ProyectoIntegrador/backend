@@ -33,4 +33,17 @@ public class Product {
 
     @Column(nullable = false)
     private PriceType priceType;
+
+    @Column(nullable = false)
+    private String trademark;
+
+    @Column(nullable = false)
+    private String model;
+
+    @Column(nullable = false)
+    private String category;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "product_details_id")
+    private ProdutDetails produtDetails;
 }
