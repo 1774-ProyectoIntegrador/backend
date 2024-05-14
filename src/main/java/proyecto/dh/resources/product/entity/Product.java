@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto.dh.common.enums.PriceType;
-import proyecto.dh.resources.users.entity.User;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -43,7 +43,12 @@ public class Product {
     @Column(nullable = false)
     private String category;
 
+    @Column(nullable = false)
+    private int stock;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "product_details_id")
     private ProdutDetails produtDetails;
+
+
 }
