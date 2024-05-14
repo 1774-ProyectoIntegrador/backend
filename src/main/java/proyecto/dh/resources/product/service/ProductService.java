@@ -19,7 +19,14 @@ public class ProductService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Product save(Product userObject) { return productRepository.save(userObject); }
+
+    public Product save(Product userObject) {
+        Optional<Product> existingProduct = productRepository.findByName(userObject.getName());
+        if(existingProduct.isPresent()){
+            throw new IllegalArgumentException("The product name is already in use");
+        }
+        return productRepository.save(userObject);
+    }
     public Product update(Long id, Product userObject) throws NotFoundException {
         Product existingProduct = findById(id);
         modelMapper.map(userObject, existingProduct);
