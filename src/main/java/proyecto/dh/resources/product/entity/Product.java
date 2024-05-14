@@ -1,13 +1,11 @@
 package proyecto.dh.resources.product.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import proyecto.dh.common.enums.PriceType;
-import proyecto.dh.resources.users.entity.User;
+import java.util.List;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -25,8 +23,8 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
-    @Column
-    private String image;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ImageProduct> images;
 
     @Column(nullable = false)
     private double price;

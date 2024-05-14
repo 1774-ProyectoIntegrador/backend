@@ -1,6 +1,5 @@
 package proyecto.dh.resources.product.controller;
 
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +8,6 @@ import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.service.ProductService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/product")
