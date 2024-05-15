@@ -3,7 +3,6 @@ package proyecto.dh.resources.product.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import proyecto.dh.common.enums.PriceType;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -41,7 +40,12 @@ public class Product {
     @Column(nullable = false)
     private String category;
 
+    @Column(nullable = false)
+    private int stock;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "product_details_id")
     private ProdutDetails produtDetails;
+
+
 }

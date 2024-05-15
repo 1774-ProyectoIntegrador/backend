@@ -23,6 +23,11 @@ public class ProductService {
     private ModelMapper modelMapper;
 
     public Product save(Product userObject) {
+        Optional<Product> existingProduct = productRepository.findByName(userObject.getName());
+        if(existingProduct.isPresent()){
+            throw new IllegalArgumentException("The product name is already in use");
+        }
+        
         Product newProduct = productRepository.save(userObject);
         saveImages(userObject);
         return newProduct;
