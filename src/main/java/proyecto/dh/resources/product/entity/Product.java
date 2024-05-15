@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import proyecto.dh.common.enums.PriceType;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -45,7 +47,7 @@ public class Product {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "product_details_id")
-    private ProdutDetails produtDetails;
+    private ProductDetails productDetails;
 
 
 }
