@@ -11,11 +11,12 @@ services:
     depends_on:
       - postgres
     environment:
-      SPRING_PROFILES_ACTIVE: prod
+      SPRING_PROFILES_ACTIVE: dev
       SPRING_DATASOURCE_URL: jdbc:postgresql://host-postgres-digitalhouse-spring:5432/proyectointegrador
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: localpassword
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop   # Utilizar solo en entorno de desarrollo
       SPRING_JPA_SHOW_SQL: "true"
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
     ports:
