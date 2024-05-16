@@ -38,3 +38,4 @@ build/
 application.properties
 application-dev.yml
 application-prod.yml
+/docker/

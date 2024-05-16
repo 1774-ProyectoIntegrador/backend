@@ -14,5 +14,13 @@ spring:
         dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
     show-sql: ${SPRING_JPA_SHOW_SQL}
 
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui
+  servers:
+    - url: https://api-digitalhouse.adksolutions.net.ar
+
 server:
   port: 8080

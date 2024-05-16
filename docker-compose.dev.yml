@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
+    restart: no
     depends_on:
       - postgres
     environment:
@@ -21,8 +21,6 @@ services:
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
     ports:
       - 6060:8080
-    networks:
-      - nginx_webnet
 
   postgres:
     image: postgres
@@ -37,9 +35,3 @@ services:
       - ./docker/postgres/log:/var/log/postgresql
     ports:
       - 5432:5432
-    networks:
-      - nginx_webnet
-
-networks:
-  nginx_webnet:
-    external: true
