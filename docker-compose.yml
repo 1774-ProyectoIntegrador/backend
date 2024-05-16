@@ -1,0 +1,36 @@
+version: '3.1'
+
+services:
+  app:
+    image: digitalhouse-pi:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host-postgres-digitalhouse-spring:5432/proyectointegrador
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: localpassword
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+    ports:
+      - 6060:8080
+
+  postgres:
+    image: postgres
+    restart: always
+    container_name: postgres-digitalhouse-spring
+    hostname: host-postgres-digitalhouse-spring
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: localpassword
+    volumes:
+      - ./docker/postgres/data:/var/lib/postgresql/data
+      - ./docker/postgres/log:/var/log/postgresql
+    ports:
+      - 5432:5432

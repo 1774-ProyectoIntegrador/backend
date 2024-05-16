@@ -36,3 +36,5 @@ build/
 ### Java Spring ###
 
 application.properties
+application-dev.yml
+application-prod.yml
