@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: [self-hosted, Linux, X64]  # Asegúrate de que las etiquetas coinciden con las del runner
 
     steps:
       - name: Checkout repository
