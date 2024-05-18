@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.product.entity.ImageProduct;
-import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.repository.ImageProductRepository;
 
 import java.util.List;
@@ -18,8 +17,8 @@ public class ImageProductService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public ImageProduct saveImageProduct(ImageProduct userObject) {
-        return imageProductRepository.save(userObject);
+    public void saveImageProduct(ImageProduct userObject) {
+        imageProductRepository.save(userObject);
     }
 
     public ImageProduct update(Long id, ImageProduct userObject) throws NotFoundException {
