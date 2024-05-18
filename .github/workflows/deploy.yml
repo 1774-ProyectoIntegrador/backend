@@ -18,6 +18,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y sshpass
 
+      - name: Ensure .ssh directory exists
+        run: mkdir -p ~/.ssh
+
       - name: Add server to known hosts
         run: ssh-keyscan -p 5664 -H ${{ secrets.DONWEB_SSH_HOST }} >> ~/.ssh/known_hosts
 
