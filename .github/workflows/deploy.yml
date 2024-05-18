@@ -13,20 +13,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up SSH
+      - name: Install sshpass
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DONWEB_SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/github_actions_rsa
-          chmod 600 ~/.ssh/github_actions_rsa
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/github_actions_rsa
+          sudo apt-get update
+          sudo apt-get install -y sshpass
 
       - name: Add server to known hosts
-        run: ssh-keyscan -p5664 -H ${{ secrets.DONWEB_SSH_HOST }} >> ~/.ssh/known_hosts
+        run: ssh-keyscan -p 5664 -H ${{ secrets.DONWEB_SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to server
         env:
           SERVER_IP: ${{ secrets.DONWEB_SSH_HOST }}
           SERVER_USER: ${{ secrets.DONWEB_SSH_USERNAME }}
+          SERVER_PASSWORD: ${{ secrets.DONWEB_SSH_PASSWORD }}
         run: |
-          ssh -p5664 -o StrictHostKeyChecking=no root@149.50.138.222 'cd /docker-apps/digitalhouse/backend && git pull origin main && ./start_containers.sh'
+          sshpass -p "$SERVER_PASSWORD" ssh -p 5664 -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP 'cd /root/docker-apps/digitalhouse/backend && git pull origin main && ./start_containers.sh'
