@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("products")
 public class ProductController {
 
     @Autowired
@@ -27,17 +27,18 @@ public class ProductController {
     @Autowired
     private S3Service s3Service;
 
-    @PostMapping
+
+    @PostMapping("create")
     public Product create(@RequestBody Product userObject) {
         return productService.save(userObject);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("update/{id}")
     public Product update(@PathVariable Long id, @RequestBody Product userObject) throws NotFoundException {
         return productService.update(id, userObject);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) throws NotFoundException {
         productService.delete(id);
         return ResponseEntity.ok("Producto eliminado correctamente");
