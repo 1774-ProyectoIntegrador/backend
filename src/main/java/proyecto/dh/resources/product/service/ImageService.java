@@ -15,7 +15,6 @@ import proyecto.dh.responses.ResponseHandler;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
@@ -33,8 +32,7 @@ public class ImageService {
         try {
             Product product = productService.findById(productId);
             ImageProduct imageProduct = s3Service.uploadFile(file, product);
-            String imageUrl = s3Service.generatePresignedUrl(imageProduct.getFileName()).toString();
-            return ResponseHandler.generateResponse("Image uploaded successfully", HttpStatus.OK, imageUrl);
+            return ResponseHandler.generateResponse("Image uploaded successfully", HttpStatus.OK, imageProduct.getUrl());
         } catch (Exception e) {
             throw new BadRequestException("Error uploading file: " + e.getMessage());
         }
@@ -67,10 +65,6 @@ public class ImageService {
         if (product == null) {
             throw new NotFoundException("Product not found");
         }
-
-        List<ImageProduct> images = product.getImages();
-        s3Service.signImageUrls(images);
-
-        return ResponseEntity.ok(images);
+        return ResponseEntity.ok(product.getImages());
     }
 }
