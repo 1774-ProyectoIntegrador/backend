@@ -10,6 +10,8 @@ services:
     restart: always
     depends_on:
       - postgres
+    env_file:
+      - .env
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: jdbc:postgresql://host-postgres-digitalhouse-spring:5432/proyectointegrador
@@ -39,6 +41,15 @@ services:
       - 5432:5432
     networks:
       - nginx_webnet
+
+  cleaner:
+    build:
+      context: .
+      dockerfile: Dockerfile.cleaner
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - app
 
 networks:
   nginx_webnet:
