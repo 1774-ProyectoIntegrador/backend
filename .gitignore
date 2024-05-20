@@ -35,3 +35,4 @@ build/
 ### Java Spring ###
 /docker/
 docker-compose.dev.yml
+/.env
