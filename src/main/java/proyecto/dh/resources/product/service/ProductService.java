@@ -20,7 +20,6 @@ public class ProductService {
     private ModelMapper modelMapper;
 
     public Product save(Product userObject) {
-        Optional<Product> existingProduct = productRepository.findByName(userObject.getName());
         return productRepository.save(userObject);
     }
 
