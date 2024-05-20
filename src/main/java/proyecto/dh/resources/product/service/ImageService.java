@@ -1,7 +1,5 @@
 package proyecto.dh.resources.product.service;
 
-import ch.qos.logback.classic.spi.IThrowableProxy;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,6 +67,10 @@ public class ImageService {
         if (product == null) {
             throw new NotFoundException("Product not found");
         }
-        return ResponseEntity.ok(product.getImages());
+
+        List<ImageProduct> images = product.getImages();
+        s3Service.signImageUrls(images);
+
+        return ResponseEntity.ok(images);
     }
 }

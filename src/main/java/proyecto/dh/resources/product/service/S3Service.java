@@ -18,6 +18,7 @@ import proyecto.dh.resources.product.repository.ImageProductRepository;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class S3Service {
@@ -74,5 +75,12 @@ public class S3Service {
 
     public void deleteFile(String key) {
         s3Client.deleteObject(new DeleteObjectRequest(bucketName, key));
+    }
+
+    public void signImageUrls(List<ImageProduct> images) {
+        for (ImageProduct image : images) {
+            String signedUrl = generatePresignedUrl(image.getFileName()).toString();
+            image.setUrl(signedUrl);
+        }
     }
 }
