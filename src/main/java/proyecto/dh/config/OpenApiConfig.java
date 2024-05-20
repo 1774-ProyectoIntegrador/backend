@@ -20,7 +20,7 @@ public class OpenApiConfig {
                         .version("v1.0")
                         .description("Backend API for RentStudio App"))
                 .servers(List.of(
-                        new Server().url("https://api-digitalhouse.adksolutions.net.ar").description("Servidor de Producción"),
+                        new Server().url("https://apidh.jackmoon.dev").description("Servidor de Producción"),
                         new Server().url("http://localhost:6060").description("Local")
                 ));
     }
