@@ -5,9 +5,10 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,9 +17,9 @@ import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.repository.ImageProductRepository;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Date;
-import java.util.List;
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.UUID;
 
 @Service
 public class S3Service {
@@ -26,6 +27,7 @@ public class S3Service {
     private final AmazonS3 s3Client;
     private final String bucketName;
     private final ImageProductRepository imageProductRepository;
+    private final SecureRandom secureRandom = new SecureRandom();
 
     public S3Service(@Value("${aws.accessKeyId}") String accessKeyId,
                      @Value("${aws.secretAccessKey}") String secretAccessKey,
@@ -43,44 +45,40 @@ public class S3Service {
         this.imageProductRepository = imageProductRepository;
     }
 
+    private String generateRandomFileName() {
+        byte[] randomBytes = new byte[16];
+        secureRandom.nextBytes(randomBytes);
+        return Base64.getUrlEncoder().encodeToString(randomBytes);
+    }
+
     public ImageProduct uploadFile(MultipartFile file, Product product) throws IOException {
-        String key = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        String fileExtension = "";
+        String originalFileName = file.getOriginalFilename();
+        if (originalFileName != null && originalFileName.contains(".")) {
+            fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        }
+
+        String key = generateRandomFileName() + fileExtension;
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(file.getSize());
         metadata.setContentType(file.getContentType());
 
-        s3Client.putObject(bucketName, key, file.getInputStream(), metadata);
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file.getInputStream(), metadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead);
+        s3Client.putObject(putObjectRequest);
+
+        String url = s3Client.getUrl(bucketName, key).toString();
 
         ImageProduct imageProduct = new ImageProduct();
-        imageProduct.setUrl(key); // Almacena solo el key, no la URL completa
+        imageProduct.setUrl(url);
         imageProduct.setFileName(key);
         imageProduct.setProduct(product);
 
         return imageProductRepository.save(imageProduct);
     }
 
-    public URL generatePresignedUrl(String key) {
-        Date expiration = new Date();
-        long expTimeMillis = expiration.getTime();
-        expTimeMillis += 1000 * 60 * 60; // 1 hour
-        expiration.setTime(expTimeMillis);
-
-        GeneratePresignedUrlRequest generatePresignedUrlRequest =
-                new GeneratePresignedUrlRequest(bucketName, key)
-                        .withMethod(com.amazonaws.HttpMethod.GET)
-                        .withExpiration(expiration);
-        return s3Client.generatePresignedUrl(generatePresignedUrlRequest);
-    }
-
     public void deleteFile(String key) {
         s3Client.deleteObject(new DeleteObjectRequest(bucketName, key));
-    }
-
-    public void signImageUrls(List<ImageProduct> images) {
-        for (ImageProduct image : images) {
-            String signedUrl = generatePresignedUrl(image.getFileName()).toString();
-            image.setUrl(signedUrl);
-        }
     }
 }
