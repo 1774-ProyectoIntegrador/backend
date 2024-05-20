@@ -2,27 +2,26 @@ package proyecto.dh.resources.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "product_images")
+@Table(name = "image_products")
 public class ImageProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String route;
+    @Column(nullable = false)
+    private String url;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @Column(nullable = false)
+    private String fileName;
+
     @JsonIgnore
+    @ManyToOne()
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 }
