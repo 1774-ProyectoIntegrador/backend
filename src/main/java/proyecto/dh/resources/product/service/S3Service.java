@@ -5,6 +5,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import org.springframework.beans.factory.annotation.Value;
@@ -69,5 +70,9 @@ public class S3Service {
                         .withMethod(com.amazonaws.HttpMethod.GET)
                         .withExpiration(expiration);
         return s3Client.generatePresignedUrl(generatePresignedUrlRequest);
+    }
+
+    public void deleteFile(String key) {
+        s3Client.deleteObject(new DeleteObjectRequest(bucketName, key));
     }
 }
