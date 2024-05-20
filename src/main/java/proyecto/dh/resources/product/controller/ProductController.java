@@ -28,17 +28,17 @@ public class ProductController {
     private S3Service s3Service;
 
 
-    @PostMapping("create")
+    @PostMapping("")
     public Product create(@RequestBody Product userObject) {
         return productService.save(userObject);
     }
 
-    @PutMapping("update/{id}")
+    @PutMapping("{id}")
     public Product update(@PathVariable Long id, @RequestBody Product userObject) throws NotFoundException {
         return productService.update(id, userObject);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) throws NotFoundException {
         productService.delete(id);
         return ResponseEntity.ok("Producto eliminado correctamente");
@@ -49,12 +49,12 @@ public class ProductController {
         return productService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public Product findById(@PathVariable Long id) throws NotFoundException {
         return productService.findById(id);
     }
 
-    @PostMapping("/{productId}/images")
+    @PostMapping("{productId}/images")
     public ResponseEntity<ResponseDTO<String>> uploadProductImage(@PathVariable Long productId, @RequestParam("file") MultipartFile file) {
         try {
             Product product = productService.findById(productId);
@@ -70,7 +70,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{productId}/images")
+    @GetMapping("{productId}/images")
     public ResponseEntity<List<String>> getProductImages(@PathVariable Long productId) throws NotFoundException {
         Product product = productService.findById(productId);
 
