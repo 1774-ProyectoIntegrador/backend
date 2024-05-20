@@ -1,5 +1,6 @@
 package proyecto.dh.resources.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,5 +22,6 @@ public class ProductCategory {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @Fetch(FetchMode.SELECT)
+    @JsonIgnore
     private Set<Product> products;
 }

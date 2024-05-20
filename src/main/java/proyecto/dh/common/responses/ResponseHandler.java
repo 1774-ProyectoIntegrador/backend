@@ -1,4 +1,4 @@
-package proyecto.dh.responses;
+package proyecto.dh.common.responses;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

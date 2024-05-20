@@ -5,19 +5,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import proyecto.dh.common.service.S3Service;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.product.entity.ImageProduct;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.repository.ImageProductRepository;
-import proyecto.dh.responses.ResponseDTO;
-import proyecto.dh.responses.ResponseHandler;
+import proyecto.dh.common.responses.ResponseDTO;
+import proyecto.dh.common.responses.ResponseHandler;
 
 import java.io.IOException;
 import java.util.List;
 
 @Service
-public class ImageService {
+public class ImageProductService {
 
     @Autowired
     private S3Service s3Service;
@@ -31,8 +32,15 @@ public class ImageService {
     public ResponseEntity<ResponseDTO<String>> uploadProductImage(Long productId, MultipartFile file) throws BadRequestException {
         try {
             Product product = productService.findById(productId);
-            ImageProduct imageProduct = s3Service.uploadFile(file, product);
-            return ResponseHandler.generateResponse("Image uploaded successfully", HttpStatus.OK, imageProduct.getUrl());
+            String imageUrl = s3Service.uploadFile(file);
+
+            ImageProduct imageProduct = new ImageProduct();
+            imageProduct.setUrl(imageUrl);
+            imageProduct.setFileName(file.getOriginalFilename());
+            imageProduct.setProduct(product);
+
+            imageProductRepository.save(imageProduct);
+            return ResponseHandler.generateResponse("Image uploaded successfully", HttpStatus.OK, imageUrl);
         } catch (Exception e) {
             throw new BadRequestException("Error uploading file: " + e.getMessage());
         }
