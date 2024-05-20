@@ -34,7 +34,7 @@ public class Product {
     private RentType rentType;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn()
+    @JoinColumn(name = "category_id")
     private ProductCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
