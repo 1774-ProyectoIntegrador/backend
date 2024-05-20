@@ -18,12 +18,14 @@ public class GlobalException {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
         ExceptionDetails details = new ExceptionDetails(new Date(), "Data integrity violation", "Check logs for details");
+        System.err.println(ex.getMessage());
         return new ResponseEntity<>(details, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<?> handleDataAccessException(DataAccessException ex, WebRequest request) {
         ExceptionDetails errorDetails = new ExceptionDetails(new Date(), "Database error", "Check logs for details");
+        System.err.println(ex.getMessage());
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
