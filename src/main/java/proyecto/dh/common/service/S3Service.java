@@ -1,4 +1,4 @@
-package proyecto.dh.resources.product.service;
+package proyecto.dh.common.service;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -12,28 +12,22 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import proyecto.dh.resources.product.entity.ImageProduct;
-import proyecto.dh.resources.product.entity.Product;
-import proyecto.dh.resources.product.repository.ImageProductRepository;
 
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Base64;
-import java.util.UUID;
 
 @Service
 public class S3Service {
 
     private final AmazonS3 s3Client;
     private final String bucketName;
-    private final ImageProductRepository imageProductRepository;
     private final SecureRandom secureRandom = new SecureRandom();
 
     public S3Service(@Value("${aws.accessKeyId}") String accessKeyId,
                      @Value("${aws.secretAccessKey}") String secretAccessKey,
                      @Value("${aws.s3.region}") String region,
-                     @Value("${aws.s3.bucketName}") String bucketName,
-                     ImageProductRepository imageProductRepository) {
+                     @Value("${aws.s3.bucketName}") String bucketName) {
 
         BasicAWSCredentials awsCreds = new BasicAWSCredentials(accessKeyId, secretAccessKey);
         this.s3Client = AmazonS3ClientBuilder.standard()
@@ -42,7 +36,6 @@ public class S3Service {
                 .build();
 
         this.bucketName = bucketName;
-        this.imageProductRepository = imageProductRepository;
     }
 
     private String generateRandomFileName() {
@@ -51,7 +44,7 @@ public class S3Service {
         return Base64.getUrlEncoder().encodeToString(randomBytes);
     }
 
-    public ImageProduct uploadFile(MultipartFile file, Product product) throws IOException {
+    public String uploadFile(MultipartFile file) throws IOException {
         String fileExtension = "";
         String originalFileName = file.getOriginalFilename();
         if (originalFileName != null && originalFileName.contains(".")) {
@@ -68,14 +61,7 @@ public class S3Service {
                 .withCannedAcl(CannedAccessControlList.PublicRead);
         s3Client.putObject(putObjectRequest);
 
-        String url = s3Client.getUrl(bucketName, key).toString();
-
-        ImageProduct imageProduct = new ImageProduct();
-        imageProduct.setUrl(url);
-        imageProduct.setFileName(key);
-        imageProduct.setProduct(product);
-
-        return imageProductRepository.save(imageProduct);
+        return s3Client.getUrl(bucketName, key).toString();
     }
 
     public void deleteFile(String key) {

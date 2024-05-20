@@ -1,4 +1,4 @@
-package proyecto.dh.responses;
+package proyecto.dh.common.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
