@@ -30,4 +30,10 @@ jobs:
           SERVER_USER: ${{ secrets.DONWEB_SSH_USERNAME }}
           SERVER_PASSWORD: ${{ secrets.DONWEB_SSH_PASSWORD }}
         run: |
-          sshpass -p "$SERVER_PASSWORD" ssh -p 5664 -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP 'cd /root/docker-apps/digitalhouse/backend && git reset --hard HEAD && git pull origin main && ./start_containers.sh'
+          sshpass -p "$SERVER_PASSWORD" ssh -p 5664 -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP '
+          cd /root/docker-apps/digitalhouse/backend &&
+          git reset --hard HEAD &&
+          git pull origin main &&
+          chmod +x start_containers.sh &&
+          chmod +x clean.sh &&
+          ./start_containers.sh'
