@@ -64,7 +64,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Product not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO<Void>> deleteProduct(@PathVariable Long id) throws NotFoundException {
         productService.delete(id);
         return ResponseHandler.generateResponse("Product eliminado correctamente", HttpStatus.OK, null);
@@ -87,7 +87,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Product not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/{productId}")
+    @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) throws NotFoundException {
             Product product = productService.findById(id);
             return new ResponseEntity<>(product, HttpStatus.OK);
@@ -99,7 +99,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Product not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping("/{productId}/attachments")
+    @PostMapping("/{id}/attachments")
     public ResponseEntity<ProductDTO> uploadProductAttachments(@PathVariable Long id, @RequestParam("files") List<MultipartFile> files) throws NotFoundException, IOException {
         Product product = productService.uploadProductAttachments(id, files);
         return new ResponseEntity<>(productService.convertToDTO(product), HttpStatus.OK);
@@ -110,7 +110,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Product not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/{productId}/attachments")
+    @GetMapping("/{id}/attachments")
     public ResponseEntity<List<Attachment>> getProductAttachments(@PathVariable Long id) throws NotFoundException {
             List<Attachment> attachments = productService.getProductAttachments(id);
             return new ResponseEntity<>(attachments, HttpStatus.OK);
