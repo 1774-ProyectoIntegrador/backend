@@ -27,7 +27,7 @@ public class ProductCategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/{categoryId}")
+    @GetMapping("/{id}")
     public ResponseEntity<ProductCategory> getCategoryById(@PathVariable Long id) {
         try {
             ProductCategory category = productCategoryService.findById(id);
@@ -37,19 +37,19 @@ public class ProductCategoryController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<ProductCategory> createCategory(@RequestBody ProductCategory category) throws BadRequestException {
         ProductCategory createdCategory = productCategoryService.save(category);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
 
-    @DeleteMapping("/{categoryId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         productCategoryService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{categoryId}/attachment")
+    @PostMapping("/{id}/attachment")
     public ResponseEntity<ProductCategory> uploadCategoryAttachment(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         try {
             ProductCategory updatedCategory = productCategoryService.uploadCategoryAttachment(id, file);
@@ -59,7 +59,7 @@ public class ProductCategoryController {
         }
     }
 
-    @GetMapping("/{categoryId}/attachment")
+    @GetMapping("/{id}/attachment")
     public ResponseEntity<Attachment> getCategoryAttachment(@PathVariable Long id) {
         try {
             Attachment attachment = productCategoryService.getCategoryAttachment(id);
