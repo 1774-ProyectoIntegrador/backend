@@ -11,6 +11,7 @@ import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.service.ProductCategoryService;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
@@ -18,6 +19,12 @@ public class ProductCategoryController {
 
     @Autowired
     private ProductCategoryService productCategoryService;
+
+    @GetMapping
+    public ResponseEntity<List<ProductCategory>> getAllCategories() {
+        List<ProductCategory> categories = productCategoryService.findAll();
+        return ResponseEntity.ok(categories);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductCategory> getCategoryById(@PathVariable Long id) {

@@ -8,6 +8,7 @@ import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
 import proyecto.dh.resources.product.dto.CreateProductDTO;
+import proyecto.dh.resources.product.dto.ProductDTO;
 import proyecto.dh.resources.product.dto.UpdateProductDTO;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
@@ -16,6 +17,7 @@ import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -32,8 +34,11 @@ public class ProductService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Product save(CreateProductDTO createProductDTO) {
+    public Product save(CreateProductDTO createProductDTO) throws NotFoundException {
         Product product = modelMapper.map(createProductDTO, Product.class);
+        ProductCategory category = productCategoryRepository.findById(createProductDTO.getCategoryId())
+                .orElseThrow(() -> new NotFoundException("Category not found"));
+        product.setCategory(category);
         return productRepository.save(product);
     }
 
@@ -58,8 +63,10 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    public List<ProductDTO> findAll() {
+        return productRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     public Product findById(Long id) throws NotFoundException {
@@ -81,5 +88,12 @@ public class ProductService {
     public List<Attachment> getProductAttachments(Long productId) throws NotFoundException {
         Product product = findById(productId);
         return product.getAttachments();
+    }
+
+    public ProductDTO convertToDTO(Product product) {
+        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+        productDTO.setCategoryId(product.getCategory().getId());
+        productDTO.setCategoryName(product.getCategory().getName());
+        return productDTO;
     }
 }
