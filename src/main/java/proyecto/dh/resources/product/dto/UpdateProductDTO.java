@@ -1,5 +1,6 @@
 package proyecto.dh.resources.product.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.product.entity.ProductFeature;
@@ -8,6 +9,7 @@ import javax.validation.constraints.*;
 import java.util.List;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UpdateProductDTO {
     @NotBlank(message = "Name is mandatory")
     @Size(max = 100, message = "Name cannot be longer than 100 characters")
