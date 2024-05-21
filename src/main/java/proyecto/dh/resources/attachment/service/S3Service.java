@@ -1,4 +1,4 @@
-package proyecto.dh.common.service;
+package proyecto.dh.resources.attachment.service;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

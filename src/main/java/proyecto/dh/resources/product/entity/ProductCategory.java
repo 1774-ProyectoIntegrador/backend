@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import proyecto.dh.resources.attachment.entity.Attachment;
 
 import java.util.Set;
 
@@ -15,13 +14,20 @@ import java.util.Set;
 @Table(name = "product_categories")
 public class ProductCategory {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
     private String name;
 
+    @Column
+    private String slug;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "attachment_id", referencedColumnName = "id")
+    private Attachment attachment;
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Fetch(FetchMode.SELECT)
     @JsonIgnore
     private Set<Product> products;
 }

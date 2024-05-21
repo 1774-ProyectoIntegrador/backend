@@ -3,10 +3,10 @@ package proyecto.dh.resources.product.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import proyecto.dh.common.enums.RentType;
+import proyecto.dh.resources.attachment.entity.Attachment;
 
 import java.util.List;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -33,12 +33,10 @@ public class Product {
     @Column(nullable = false)
     private RentType rentType;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private ProductCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ImageProduct> images;
-
-
+    private List<Attachment> attachments;
 }

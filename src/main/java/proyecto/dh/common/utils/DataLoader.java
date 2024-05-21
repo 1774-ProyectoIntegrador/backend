@@ -4,9 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import proyecto.dh.common.enums.RentType;
-import proyecto.dh.resources.product.entity.Product;
-import proyecto.dh.resources.product.repository.ImageProductRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
 
 @Component
@@ -14,8 +11,6 @@ public class DataLoader implements ApplicationRunner {
 
     @Autowired
     ProductRepository productRepository;
-    @Autowired
-    ImageProductRepository imageProductRepository;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
