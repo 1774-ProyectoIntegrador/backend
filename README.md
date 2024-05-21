@@ -4,7 +4,7 @@
 
 ## Requerimientos
 
-- Java SDK 17 minimo
+- No requiere instalar 
 - Docker Instalado en su maquina local
     - Docker Desktop para [Windows](https://docs.docker.com/desktop/install/windows-install/)
     - Docker Desktop para [MacOS](https://docs.docker.com/desktop/install/mac-install/)
@@ -27,6 +27,6 @@
 ```
 docker-compose down
 docker-compose build
-docker-compose up -d
+docker-compose up -f docker-compose.dev.yml -d
 ```
 
