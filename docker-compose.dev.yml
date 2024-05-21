@@ -23,6 +23,7 @@ services:
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: localpassword
+      POSTGRES_DB: proyectointegrador
     volumes:
       - ./docker/postgres/data:/var/lib/postgresql/data
       - ./docker/postgres/log:/var/log/postgresql
