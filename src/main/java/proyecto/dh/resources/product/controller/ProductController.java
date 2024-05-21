@@ -1,10 +1,18 @@
 package proyecto.dh.resources.product.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import proyecto.dh.common.responses.ResponseDTO;
+import proyecto.dh.common.responses.ResponseHandler;
+import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.product.dto.CreateProductDTO;
@@ -18,67 +26,93 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("products")
+@RequestMapping("/products")
 public class ProductController {
 
     @Autowired
     private ProductService productService;
 
-    @PostMapping("")
-    public ResponseEntity<ProductDTO> create(@Valid @RequestBody CreateProductDTO createProductDTO) {
-        try {
-            Product product = productService.save(createProductDTO);
-            ProductDTO productDTO = productService.convertToDTO(product);
-            return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    @Operation(summary = "Create a new product", description = "This operation creates a new product in the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Product created successfully", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "Category not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PostMapping
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody CreateProductDTO createProductDTO) throws NotFoundException, BadRequestException {
+        ProductDTO createdProduct = productService.save(createProductDTO);
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody UpdateProductDTO productUpdateDTO) throws NotFoundException {
-        Product updatedProduct = productService.updateProduct(id, productUpdateDTO);
-        ProductDTO productDTO = productService.convertToDTO(updatedProduct);
-        return ResponseEntity.ok(productDTO);
+    @Operation(summary = "Update an existing product", description = "This operation updates an existing product in the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product updated successfully", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input"),
+            @ApiResponse(responseCode = "404", description = "Product or category not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductDTO updateProductDTO) throws NotFoundException {
+        ProductDTO updatedProduct = productService.updateProduct(id, updateProductDTO);
+        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id) throws NotFoundException {
+    @Operation(summary = "Delete a product", description = "This operation deletes a product from the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Product deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDTO<Void>> deleteProduct(@PathVariable Long id) throws NotFoundException {
         productService.delete(id);
-        return ResponseEntity.ok("Producto eliminado correctamente");
+        return ResponseHandler.generateResponse("Product eliminado correctamente", HttpStatus.OK, null);
     }
 
+    @Operation(summary = "Get all products", description = "This operation retrieves all products in the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products retrieved successfully", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> findAll() {
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
         List<ProductDTO> products = productService.findAll();
-        return ResponseEntity.ok(products);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<ProductDTO> findById(@PathVariable Long id) throws NotFoundException {
-        Product product = productService.findById(id);
-        ProductDTO productDTO = productService.convertToDTO(product);
-        return ResponseEntity.ok(productDTO);
+    @Operation(summary = "Get product by ID", description = "This operation retrieves a product by its ID.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Product retrieved successfully", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) throws NotFoundException {
+            Product product = productService.findById(id);
+            return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    @PostMapping("{productId}/attachments")
-    public ResponseEntity<ProductDTO> uploadProductAttachments(@PathVariable Long productId, @RequestParam("files") List<MultipartFile> files) {
-        try {
-            Product product = productService.uploadProductAttachments(productId, files);
-            ProductDTO productDTO = productService.convertToDTO(product);
-            return ResponseEntity.ok(productDTO);
-        } catch (IOException | NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    @Operation(summary = "Upload attachments for a product", description = "This operation uploads attachments for a specific product.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Attachments uploaded successfully", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PostMapping("/{id}/attachments")
+    public ResponseEntity<ProductDTO> uploadProductAttachments(@PathVariable Long id, @RequestParam("files") List<MultipartFile> files) throws NotFoundException, IOException {
+        Product product = productService.uploadProductAttachments(id, files);
+        return new ResponseEntity<>(productService.convertToDTO(product), HttpStatus.OK);
     }
-
-    @GetMapping("{productId}/attachments")
-    public ResponseEntity<List<Attachment>> getProductAttachments(@PathVariable Long productId) {
-        try {
-            List<Attachment> attachments = productService.getProductAttachments(productId);
-            return ResponseEntity.ok(attachments);
-        } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+    @Operation(summary = "Get attachments for a product", description = "This operation gets attachments for a specific product.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieve attachments", content = @Content(schema = @Schema(implementation = Attachment.class))),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping("/{id}/attachments")
+    public ResponseEntity<List<Attachment>> getProductAttachments(@PathVariable Long id) throws NotFoundException {
+            List<Attachment> attachments = productService.getProductAttachments(id);
+            return new ResponseEntity<>(attachments, HttpStatus.OK);
     }
 }

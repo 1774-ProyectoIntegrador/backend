@@ -22,11 +22,12 @@ public class Attachment {
     @Column(nullable = false)
     private String fileName;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String fileKey;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "product_id")
     private Product product;
 
