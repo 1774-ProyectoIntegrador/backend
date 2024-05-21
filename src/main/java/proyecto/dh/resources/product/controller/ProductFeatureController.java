@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("products/features")
+@RequestMapping("/products/features")
 public class ProductFeatureController {
 
     @Autowired
