@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
+import proyecto.dh.resources.product.dto.CreateProductDTO;
 import proyecto.dh.resources.product.dto.UpdateProductDTO;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.service.ProductService;
@@ -22,8 +23,9 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping("")
-    public Product create(@RequestBody Product product) {
-        return productService.save(product);
+    public ResponseEntity<Product> create(@RequestBody CreateProductDTO createProductDTO) {
+        Product product = productService.save(createProductDTO);
+        return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")

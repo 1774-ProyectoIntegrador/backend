@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
+import proyecto.dh.resources.product.dto.CreateProductDTO;
 import proyecto.dh.resources.product.dto.UpdateProductDTO;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
@@ -31,7 +32,8 @@ public class ProductService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Product save(Product product) {
+    public Product save(CreateProductDTO createProductDTO) {
+        Product product = modelMapper.map(createProductDTO, Product.class);
         return productRepository.save(product);
     }
 
