@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
@@ -12,10 +13,13 @@ import proyecto.dh.resources.product.dto.ProductDTO;
 import proyecto.dh.resources.product.dto.UpdateProductDTO;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
+import proyecto.dh.resources.product.entity.ProductFeature;
 import proyecto.dh.resources.product.repository.ProductRepository;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,32 +38,50 @@ public class ProductService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Product save(CreateProductDTO createProductDTO) throws NotFoundException {
-        Product product = modelMapper.map(createProductDTO, Product.class);
-        ProductCategory category = productCategoryRepository.findById(createProductDTO.getCategoryId())
-                .orElseThrow(() -> new NotFoundException("Category not found"));
+    public ProductDTO save(CreateProductDTO userObject) throws NotFoundException, BadRequestException {
+        if (productRepository.existsByName(userObject.getName())) {
+            throw new BadRequestException("Producto con nombre '" + userObject.getName() + "' ya existe");
+        }
+        Product product = modelMapper.map(userObject, Product.class);
+        ProductCategory category = productCategoryRepository.findById(userObject.getCategoryId())
+                .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
         product.setCategory(category);
-        return productRepository.save(product);
+
+        if (userObject.getFeatures() != null) {
+            List<ProductFeature> features = userObject.getFeatures().stream()
+                    .peek(feature -> feature.setProduct(product))
+                    .toList();
+            product.setProductFeatures(new HashSet<>(features));
+        }
+
+        Product savedProduct = productRepository.save(product);
+        return convertToDTO(savedProduct);
     }
 
-    public Product updateProduct(Long id, UpdateProductDTO productUpdateDTO) throws NotFoundException {
+    public ProductDTO updateProduct(Long id, UpdateProductDTO productUpdateDTO) throws NotFoundException {
         Product existingProduct = findById(id);
 
-        // Map the fields from the DTO to the existing product entity
         modelMapper.map(productUpdateDTO, existingProduct);
 
-        // Update the category if provided in the DTO
         if (productUpdateDTO.getCategoryId() != null) {
             ProductCategory category = productCategoryRepository.findById(productUpdateDTO.getCategoryId())
-                    .orElseThrow(() -> new NotFoundException("Category not found"));
+                    .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
             existingProduct.setCategory(category);
         }
 
-        return productRepository.save(existingProduct);
+        if (productUpdateDTO.getFeatures() != null) {
+            existingProduct.getProductFeatures().clear();
+            existingProduct.getProductFeatures().addAll(productUpdateDTO.getFeatures().stream()
+                    .peek(feature -> feature.setProduct(existingProduct))
+                    .toList());
+        }
+        Product updatedProduct = productRepository.save(existingProduct);
+        return convertToDTO(updatedProduct);
     }
 
     public void delete(Long id) throws NotFoundException {
         Product findProduct = findById(id);
+        attachmentService.deleteAttachments(findProduct.getAttachments());
         productRepository.deleteById(id);
     }
 
@@ -94,6 +116,10 @@ public class ProductService {
         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
         productDTO.setCategoryId(product.getCategory().getId());
         productDTO.setCategoryName(product.getCategory().getName());
+
+        if (product.getProductFeatures() != null) {
+            productDTO.setFeatures(new ArrayList<>(product.getProductFeatures()));
+        }
         return productDTO;
     }
 }
