@@ -32,11 +32,13 @@ public class ImageProductService {
     public ResponseEntity<ResponseDTO<String>> uploadProductImage(Long productId, MultipartFile file) throws BadRequestException {
         try {
             Product product = productService.findById(productId);
-            String imageUrl = s3Service.uploadFile(file);
+            String fileKey = s3Service.uploadFile(file);
+            String imageUrl = s3Service.getFileUrl(fileKey); // Obtener la URL completa del archivo
 
             ImageProduct imageProduct = new ImageProduct();
-            imageProduct.setUrl(imageUrl);
-            imageProduct.setFileName(file.getOriginalFilename());
+            imageProduct.setUrl(imageUrl); // URL completa del archivo subido
+            imageProduct.setFileName(file.getOriginalFilename()); // Nombre del archivo original
+            imageProduct.setFileKey(fileKey); // Clave del archivo generado
             imageProduct.setProduct(product);
 
             imageProductRepository.save(imageProduct);
@@ -49,17 +51,10 @@ public class ImageProductService {
     public ResponseEntity<ResponseDTO<String>> deleteProductImage(Long productId, Long imageId) throws BadRequestException {
         try {
             Product product = productService.findById(productId);
+            ImageProduct imageProduct = imageProductRepository.findById(imageId)
+                    .orElseThrow(() -> new NotFoundException("Image not found"));
 
-            ImageProduct imageProduct = product.getImages().stream()
-                    .filter(image -> image.getId().equals(imageId))
-                    .findFirst()
-                    .orElse(null);
-
-            if (imageProduct == null) {
-                throw new NotFoundException("Image not found");
-            }
-
-            s3Service.deleteFile(imageProduct.getFileName());
+            s3Service.deleteFile(imageProduct.getFileKey()); // Usar la clave del archivo generado
             imageProductRepository.delete(imageProduct);
 
             return ResponseHandler.generateResponse("Image deleted successfully", HttpStatus.OK, null);
@@ -70,9 +65,6 @@ public class ImageProductService {
 
     public ResponseEntity<List<ImageProduct>> getProductImages(Long productId) throws NotFoundException {
         Product product = productService.findById(productId);
-        if (product == null) {
-            throw new NotFoundException("Product not found");
-        }
         return ResponseEntity.ok(product.getImages());
     }
 }

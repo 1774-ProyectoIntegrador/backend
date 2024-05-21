@@ -18,10 +18,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# Eliminar imágenes colgantes (dangling)
-echo "Eliminando imágenes colgantes (dangling)..."
-docker image prune -f
-
 # Levantar los contenedores en segundo plano
 echo "Levantando los contenedores..."
 docker-compose up -d
