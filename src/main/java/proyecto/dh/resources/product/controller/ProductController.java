@@ -32,12 +32,12 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @Operation(summary = "Create a new product", description = "This operation creates a new product in the system.")
+    @Operation(summary = "Crear un nuevo producto", description = "Esta operación crea un nuevo producto en el sistema.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Product created successfully", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "404", description = "Category not found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
+            @ApiResponse(responseCode = "201", description = "Producto creado con éxito", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Entrada inválida"),
+            @ApiResponse(responseCode = "404", description = "Categoría no encontrada"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody CreateProductDTO createProductDTO) throws NotFoundException, BadRequestException {
