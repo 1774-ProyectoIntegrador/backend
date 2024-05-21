@@ -60,7 +60,6 @@ public class ProductService {
 
     public ProductDTO updateProduct(Long id, UpdateProductDTO productUpdateDTO) throws NotFoundException {
         Product existingProduct = findById(id);
-
         modelMapper.map(productUpdateDTO, existingProduct);
 
         if (productUpdateDTO.getCategoryId() != null) {
@@ -75,6 +74,7 @@ public class ProductService {
                     .peek(feature -> feature.setProduct(existingProduct))
                     .toList());
         }
+
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToDTO(updatedProduct);
     }
