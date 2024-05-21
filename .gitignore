@@ -33,6 +33,6 @@ build/
 
 
 ### Java Spring ###
-/docker/
+/docker/postgres
 docker-compose.dev.yml
 /.env
