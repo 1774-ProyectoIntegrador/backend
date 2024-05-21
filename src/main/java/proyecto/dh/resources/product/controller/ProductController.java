@@ -8,10 +8,12 @@ import org.springframework.web.multipart.MultipartFile;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.product.dto.CreateProductDTO;
+import proyecto.dh.resources.product.dto.ProductDTO;
 import proyecto.dh.resources.product.dto.UpdateProductDTO;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.service.ProductService;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,15 +25,21 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping("")
-    public ResponseEntity<Product> create(@RequestBody CreateProductDTO createProductDTO) {
-        Product product = productService.save(createProductDTO);
-        return new ResponseEntity<>(product, HttpStatus.CREATED);
+    public ResponseEntity<ProductDTO> create(@Valid @RequestBody CreateProductDTO createProductDTO) {
+        try {
+            Product product = productService.save(createProductDTO);
+            ProductDTO productDTO = productService.convertToDTO(product);
+            return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody UpdateProductDTO productUpdateDTO) throws NotFoundException {
+    public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody UpdateProductDTO productUpdateDTO) throws NotFoundException {
         Product updatedProduct = productService.updateProduct(id, productUpdateDTO);
-        return ResponseEntity.ok(updatedProduct);
+        ProductDTO productDTO = productService.convertToDTO(updatedProduct);
+        return ResponseEntity.ok(productDTO);
     }
 
     @DeleteMapping("{id}")
@@ -41,20 +49,24 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> findAll() {
-        return productService.findAll();
+    public ResponseEntity<List<ProductDTO>> findAll() {
+        List<ProductDTO> products = productService.findAll();
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("{id}")
-    public Product findById(@PathVariable Long id) throws NotFoundException {
-        return productService.findById(id);
+    public ResponseEntity<ProductDTO> findById(@PathVariable Long id) throws NotFoundException {
+        Product product = productService.findById(id);
+        ProductDTO productDTO = productService.convertToDTO(product);
+        return ResponseEntity.ok(productDTO);
     }
 
     @PostMapping("{productId}/attachments")
-    public ResponseEntity<Product> uploadProductAttachments(@PathVariable Long productId, @RequestParam("files") List<MultipartFile> files) {
+    public ResponseEntity<ProductDTO> uploadProductAttachments(@PathVariable Long productId, @RequestParam("files") List<MultipartFile> files) {
         try {
             Product product = productService.uploadProductAttachments(productId, files);
-            return ResponseEntity.ok(product);
+            ProductDTO productDTO = productService.convertToDTO(product);
+            return ResponseEntity.ok(productDTO);
         } catch (IOException | NotFoundException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

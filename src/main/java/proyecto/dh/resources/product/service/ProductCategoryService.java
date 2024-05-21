@@ -10,6 +10,7 @@ import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class ProductCategoryService {
@@ -19,6 +20,10 @@ public class ProductCategoryService {
 
     @Autowired
     private AttachmentService attachmentService;
+
+    public List<ProductCategory> findAll() {
+        return productCategoryRepository.findAll();
+    }
 
     public ProductCategory findById(Long id) throws NotFoundException {
         return productCategoryRepository.findById(id)

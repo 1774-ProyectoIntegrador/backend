@@ -5,6 +5,7 @@ import lombok.*;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.entity.Attachment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -38,5 +39,5 @@ public class Product {
     private ProductCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Attachment> attachments;
+    private List<Attachment> attachments = new ArrayList<>();
 }
