@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.product.dto.CreateProductDTO;
 import proyecto.dh.resources.product.dto.ProductDTO;
@@ -34,13 +35,9 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody CreateProductDTO createProductDTO) {
-        try {
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody CreateProductDTO createProductDTO) throws NotFoundException, BadRequestException {
             ProductDTO createdProduct = productService.save(createProductDTO);
             return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
     @Operation(summary = "Update an existing product", description = "This operation updates an existing product in the system.")
