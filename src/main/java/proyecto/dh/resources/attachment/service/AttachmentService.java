@@ -3,6 +3,7 @@ package proyecto.dh.resources.attachment.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.repository.AttachmentRepository;
 
@@ -40,12 +41,13 @@ public class AttachmentService {
         return attachments;
     }
 
-    public void deleteAttachment(Long attachmentId) {
-        Attachment attachment = attachmentRepository.findById(attachmentId).orElseThrow(() -> new IllegalArgumentException("Invalid attachment ID"));
+    public void deleteAttachment(Long attachmentId) throws BadRequestException {
+        Attachment attachment = attachmentRepository.findById(attachmentId).orElseThrow(() -> new BadRequestException("ID de archivo adjunto no válido"));
         s3Service.deleteFile(attachment.getFileKey());
         attachmentRepository.delete(attachment);
     }
 
+    /*** Internal Use ***/
     public void deleteAttachments(List<Attachment> attachments) {
         for (Attachment attachment : attachments) {
             s3Service.deleteFile(attachment.getFileKey());
