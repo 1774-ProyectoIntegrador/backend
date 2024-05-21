@@ -45,4 +45,11 @@ public class AttachmentService {
         s3Service.deleteFile(attachment.getFileKey());
         attachmentRepository.delete(attachment);
     }
+
+    public void deleteAttachments(List<Attachment> attachments) {
+        for (Attachment attachment : attachments) {
+            s3Service.deleteFile(attachment.getFileKey());
+            attachmentRepository.delete(attachment);
+        }
+    }
 }

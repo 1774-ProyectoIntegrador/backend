@@ -81,6 +81,7 @@ public class ProductService {
 
     public void delete(Long id) throws NotFoundException {
         Product findProduct = findById(id);
+        attachmentService.deleteAttachments(findProduct.getAttachments());
         productRepository.deleteById(id);
     }
 
