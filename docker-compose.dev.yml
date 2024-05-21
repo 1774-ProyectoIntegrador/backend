@@ -28,7 +28,7 @@ services:
       - ./docker/postgres/log:/var/log/postgresql
       - ./sql:/docker-entrypoint-initdb.d
     ports:
-      - 5432:5432
+      - 6061:5432
 
   cleaner:
     build:
