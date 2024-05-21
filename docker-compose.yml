@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    restart: always
+    restart: no
     depends_on:
       - postgres
     env_file:

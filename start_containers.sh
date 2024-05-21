@@ -1,30 +1,39 @@
 #!/bin/bash
 
-# Nombre del archivo: start_containers.sh
+# File name: start_containers.sh
 
-# Comprobar si docker-compose está instalado
+# Check if docker-compose is installed
 if ! command -v docker-compose &> /dev/null
 then
-    echo "docker-compose no está instalado. Por favor, instálalo e inténtalo de nuevo."
+    echo "[JACKMOON-DEV] docker-compose is not installed. Please install it and try again."
     exit 1
 fi
 
-# Construir los contenedores
-echo "Construyendo los contenedores..."
+# Stop and remove existing containers
+echo "[JACKMOON-DEV] Stopping and removing existing containers..."
+docker-compose down
+
+if [ $? -ne 0 ]; then
+    echo "[JACKMOON-DEV] Error while stopping and removing containers."
+    exit 1
+fi
+
+# Build the containers
+echo "[JACKMOON-DEV] Building the containers..."
 docker-compose build
 
 if [ $? -ne 0 ]; then
-    echo "Error durante la construcción de los contenedores."
+    echo "[JACKMOON-DEV] Error during container build."
     exit 1
 fi
 
-# Levantar los contenedores en segundo plano
-echo "Levantando los contenedores..."
+# Start the containers in the background
+echo "[JACKMOON-DEV] Starting the containers..."
 docker-compose up -d
 
 if [ $? -ne 0 ]; then
-    echo "Error al levantar los contenedores."
+    echo "[JACKMOON-DEV] Error while starting the containers."
     exit 1
 fi
 
-echo "Contenedores levantados exitosamente."
+echo "[JACKMOON-DEV] Containers started successfully."
