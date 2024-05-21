@@ -6,7 +6,7 @@
 
 - Java SDK 17 minimo
 - Docker Instalado en su maquina local
-    - Docker Desktop para [Windows](https://docs.docker.com/desktop/install/windows-install/])
+    - Docker Desktop para [Windows](https://docs.docker.com/desktop/install/windows-install/)
     - Docker Desktop para [MacOS](https://docs.docker.com/desktop/install/mac-install/)
     - Docker Engine para [Linux](https://docs.docker.com/engine/install/)
 - IntelliJ IDEA Community/Pro
