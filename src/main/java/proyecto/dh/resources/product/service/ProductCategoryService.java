@@ -3,6 +3,7 @@ package proyecto.dh.resources.product.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
@@ -16,26 +17,31 @@ import java.util.List;
 public class ProductCategoryService {
 
     @Autowired
-    private ProductCategoryRepository productCategoryRepository;
+    private ProductCategoryRepository repository;
 
     @Autowired
     private AttachmentService attachmentService;
 
     public List<ProductCategory> findAll() {
-        return productCategoryRepository.findAll();
+        return repository.findAll();
     }
 
     public ProductCategory findById(Long id) throws NotFoundException {
-        return productCategoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Category not found"));
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
     }
 
-    public ProductCategory save(ProductCategory category) {
-        return productCategoryRepository.save(category);
+    public ProductCategory save(ProductCategory category) throws BadRequestException {
+        if (repository.existByName(category.getName())) {
+            throw new BadRequestException("Categoría con el nombre '" + category.getName() + "' ya existe");
+        } else if (repository.existsBySlug(category.getSlug())) {
+            throw new BadRequestException("Categoría con el slug '" + category.getSlug() + "' ya existe");
+        }
+        return repository.save(category);
     }
 
     public void deleteById(Long id) {
-        productCategoryRepository.deleteById(id);
+        repository.deleteById(id);
     }
 
     public ProductCategory uploadCategoryAttachment(Long categoryId, MultipartFile file) throws IOException, NotFoundException {
@@ -43,7 +49,7 @@ public class ProductCategoryService {
         Attachment attachment = attachmentService.uploadAttachment(file);
 
         category.setAttachment(attachment);
-        return productCategoryRepository.save(category);
+        return repository.save(category);
     }
 
     public Attachment getCategoryAttachment(Long categoryId) throws NotFoundException {

@@ -7,6 +7,7 @@ import proyecto.dh.resources.attachment.entity.Attachment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,10 +27,10 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
-    private int stock;
+    private Integer stock;
 
     @Column(nullable = false)
-    private double price;
+    private Double price;
 
     @Column(nullable = false)
     private RentType rentType;
@@ -39,5 +40,9 @@ public class Product {
     private ProductCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ProductFeature> productFeatures;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>();
+
 }

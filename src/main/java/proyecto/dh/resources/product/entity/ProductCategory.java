@@ -17,10 +17,10 @@ public class ProductCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String slug;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

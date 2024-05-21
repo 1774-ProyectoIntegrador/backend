@@ -1,17 +1,22 @@
 package proyecto.dh.resources.product.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto.dh.common.enums.RentType;
+import proyecto.dh.resources.product.entity.ProductFeature;
 
 import javax.validation.constraints.*;
+import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CreateProductDTO {
 
     @NotBlank(message = "Name is mandatory")
@@ -35,4 +40,6 @@ public class CreateProductDTO {
 
     @NotNull(message = "Category ID is mandatory")
     private Long categoryId;
+
+    private List<ProductFeature> features;
 }

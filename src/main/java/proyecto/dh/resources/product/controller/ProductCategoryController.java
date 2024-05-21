@@ -26,7 +26,7 @@ public class ProductCategoryController {
         return ResponseEntity.ok(categories);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{categoryId}")
     public ResponseEntity<ProductCategory> getCategoryById(@PathVariable Long id) {
         try {
             ProductCategory category = productCategoryService.findById(id);
@@ -42,13 +42,13 @@ public class ProductCategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{categoryId}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         productCategoryService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/attachment")
+    @PostMapping("/{categoryId}/attachment")
     public ResponseEntity<ProductCategory> uploadCategoryAttachment(@PathVariable Long id, @RequestParam("file") MultipartFile file) {
         try {
             ProductCategory updatedCategory = productCategoryService.uploadCategoryAttachment(id, file);
@@ -58,7 +58,7 @@ public class ProductCategoryController {
         }
     }
 
-    @GetMapping("/{id}/attachment")
+    @GetMapping("/{categoryId}/attachment")
     public ResponseEntity<Attachment> getCategoryAttachment(@PathVariable Long id) {
         try {
             Attachment attachment = productCategoryService.getCategoryAttachment(id);
