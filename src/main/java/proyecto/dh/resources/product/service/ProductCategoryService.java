@@ -32,7 +32,7 @@ public class ProductCategoryService {
     }
 
     public ProductCategory save(ProductCategory category) throws BadRequestException {
-        if (repository.existByName(category.getName())) {
+        if (repository.existsByName(category.getName())) {
             throw new BadRequestException("Categoría con el nombre '" + category.getName() + "' ya existe");
         } else if (repository.existsBySlug(category.getSlug())) {
             throw new BadRequestException("Categoría con el slug '" + category.getSlug() + "' ya existe");

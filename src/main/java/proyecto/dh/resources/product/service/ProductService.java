@@ -39,7 +39,7 @@ public class ProductService {
     private ModelMapper modelMapper;
 
     public ProductDTO save(CreateProductDTO userObject) throws NotFoundException, BadRequestException {
-        if (productRepository.existByName()) {
+        if (productRepository.existsByName(userObject.getName())) {
             throw new BadRequestException("Producto con nombre '" + userObject.getName() + "' ya existe");
         }
         Product product = modelMapper.map(userObject, Product.class);

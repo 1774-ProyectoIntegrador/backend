@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.product.entity.ProductCategory;
@@ -37,7 +38,7 @@ public class ProductCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductCategory> createCategory(@RequestBody ProductCategory category) {
+    public ResponseEntity<ProductCategory> createCategory(@RequestBody ProductCategory category) throws BadRequestException {
         ProductCategory createdCategory = productCategoryService.save(category);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
