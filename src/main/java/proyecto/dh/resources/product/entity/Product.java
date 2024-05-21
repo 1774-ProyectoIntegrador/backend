@@ -1,5 +1,6 @@
 package proyecto.dh.resources.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 import proyecto.dh.common.enums.RentType;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "products")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
