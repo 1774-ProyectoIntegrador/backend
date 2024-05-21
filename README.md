@@ -17,8 +17,8 @@
 
 ## Configuración del Proyecto
 
-1 - Renombrar el archivo `SAMPLE.env` a `.env` y configurar sus claves de acceso a AWS S3.
-2 - Docker no requiere ninguna configuración, puede modificar el puerto a su necesidad.
+1. Renombrar el archivo `SAMPLE.env` a `.env` y configurar sus claves de acceso a AWS S3.
+2. Docker no requiere ninguna configuración, puede modificar el puerto a su necesidad.
 
 ## Como correr el proyecto
 
