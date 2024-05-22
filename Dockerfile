@@ -25,4 +25,4 @@ COPY --from=builder /app/target/dh-0.0.1-SNAPSHOT.jar /app/dh-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
 
 # Ejecutar el archivo JAR con el perfil de producción
-ENTRYPOINT ["java", "-jar", "/app/dh-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=prod"]
+ENTRYPOINT ["java", "-jar", "/app/dh-0.0.1-SNAPSHOT.jar"]
