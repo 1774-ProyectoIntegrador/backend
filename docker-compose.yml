@@ -13,7 +13,7 @@ services:
     env_file:
       - .env
     ports:
-      - 6060:8080
+      - "6060:8080"
     networks:
       - nginx_webnet
 
@@ -31,7 +31,7 @@ services:
       - ./docker/postgres/log:/var/log/postgresql
       - ./sql:/docker-entrypoint-initdb.d
     ports:
-      - 5432:5432
+      - "6061:5432"
     networks:
       - nginx_webnet
 
