@@ -25,6 +25,9 @@ public class ProductFeature {
     @Column(nullable = false)
     private String name;
 
+    @Column
+    private String description;
+
     @Column(nullable = false)
     private String icon;
 
