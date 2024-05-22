@@ -1,5 +1,6 @@
 package proyecto.dh.resources.product.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -7,6 +8,7 @@ import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
+import proyecto.dh.resources.product.dto.UpdateProductCategoryDTO;
 import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 
@@ -21,6 +23,9 @@ public class ProductCategoryService {
 
     @Autowired
     private AttachmentService attachmentService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     public List<ProductCategory> findAll() {
         return repository.findAll();
@@ -42,6 +47,22 @@ public class ProductCategoryService {
 
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    public ProductCategory updateCategory(Long id, UpdateProductCategoryDTO categoryUpdateDTO) throws NotFoundException, BadRequestException {
+        ProductCategory existingCategory = findById(id);
+
+        modelMapper.map(categoryUpdateDTO, existingCategory);
+
+        if (categoryUpdateDTO.getName() != null && repository.existsByName(categoryUpdateDTO.getName()) && !existingCategory.getName().equals(categoryUpdateDTO.getName())) {
+            throw new BadRequestException("Categoría con el nombre '" + categoryUpdateDTO.getName() + "' ya existe");
+        }
+
+        if (categoryUpdateDTO.getSlug() != null && repository.existsBySlug(categoryUpdateDTO.getSlug()) && !existingCategory.getSlug().equals(categoryUpdateDTO.getSlug())) {
+            throw new BadRequestException("Categoría con el slug '" + categoryUpdateDTO.getSlug() + "' ya existe");
+        }
+
+        return repository.save(existingCategory);
     }
 
     public ProductCategory uploadCategoryAttachment(Long categoryId, MultipartFile file) throws IOException, NotFoundException {
