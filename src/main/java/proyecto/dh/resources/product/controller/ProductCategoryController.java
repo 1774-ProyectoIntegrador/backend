@@ -1,5 +1,10 @@
 package proyecto.dh.resources.product.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,9 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
+import proyecto.dh.resources.product.dto.ProductDTO;
+import proyecto.dh.resources.product.dto.UpdateProductCategoryDTO;
+import proyecto.dh.resources.product.dto.UpdateProductDTO;
 import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.service.ProductCategoryService;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -37,10 +46,17 @@ public class ProductCategoryController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<ProductCategory> createCategory(@RequestBody ProductCategory category) throws BadRequestException {
         ProductCategory createdCategory = productCategoryService.save(category);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
+    }
+
+    @Operation(summary = "Update an existing category")
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductCategory> updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductCategoryDTO userObject) throws NotFoundException, BadRequestException {
+        ProductCategory updatedProduct = productCategoryService.updateCategory(id, userObject);
+        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
