@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import proyecto.dh.exceptions.handler.BadRequestException;
 
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -48,7 +49,11 @@ public class S3Service {
         return Base64.getUrlEncoder().encodeToString(randomBytes);
     }
 
-    public String uploadFile(MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file) throws IOException, BadRequestException {
+        if (file.isEmpty()) {
+            throw new BadRequestException("El archivo no puede estar vacío");
+        }
+
         String fileExtension = "";
         String originalFileName = file.getOriginalFilename();
         if (originalFileName != null && originalFileName.contains(".")) {
