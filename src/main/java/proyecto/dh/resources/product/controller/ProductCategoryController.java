@@ -3,15 +3,12 @@ package proyecto.dh.resources.product.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
-import proyecto.dh.resources.attachment.dto.AttachmentDTO;
 import proyecto.dh.resources.product.dto.category.ProductCategoryDTO;
 import proyecto.dh.resources.product.dto.category.ProductCategorySaveDTO;
 import proyecto.dh.resources.product.service.ProductCategoryService;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -46,20 +43,8 @@ public class ProductCategoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) throws BadRequestException, NotFoundException {
         categoryService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{id}/attachments")
-    public ResponseEntity<ProductCategoryDTO> uploadAttachments(@PathVariable Long id, @RequestParam("file") MultipartFile file) throws IOException, NotFoundException {
-        ProductCategoryDTO categoryDTO = categoryService.uploadCategoryAttachment(id, file);
-        return ResponseEntity.ok(categoryDTO);
-    }
-
-    @GetMapping("/{id}/attachments")
-    public ResponseEntity<AttachmentDTO> getAttachments(@PathVariable Long id) throws NotFoundException {
-        AttachmentDTO attachment = categoryService.getCategoryAttachment(id);
-        return ResponseEntity.ok(attachment);
     }
 }

@@ -3,23 +3,21 @@ package proyecto.dh.resources.product.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.dto.AttachmentDTO;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
-import proyecto.dh.resources.product.dto.category.ProductCategoryDTO;
-import proyecto.dh.resources.product.dto.ProductSaveDTO;
 import proyecto.dh.resources.product.dto.ProductDTO;
+import proyecto.dh.resources.product.dto.ProductSaveDTO;
 import proyecto.dh.resources.product.dto.ProductUpdateDTO;
+import proyecto.dh.resources.product.dto.category.ProductCategoryDTO;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.entity.ProductFeature;
-import proyecto.dh.resources.product.repository.ProductRepository;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
+import proyecto.dh.resources.product.repository.ProductRepository;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,6 +46,17 @@ public class ProductService {
         ProductCategory category = productCategoryRepository.findById(productSaveDTO.getCategoryId())
                 .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
         product.setCategory(category);
+
+        if (productSaveDTO.getAttachments() != null) {
+            List<Attachment> attachments = new ArrayList<>();
+            for (Long attachmentId : productSaveDTO.getAttachments()) {
+                Attachment attachment = attachmentService.findById(attachmentId);
+                validateFileType(attachment);
+                attachment.setProduct(product);
+                attachments.add(attachment);
+            }
+            product.setAttachments(attachments);
+        }
 
         if (productSaveDTO.getFeatures() != null) {
             List<ProductFeature> features = productSaveDTO.getFeatures().stream()
@@ -83,7 +92,7 @@ public class ProductService {
 
     public void delete(Long id) throws NotFoundException {
         Product findProduct = findByIdEntity(id);
-        attachmentService.deleteAttachments(findProduct.getAttachments());
+        attachmentService.deleteAttachmentsByEntities(findProduct.getAttachments());
         productRepository.deleteById(id);
     }
 
@@ -98,23 +107,11 @@ public class ProductService {
         return convertToDTO(productSearched);
     }
 
-    public Product uploadProductAttachments(Long productId, List<MultipartFile> files) throws IOException, NotFoundException {
-        Product product = findByIdEntity(productId);
-        List<Attachment> attachments = attachmentService.uploadAttachments(files);
-
-        for (Attachment attachment : attachments) {
-            attachment.setProduct(product);
+    private void validateFileType(Attachment attachment) throws BadRequestException {
+        String contentType = attachment.getFileName().substring(attachment.getFileName().lastIndexOf('.') + 1).toLowerCase();
+        if (!"jpeg".equals(contentType) && !"png".equals(contentType) && !"jpg".equals(contentType)) {
+            throw new BadRequestException("Solo se permiten archivos JPEG, PNG y JPG");
         }
-        product.getAttachments().addAll(attachments);
-
-        return productRepository.save(product);
-    }
-
-    public List<AttachmentDTO> getProductAttachments(Long productId) throws NotFoundException {
-        Product product = findByIdEntity(productId);
-        return product.getAttachments().stream()
-                .map(attachment -> modelMapper.map(attachment, AttachmentDTO.class))
-                .collect(Collectors.toList());
     }
 
     private Product findByIdEntity(Long id) throws NotFoundException {
@@ -141,7 +138,6 @@ public class ProductService {
         }
         return productDTO;
     }
-
 
     public Product convertToEntity(ProductSaveDTO productSaveDTO) {
         return modelMapper.map(productSaveDTO, Product.class);

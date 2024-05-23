@@ -23,6 +23,9 @@ public class ProductCategory {
     private String name;
 
     @Column(nullable = false, unique = true)
+    private String description;
+
+    @Column(nullable = false, unique = true)
     private String slug;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
