@@ -69,7 +69,7 @@ public class ProductService {
         return convertToDTO(savedProduct);
     }
 
-    public ProductDTO updateProduct(Long id, ProductUpdateDTO productUpdateDTO) throws NotFoundException {
+    public ProductDTO updateProduct(Long id, ProductUpdateDTO productUpdateDTO) throws NotFoundException, BadRequestException {
         Product existingProduct = findByIdEntity(id);
         modelMapper.map(productUpdateDTO, existingProduct);
 
@@ -77,6 +77,17 @@ public class ProductService {
             ProductCategory category = productCategoryRepository.findById(productUpdateDTO.getCategoryId())
                     .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
             existingProduct.setCategory(category);
+        }
+
+        if (productUpdateDTO.getAttachments() != null) {
+            List<Attachment> attachments = new ArrayList<>();
+            for (Long attachmentId : productUpdateDTO.getAttachments()) {
+                Attachment attachment = attachmentService.findById(attachmentId);
+                validateFileType(attachment);
+                attachment.setProduct(existingProduct);
+                attachments.add(attachment);
+            }
+            existingProduct.setAttachments(attachments);
         }
 
         if (productUpdateDTO.getFeatures() != null) {
