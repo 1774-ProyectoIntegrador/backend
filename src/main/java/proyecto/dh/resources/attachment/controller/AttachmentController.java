@@ -8,11 +8,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import proyecto.dh.common.responses.ResponseDTO;
+import proyecto.dh.common.responses.ResponseHandler;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.resources.attachment.dto.AttachmentDTO;
+import proyecto.dh.resources.attachment.dto.DeleteAttachmentDTO;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
 
@@ -30,13 +34,14 @@ public class AttachmentController {
 
     @Operation(summary = "Subir archivos adjuntos", description = "Esta operación sube archivos adjuntos y devuelve sus IDs.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Archivos subidos correctamente"),
+            @ApiResponse(responseCode = "200", description = "Archivos subidos correctamente", useReturnTypeSchema = false),
             @ApiResponse(responseCode = "400", description = "Error al subir archivos"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping("/upload")
+    @PostMapping(value = "/upload", produces = { "application/json" }, consumes = {
+            "multipart/form-data" })
     public ResponseEntity<List<AttachmentDTO>> uploadAttachments(
-            @Parameter(description = "Los archivos a subir", required = true, content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "array", format = "binary"))) @RequestParam("files") List<MultipartFile> files) throws IOException, BadRequestException {
+            @Parameter(description = "Los archivos a subir", required = true, content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "array", format = "binary"))) @RequestPart("files") List<MultipartFile> files) throws IOException, BadRequestException {
         List<AttachmentDTO> attachmentDTOs = attachmentService.uploadAttachments(files).stream()
                 .map(attachment -> new AttachmentDTO(attachment.getId(), attachment.getUrl(), attachment.getFileName()))
                 .collect(Collectors.toList());
@@ -50,9 +55,9 @@ public class AttachmentController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping
-    public ResponseEntity<String> deleteAttachments(@RequestBody List<Long> ids) throws BadRequestException {
-        attachmentService.deleteAttachments(ids);
-        return ResponseEntity.ok("Archivos adjuntos eliminados correctamente");
+    public ResponseEntity<ResponseDTO<String>> deleteAttachments(@RequestBody DeleteAttachmentDTO userObject) throws BadRequestException {
+        attachmentService.deleteAttachments(userObject.getIds());
+        return ResponseHandler.generateResponse("Archivos adjuntos eliminados correctamente", HttpStatus.ACCEPTED, null);
     }
 
     @Operation(summary = "Obtener detalles de un archivo adjunto por ID", description = "Esta operación devuelve los detalles de un archivo adjunto basado en su ID.")
