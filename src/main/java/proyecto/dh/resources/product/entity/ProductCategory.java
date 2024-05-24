@@ -22,7 +22,7 @@ public class ProductCategory {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column()
     private String description;
 
     @Column(nullable = false, unique = true)
