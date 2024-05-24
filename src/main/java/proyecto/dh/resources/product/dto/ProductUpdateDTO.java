@@ -27,5 +27,7 @@ public class ProductUpdateDTO {
 
     private Long categoryId;
 
+    private List<Long> attachments;
+
     private List<ProductFeature> features;
 }
