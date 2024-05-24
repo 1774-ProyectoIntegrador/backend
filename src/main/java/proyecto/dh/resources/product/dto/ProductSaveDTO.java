@@ -1,6 +1,7 @@
 package proyecto.dh.resources.product.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.product.entity.ProductFeature;
-
-import javax.validation.constraints.*;
 import java.util.List;
 
 @Getter
@@ -41,6 +40,8 @@ public class ProductSaveDTO {
 
     @NotNull(message = "Category ID is mandatory")
     private Long categoryId;
+
+    private List<Long> attachments;
 
     private List<ProductFeature> features;
 }

@@ -5,7 +5,7 @@ import lombok.*;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.product.entity.ProductFeature;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.util.List;
 
 @Data

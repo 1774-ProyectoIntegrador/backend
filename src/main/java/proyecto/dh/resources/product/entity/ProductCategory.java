@@ -22,6 +22,9 @@ public class ProductCategory {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column()
+    private String description;
+
     @Column(nullable = false, unique = true)
     private String slug;
 

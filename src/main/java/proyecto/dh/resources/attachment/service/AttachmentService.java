@@ -20,7 +20,7 @@ public class AttachmentService {
     @Autowired
     private AttachmentRepository attachmentRepository;
 
-    public Attachment uploadAttachment(MultipartFile file) throws IOException {
+    public Attachment uploadAttachment(MultipartFile file) throws IOException, BadRequestException {
         String fileKey = s3Service.uploadFile(file);
         String attachmentUrl = s3Service.getFileUrl(fileKey);
 
@@ -32,7 +32,7 @@ public class AttachmentService {
         return attachmentRepository.save(attachment);
     }
 
-    public List<Attachment> uploadAttachments(List<MultipartFile> files) throws IOException {
+    public List<Attachment> uploadAttachments(List<MultipartFile> files) throws IOException, BadRequestException {
         List<Attachment> attachments = new ArrayList<>();
         for (MultipartFile file : files) {
             Attachment attachment = uploadAttachment(file);
@@ -41,14 +41,24 @@ public class AttachmentService {
         return attachments;
     }
 
+    public Attachment findById(Long id) throws BadRequestException {
+        return attachmentRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("ID de archivo adjunto no válido"));
+    }
+
+    public void deleteAttachments(List<Long> attachmentIds) throws BadRequestException {
+        for (Long id : attachmentIds) {
+            deleteAttachment(id);
+        }
+    }
+
     public void deleteAttachment(Long attachmentId) throws BadRequestException {
-        Attachment attachment = attachmentRepository.findById(attachmentId).orElseThrow(() -> new BadRequestException("ID de archivo adjunto no válido"));
+        Attachment attachment = findById(attachmentId);
         s3Service.deleteFile(attachment.getFileKey());
         attachmentRepository.delete(attachment);
     }
 
-    /*** Internal Use ***/
-    public void deleteAttachments(List<Attachment> attachments) {
+    public void deleteAttachmentsByEntities(List<Attachment> attachments) {
         for (Attachment attachment : attachments) {
             s3Service.deleteFile(attachment.getFileKey());
             attachmentRepository.delete(attachment);
