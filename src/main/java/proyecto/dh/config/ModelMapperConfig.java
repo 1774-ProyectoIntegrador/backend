@@ -14,7 +14,6 @@ public class ModelMapperConfig {
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        // Configurar ModelMapper para omitir campos nulos
         Condition<Object, Object> notNull = new Condition<Object, Object>() {
             @Override
             public boolean applies(MappingContext<Object, Object> context) {
