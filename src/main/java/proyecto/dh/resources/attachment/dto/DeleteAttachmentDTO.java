@@ -13,5 +13,5 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DeleteAttachmentDTO {
 
-    private List<Long> ids;
+    private List<Long> attachmentsIds;
 }

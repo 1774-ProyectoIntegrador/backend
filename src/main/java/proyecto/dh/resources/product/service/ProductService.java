@@ -1,5 +1,6 @@
 package proyecto.dh.resources.product.service;
 
+import org.hibernate.collection.spi.PersistentList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import proyecto.dh.resources.product.repository.ProductRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,27 +81,40 @@ public class ProductService {
             existingProduct.setCategory(category);
         }
 
-        if (productUpdateDTO.getAttachments() != null) {
-            List<Attachment> attachments = new ArrayList<>();
-            for (Long attachmentId : productUpdateDTO.getAttachments()) {
-                Attachment attachment = attachmentService.findById(attachmentId);
-                validateFileType(attachment);
-                attachment.setProduct(existingProduct);
-                attachments.add(attachment);
+        if (productUpdateDTO.getAttachmentsIds() != null) {
+            List<Attachment> existingAttachments = new ArrayList<>(existingProduct.getAttachments());
+
+            // Eliminar los adjuntos que no están en la nueva lista de IDs
+            for (Attachment currentAttach : existingAttachments) {
+                if (!productUpdateDTO.getAttachmentsIds().contains(currentAttach.getId())) {
+                    existingProduct.removeAttachment(currentAttach);
+                }
             }
-            existingProduct.setAttachments(attachments);
+
+            // Agregar los nuevos adjuntos
+            for (Long attachmentId : productUpdateDTO.getAttachmentsIds()) {
+                Attachment attachment = attachmentService.findById(attachmentId);
+                if (attachment.getProduct() != existingProduct) {
+                    existingProduct.addAttachment(attachment);
+                }
+            }
         }
 
         if (productUpdateDTO.getFeatures() != null) {
+            Set<ProductFeature> newFeatures = new HashSet<>();
+            for (ProductFeature feature : productUpdateDTO.getFeatures()) {
+                feature.setProduct(existingProduct);
+                newFeatures.add(feature);
+            }
+
             existingProduct.getProductFeatures().clear();
-            existingProduct.getProductFeatures().addAll(productUpdateDTO.getFeatures().stream()
-                    .peek(feature -> feature.setProduct(existingProduct))
-                    .toList());
+            existingProduct.getProductFeatures().addAll(newFeatures);
         }
 
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToDTO(updatedProduct);
     }
+
 
     public void delete(Long id) throws NotFoundException {
         Product findProduct = findByIdEntity(id);
