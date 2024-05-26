@@ -31,7 +31,7 @@ public class ProductCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductCategoryDTO> create(@RequestBody ProductCategorySaveDTO categorySaveDTO) throws BadRequestException {
+    public ResponseEntity<ProductCategoryDTO> create(@RequestBody ProductCategorySaveDTO categorySaveDTO) throws BadRequestException, NotFoundException {
         ProductCategoryDTO savedCategory = categoryService.save(categorySaveDTO);
         return ResponseEntity.ok(savedCategory);
     }

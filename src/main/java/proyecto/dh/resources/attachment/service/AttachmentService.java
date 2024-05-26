@@ -50,8 +50,13 @@ public class AttachmentService {
         return attachmentRepository.findById(id)
                 .orElseThrow(() -> new BadRequestException("ID de archivo adjunto no válido"));
     }
-    public List<Attachment> findAll() {
-        return attachmentRepository.findAll();
+
+
+    public List<AttachmentDTO> findAll() {
+        List<Attachment> attachmentsList = attachmentRepository.findAll();
+        return attachmentsList.stream()
+                .map(this::convertToDto)
+                .toList();
     }
 
     public void deleteAttachments(List<Long> attachmentIds) throws BadRequestException {
@@ -75,7 +80,11 @@ public class AttachmentService {
 
     // Métodos de conversión
     public AttachmentDTO convertToDto(Attachment attachment) {
-        return modelMapper.map(attachment, AttachmentDTO.class);
+        AttachmentDTO attachmentDTO = modelMapper.map(attachment, AttachmentDTO.class);
+        if (attachment.getProduct() != null) {
+            attachmentDTO.setProductsIds(List.of(attachment.getProduct().getId()));
+        }
+        return attachmentDTO;
     }
     public Attachment convertToEntity(AttachmentDTO attachmentDTO) {
         return modelMapper.map(attachmentDTO, Attachment.class);

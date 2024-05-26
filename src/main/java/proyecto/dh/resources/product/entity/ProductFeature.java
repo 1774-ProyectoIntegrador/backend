@@ -30,7 +30,7 @@ public class ProductFeature {
     private String icon;
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(nullable = false)
     @JsonIgnore
     private Product product;
 

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +23,6 @@ import proyecto.dh.resources.attachment.service.AttachmentService;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/attachments")
@@ -32,20 +32,17 @@ public class AttachmentController {
     @Autowired
     private AttachmentService attachmentService;
 
+
     @Operation(summary = "Subir archivos adjuntos", description = "Esta operación sube archivos adjuntos y devuelve sus IDs.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Archivos subidos correctamente", useReturnTypeSchema = false),
             @ApiResponse(responseCode = "400", description = "Error al subir archivos"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping(value = "/upload", produces = { "application/json" }, consumes = {
-            "multipart/form-data" })
-    public ResponseEntity<List<AttachmentDTO>> uploadAttachments(
+    @PostMapping(value = "/upload", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<List<Attachment>> uploadAttachments(
             @Parameter(description = "Los archivos a subir", required = true, content = @Content(mediaType = "multipart/form-data", schema = @Schema(type = "array", format = "binary"))) @RequestPart("files") List<MultipartFile> files) throws IOException, BadRequestException {
-        List<AttachmentDTO> attachmentDTOs = attachmentService.uploadAttachments(files).stream()
-                .map(attachment -> new AttachmentDTO(attachment.getId(), attachment.getUrl(), attachment.getFileName()))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(attachmentDTOs);
+        return ResponseEntity.ok(attachmentService.uploadAttachments(files));
     }
 
     @Operation(summary = "Eliminar uno o varios archivos adjuntos por ID", description = "Esta operación elimina uno o varios archivos adjuntos del S3 basados en sus IDs.")
@@ -56,7 +53,7 @@ public class AttachmentController {
     })
     @DeleteMapping
     public ResponseEntity<ResponseDTO<String>> deleteAttachments(@RequestBody DeleteAttachmentDTO userObject) throws BadRequestException {
-        attachmentService.deleteAttachments(userObject.getIds());
+        attachmentService.deleteAttachments(userObject.getAttachmentsIds());
         return ResponseHandler.generateResponse("Archivos adjuntos eliminados correctamente", HttpStatus.ACCEPTED, null);
     }
 
@@ -66,9 +63,13 @@ public class AttachmentController {
             @ApiResponse(responseCode = "404", description = "Archivo adjunto no encontrado")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<AttachmentDTO> getAttachmentById(@PathVariable Long id) throws BadRequestException {
+    public ResponseEntity<Attachment> getAttachmentById(@PathVariable Long id) throws BadRequestException {
         Attachment attachment = attachmentService.findById(id);
-        AttachmentDTO attachmentDTO = new AttachmentDTO(attachment.getId(), attachment.getUrl(), attachment.getFileName());
-        return ResponseEntity.ok(attachmentDTO);
+        return ResponseEntity.ok(attachment);
+    }
+
+    @GetMapping()
+    public List<AttachmentDTO> getAll()  {
+        return attachmentService.findAll();
     }
 }

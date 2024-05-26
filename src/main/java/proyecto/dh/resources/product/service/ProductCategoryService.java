@@ -27,7 +27,7 @@ public class ProductCategoryService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public ProductCategoryDTO save(ProductCategorySaveDTO categorySaveDTO) throws BadRequestException {
+    public ProductCategoryDTO save(ProductCategorySaveDTO categorySaveDTO) throws BadRequestException, NotFoundException {
         validateSlug(categorySaveDTO.getSlug());
 
         if (repository.existsByName(categorySaveDTO.getName())) {
@@ -37,12 +37,6 @@ public class ProductCategoryService {
         }
 
         ProductCategory category = convertToEntity(categorySaveDTO);
-
-        if (categorySaveDTO.getAttachmentId() != null) {
-            Attachment attachment = attachmentService.findById(categorySaveDTO.getAttachmentId());
-            validateFileType(attachment);
-            category.setAttachment(attachment);
-        }
 
         ProductCategory savedCategory = repository.save(category);
         return convertToDTO(savedCategory);
@@ -73,9 +67,11 @@ public class ProductCategoryService {
 
     public void deleteById(Long id) throws BadRequestException, NotFoundException {
         ProductCategory category = findByIdEntity(id);
-        if (category.getAttachment() != null) {
+
+        //TODO
+        /*if (category.getAttachment() != null) {
             attachmentService.deleteAttachment(category.getAttachment().getId());
-        }
+        }*/
         repository.deleteById(id);
     }
 
