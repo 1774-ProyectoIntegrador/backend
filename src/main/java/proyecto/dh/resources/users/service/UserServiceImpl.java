@@ -30,6 +30,7 @@ public class UserServiceImpl {
         user.setEmail(userSignupDto.getEmail());
         user.setPassword(passwordEncoder.encode(userSignupDto.getPassword()));
 
+        //TODO : se debe usar JWT
 
         // Enviar correo de confirmación
         try {
