@@ -44,7 +44,4 @@ public class User {
     private String password;
 
 
-
-//    @OneToOne
-//    private Profile profile;
 }
