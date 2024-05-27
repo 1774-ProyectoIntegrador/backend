@@ -43,6 +43,8 @@ public class User {
     @NotEmpty(message = "Password is required")
     private String password;
 
+
+
 //    @OneToOne
 //    private Profile profile;
 }
