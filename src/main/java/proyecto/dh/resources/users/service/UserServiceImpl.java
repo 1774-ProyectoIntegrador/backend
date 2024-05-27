@@ -10,7 +10,7 @@ import proyecto.dh.resources.users.entity.User;
 import proyecto.dh.resources.users.repository.UserRepository;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl {
 
     private UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
@@ -23,7 +23,6 @@ public class UserServiceImpl implements UserService {
         this.emailService = emailService;
     }
 
-    @Override
     public User save(UserSignupDto userSignupDto) {
         User user = new User();
         user.setFirstName(userSignupDto.getFirstName());
@@ -52,7 +51,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
