@@ -17,15 +17,15 @@ Este documento describe cómo utilizar Postman para testear el usuario administr
 #### Solicitud de Autenticación
 
 - **Método:** `POST`
-- **URL:** `http://localhost:8080/auth/login`
+- **URL:** `http://localhost:6060/auth/login`
 - **Encabezados:**
     - `Content-Type: application/json`
 - **Cuerpo (JSON):**
 
   ```json
   {
-      "email": "admin@example.com",
-      "password": "adminPassword"
+      "email": "admin@admin.com",
+      "password": "admin"
   }
 
 
@@ -42,7 +42,7 @@ Si las credenciales son correctas, deberías recibir una respuesta similar a la 
 ### 2. Acceso a Ruta Protegida del Administrador
 ####  Solicitud de Acceso
 - **Método:** `GET`
-- **URL:** `http://localhost:8080/admin/dashboard`
+- **URL:** `http://localhost:6060/admin/dashboard`
 - **Encabezados:**
     - `Authorization: Bearer <jwt>`
 
@@ -50,7 +50,7 @@ Si las credenciales son correctas, deberías recibir una respuesta similar a la 
     1 Copia el token JWT de la respuesta de autenticación (el valor del campo "jwt").
     2 Crea una nueva solicitud en Postman.
     3 Configura el método HTTP a GET.
-    4 Ingresa la URL http://localhost:8080/admin/dashboard.
+    4 Ingresa la URL http://localhost:6060/admin/dashboard.
     5 En la pestaña "Headers", añade el encabezado Authorization con el valor Bearer <jwt>, reemplazando <jwt> con el token recibido.
     6 Haz clic en "Send".
 
