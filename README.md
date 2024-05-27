@@ -1,3 +1,4 @@
+
 ### RentStudio - RESTful API with Spring Boot
 
 👋 ¡Bienvenido a la API RESTful creada en Java con Spring Boot! Aquí encontrarás los requisitos y las instrucciones para ejecutar el proyecto.
@@ -45,7 +46,14 @@ docker-compose build
 docker-compose up -f docker-compose.dev.yml -d
 ```
 
+### Usando IntelliJ IDEA
+
+1. Abre el proyecto en IntelliJ IDEA.
+2. Ve a la parte de `RUN` y selecciona la opción `[DEV] Run with Docker Compose` como se muestra en la imagen a continuación.
+
+![IntelliJ IDEA Run Configuration](./run-readme.png)
+
 ## Notas Adicionales
 
-- Asegúrate de tener Docker Desktop corriendo antes de ejecutar los scripts.
+- Asegúrate de tener Docker Desktop corriendo antes de ejecutar los scripts o usar IntelliJ IDEA.
 - Puedes modificar los scripts para adaptarlos a tus necesidades específicas.
