@@ -6,28 +6,12 @@ if (-not (Get-Command docker-compose -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-# Ensure correct permissions for directories and files
-Write-Host "[JACKMOON-DEV] Setting permissions for directories and files..."
-
-# Note: In Windows, setting permissions is different and complex. You might need to adjust this part based on your requirements.
-# The below commands are placeholders, adjust them according to your actual needs.
-
-# Example of changing file attributes (not permissions)
-Set-ItemProperty -Path "./docker" -Name "IsReadOnly" -Value $false -ErrorAction Stop
-Set-ItemProperty -Path "./sql" -Name "IsReadOnly" -Value $false -ErrorAction Stop
-Set-ItemProperty -Path "./clean.sh" -Name "IsReadOnly" -Value $false -ErrorAction Stop
-
-if ($?) {
-    Write-Host "[JACKMOON-DEV] Error while setting permissions."
-    exit 1
-}
-
 # Stop and remove existing containers
 Write-Host "[JACKMOON-DEV] Stopping and removing existing containers..."
 docker-compose down
 Start-Sleep -Seconds 10  # Adding a delay to ensure proper shutdown
 
-if ($?) {
+if (-not $?) {
     Write-Host "[JACKMOON-DEV] Error while stopping and removing containers."
     exit 1
 }
@@ -36,16 +20,16 @@ if ($?) {
 Write-Host "[JACKMOON-DEV] Building the containers..."
 docker-compose build
 
-if ($?) {
+if (-not $?) {
     Write-Host "[JACKMOON-DEV] Error during container build."
     exit 1
 }
 
 # Start the containers in the background
 Write-Host "[JACKMOON-DEV] Starting the containers..."
-docker-compose up -d
+docker-compose -f .\docker-compose.dev.yml up -d
 
-if ($?) {
+if (-not $?) {
     Write-Host "[JACKMOON-DEV] Error while starting the containers."
     exit 1
 }
