@@ -13,7 +13,7 @@ services:
     environment:
       - SPRING_LOGGIN_LEVEL_ROOT=INFO
       - SPRING_LOGGIN_LEVEL_FRAMEWORK=INFO
-      - SPRING_LOGGIN_LEVEL_PROJECT=DEBUG
+      - SPRING_LOGGIN_LEVEL_PROJECT=INFO
     env_file:
       - .env
     ports:
