@@ -28,7 +28,7 @@ public class AuthController {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto authRequest) throws Exception {
         try {
             authenticationManager.authenticate(
