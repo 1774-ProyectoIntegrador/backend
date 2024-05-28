@@ -1,6 +1,5 @@
 package proyecto.dh.common.utils;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -11,23 +10,24 @@ import proyecto.dh.resources.users.repository.UserRepository;
 @Component
 public class DataLoader implements CommandLineRunner {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+    public DataLoader(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public void run(String... args) throws Exception {
-        // Verificar si el usuario admin ya existe
-        if (userRepository.findByEmail("admin@admin.com") == null) {
-            // Crear el usuario admin
+    public void run(String... args) {
+        createAdminUser();
+    }
+
+    private void createAdminUser() {
+        String adminEmail = "admin@admin.com";
+        if (userRepository.findByEmail(adminEmail) == null) {
             User admin = new User();
-            admin.setEmail("admin@admin.com");
+            admin.setEmail(adminEmail);
             admin.setPassword(passwordEncoder.encode("admin")); // Encripta la contraseña
             admin.setRole(Role.ADMIN);
             admin.setFirstName("admin");
