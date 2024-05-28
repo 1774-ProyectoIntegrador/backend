@@ -8,7 +8,7 @@ Este documento describe cómo utilizar Postman para testear el usuario administr
 ## Prerrequisitos
 
 1. **Postman:** Asegúrate de tener Postman instalado. Puedes descargarlo desde [Postman](https://www.postman.com/).
-2. **Aplicación en Ejecución:** La aplicación Spring Boot debe estar en ejecución en `http://localhost:8080`.
+2. **Aplicación en Ejecución:** La aplicación Spring Boot debe estar en ejecución en `http://localhost:6060`.
 
 ## Pasos para Testear
 

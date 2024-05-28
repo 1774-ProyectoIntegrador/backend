@@ -33,23 +33,22 @@ public class UserServiceImpl {
         user.setPassword(passwordEncoder.encode(userSignupDto.getPassword()));
         user.setRole(Role.USER);  // Asignar el rol "User"
 
-        //TODO : se debe usar JWT
 
         // Enviar correo de confirmación
-        try {
-            String subject = "Confirmación de Registro";
-            String text = String.format(
-                    "Hola %s,\n\nTu registro en nuestro sitio ha sido exitoso.\n\n" +
-                            "Usuario: %s\nCorreo Electrónico: %s\n\n" +
-                            "Puedes iniciar sesión en tu cuenta utilizando el siguiente enlace:\n" +
-                            "<a href=\"http://localhost:8080/login\">Iniciar sesión</a>",
-                    user.getFirstName(), user.getFirstName(), user.getEmail());
-
-            emailService.sendRegistrationConfirmationEmail(user.getEmail(), subject, text);
-        } catch (MessagingException e) {
-            // Manejar la excepción (por ejemplo, registrar el error)
-            e.printStackTrace();
-        }
+//        try {
+//            String subject = "Confirmación de Registro";
+//            String text = String.format(
+//                    "Hola %s,\n\nTu registro en nuestro sitio ha sido exitoso.\n\n" +
+//                            "Usuario: %s\nCorreo Electrónico: %s\n\n" +
+//                            "Puedes iniciar sesión en tu cuenta utilizando el siguiente enlace:\n" +
+//                            "<a href=\"http://localhost:8080/login\">Iniciar sesión</a>",
+//                    user.getFirstName(), user.getFirstName(), user.getEmail());
+//
+//            emailService.sendRegistrationConfirmationEmail(user.getEmail(), subject, text);
+//        } catch (MessagingException e) {
+//            // Manejar la excepción (por ejemplo, registrar el error)
+//            e.printStackTrace();
+//        }
 
         return userRepository.save(user);
     }
