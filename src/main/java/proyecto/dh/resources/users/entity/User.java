@@ -21,27 +21,22 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long id;
 
     @Column(nullable = false)
-    private Role role;
-
-    @NotEmpty(message = "Name is required")
     private String firstName;
 
-    @NotEmpty(message = "Surname is required")
+    @Column(nullable = false)
     private String lastName;
 
     @Column(unique = true, nullable = false)
-    private String userName;
-
-    @NotEmpty(message = "Email is required")
-    @Email(message = "Invalid email")
-    @Column(unique = true, nullable = false)
     private String email;
 
-    @NotEmpty(message = "Password is required")
+    @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private Role role;
 
 }

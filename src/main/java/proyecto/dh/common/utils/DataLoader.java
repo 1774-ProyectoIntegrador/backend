@@ -1,4 +1,4 @@
-package proyecto.dh.config;
+package proyecto.dh.common.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -30,7 +30,6 @@ public class DataLoader implements CommandLineRunner {
             admin.setEmail("admin@admin.com");
             admin.setPassword(passwordEncoder.encode("admin")); // Encripta la contraseña
             admin.setRole(Role.ADMIN);
-            admin.setUserName("admin");
             admin.setFirstName("admin");
             admin.setLastName("admin");
 
