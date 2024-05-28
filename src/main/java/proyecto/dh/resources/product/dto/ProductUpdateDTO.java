@@ -3,12 +3,15 @@ package proyecto.dh.resources.product.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import proyecto.dh.common.enums.RentType;
+import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.product.entity.ProductFeature;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductUpdateDTO {
     @Size(max = 100, message = "Name cannot be longer than 100 characters")
@@ -26,6 +29,8 @@ public class ProductUpdateDTO {
     private RentType rentType;
 
     private Long categoryId;
+
+    private List<Long> attachmentsIds;
 
     private List<ProductFeature> features;
 }

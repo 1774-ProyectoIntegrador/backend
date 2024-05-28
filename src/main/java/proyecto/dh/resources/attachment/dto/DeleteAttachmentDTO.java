@@ -11,10 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AttachmentDTO {
+public class DeleteAttachmentDTO {
 
-    private Long id;
-    private String url;
-    private String fileName;
-    private List<Long> productsIds;
+    private List<Long> attachmentsIds;
 }

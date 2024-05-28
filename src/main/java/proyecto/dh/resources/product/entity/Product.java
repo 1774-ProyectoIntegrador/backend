@@ -44,7 +44,24 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductFeature> productFeatures;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>();
+
+
+    // Métodos para sincronizar las relaciones
+    public void addAttachment(Attachment attachment) {
+        if (attachments == null) {
+            attachments = new ArrayList<>();
+        }
+        attachment.setProduct(this);
+        attachments.add(attachment);
+    }
+
+    public void removeAttachment(Attachment attachment) {
+        if (attachments != null) {
+            attachment.setProduct(null);
+            attachments.remove(attachment);
+        }
+    }
 
 }
