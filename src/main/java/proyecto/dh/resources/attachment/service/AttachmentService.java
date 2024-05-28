@@ -1,9 +1,11 @@
 package proyecto.dh.resources.attachment.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import proyecto.dh.exceptions.handler.BadRequestException;
+import proyecto.dh.resources.attachment.dto.AttachmentDTO;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.repository.AttachmentRepository;
 
@@ -20,7 +22,10 @@ public class AttachmentService {
     @Autowired
     private AttachmentRepository attachmentRepository;
 
-    public Attachment uploadAttachment(MultipartFile file) throws IOException {
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public Attachment uploadAttachment(MultipartFile file) throws IOException, BadRequestException {
         String fileKey = s3Service.uploadFile(file);
         String attachmentUrl = s3Service.getFileUrl(fileKey);
 
@@ -32,7 +37,7 @@ public class AttachmentService {
         return attachmentRepository.save(attachment);
     }
 
-    public List<Attachment> uploadAttachments(List<MultipartFile> files) throws IOException {
+    public List<Attachment> uploadAttachments(List<MultipartFile> files) throws IOException, BadRequestException {
         List<Attachment> attachments = new ArrayList<>();
         for (MultipartFile file : files) {
             Attachment attachment = uploadAttachment(file);
@@ -41,17 +46,47 @@ public class AttachmentService {
         return attachments;
     }
 
+    public Attachment findById(Long id) throws BadRequestException {
+        return attachmentRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("ID de archivo adjunto no válido"));
+    }
+
+
+    public List<AttachmentDTO> findAll() {
+        List<Attachment> attachmentsList = attachmentRepository.findAll();
+        return attachmentsList.stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    public void deleteAttachments(List<Long> attachmentIds) throws BadRequestException {
+        for (Long id : attachmentIds) {
+            deleteAttachment(id);
+        }
+    }
+
     public void deleteAttachment(Long attachmentId) throws BadRequestException {
-        Attachment attachment = attachmentRepository.findById(attachmentId).orElseThrow(() -> new BadRequestException("ID de archivo adjunto no válido"));
+        Attachment attachment = findById(attachmentId);
         s3Service.deleteFile(attachment.getFileKey());
         attachmentRepository.delete(attachment);
     }
 
-    /*** Internal Use ***/
-    public void deleteAttachments(List<Attachment> attachments) {
+    public void deleteAttachmentsByEntities(List<Attachment> attachments) {
         for (Attachment attachment : attachments) {
             s3Service.deleteFile(attachment.getFileKey());
             attachmentRepository.delete(attachment);
         }
+    }
+
+    // Métodos de conversión
+    public AttachmentDTO convertToDto(Attachment attachment) {
+        AttachmentDTO attachmentDTO = modelMapper.map(attachment, AttachmentDTO.class);
+        if (attachment.getProduct() != null) {
+            attachmentDTO.setProductsIds(List.of(attachment.getProduct().getId()));
+        }
+        return attachmentDTO;
+    }
+    public Attachment convertToEntity(AttachmentDTO attachmentDTO) {
+        return modelMapper.map(attachmentDTO, Attachment.class);
     }
 }

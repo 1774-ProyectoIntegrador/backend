@@ -27,11 +27,8 @@ public class Attachment {
     private String fileKey;
 
     @JsonIgnore
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "attachment")
-    private ProductCategory productCategory;
 }
