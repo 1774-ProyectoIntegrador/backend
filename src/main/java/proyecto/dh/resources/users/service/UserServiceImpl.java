@@ -1,13 +1,15 @@
 package proyecto.dh.resources.users.service;
 
-
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import proyecto.dh.common.enums.Role;
 import proyecto.dh.resources.users.dto.UserSignupDto;
 import proyecto.dh.resources.users.entity.User;
 import proyecto.dh.resources.users.repository.UserRepository;
+
+import java.util.Collections;
 
 @Service
 public class UserServiceImpl {
@@ -29,6 +31,7 @@ public class UserServiceImpl {
         user.setLastName(userSignupDto.getLastName());
         user.setEmail(userSignupDto.getEmail());
         user.setPassword(passwordEncoder.encode(userSignupDto.getPassword()));
+        user.setRole(Role.USER);  // Asignar el rol "User"
 
         //TODO : se debe usar JWT
 
@@ -47,7 +50,6 @@ public class UserServiceImpl {
             // Manejar la excepción (por ejemplo, registrar el error)
             e.printStackTrace();
         }
-
 
         return userRepository.save(user);
     }
