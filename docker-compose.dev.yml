@@ -10,6 +10,10 @@ services:
     restart: no
     depends_on:
       - postgres
+    environment:
+      - SPRING_LOGGIN_LEVEL_ROOT=INFO
+      - SPRING_LOGGIN_LEVEL_FRAMEWORK=DEBUG
+      - SPRING_LOGGIN_LEVEL_PROJECT=DEBUG
     env_file:
       - .env
     ports:

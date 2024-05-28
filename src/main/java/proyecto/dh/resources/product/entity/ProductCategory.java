@@ -22,12 +22,15 @@ public class ProductCategory {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column()
+    private String description;
+
     @Column(nullable = false, unique = true)
     private String slug;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "attachment_id", referencedColumnName = "id")
-    private Attachment attachment;
+    @OneToOne(orphanRemoval = true)
+    @JoinColumn(name = "attachments_id")
+    private Attachment attachments;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
