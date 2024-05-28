@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto.dh.common.enums.Role;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -21,15 +26,22 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @NotEmpty(message = "Name is required")
+    private String firstName;
+
+    @NotEmpty(message = "Surname is required")
+    private String lastName;
+
     @Column(unique = true, nullable = false)
     private String userName;
 
+    @NotEmpty(message = "Email is required")
+    @Email(message = "Invalid email")
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @NotEmpty(message = "Password is required")
     private String password;
 
-    @OneToOne
-    private Profile profile;
+
 }
