@@ -1,5 +1,7 @@
 package proyecto.dh.common.utils;
 
+import org.hibernate.validator.internal.util.logging.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -7,16 +9,17 @@ import proyecto.dh.common.enums.Role;
 import proyecto.dh.resources.users.entity.User;
 import proyecto.dh.resources.users.repository.UserRepository;
 
+import java.util.Collections;
+import java.util.logging.Logger;
+
 @Component
 public class DataLoader implements CommandLineRunner {
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    public DataLoader(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public void run(String... args) {
@@ -25,18 +28,22 @@ public class DataLoader implements CommandLineRunner {
 
     private void createAdminUser() {
         String adminEmail = "admin@admin.com";
-        if (userRepository.findByEmail(adminEmail) == null) {
+        User findAdmin = userRepository.findByEmail(adminEmail);
+        try {
+            userRepository.delete(findAdmin);
+            System.out.println("[DATA-LOADER] Admin User deleted: " + findAdmin);
+        } catch (Exception e) {
+            System.err.println("[DATA-LOADER] Admin User NOT deleted: " + findAdmin);
+        }
+
             User admin = new User();
             admin.setEmail(adminEmail);
             admin.setPassword(passwordEncoder.encode("admin")); // Encripta la contraseña
-            admin.setRole(Role.ADMIN);
+            admin.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
             admin.setFirstName("admin");
             admin.setLastName("admin");
 
             userRepository.save(admin);
-            System.out.println("Admin user created: " + admin);
-        } else {
-            System.out.println("Admin user already exists.");
-        }
+            System.out.println("[DATA-LOADER] Admin user created: " + admin);
     }
 }
