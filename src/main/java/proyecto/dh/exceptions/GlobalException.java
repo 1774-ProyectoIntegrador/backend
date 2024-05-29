@@ -1,9 +1,12 @@
 package proyecto.dh.exceptions;
 
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -35,14 +38,26 @@ public class GlobalException {
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler({NotFoundException.class})
-    public ResponseEntity<?> NotFoundException(NotFoundException exception, WebRequest request) {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleNotFoundException(NotFoundException exception, WebRequest request) {
         ExceptionDetails errorDetails = new ExceptionDetails(new Date(), exception.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({BadRequestException.class})
+    @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<?> handleBadRequestException(BadRequestException exception, WebRequest request) {
+        ExceptionDetails errorDetails = new ExceptionDetails(new Date(), exception.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ExceptionDetails> handleAccessDeniedException(AccessDeniedException exception, WebRequest request) {
+        ExceptionDetails errorDetails = new ExceptionDetails(new Date(), "Acceso denegado: No tienes permisos para acceder a este recurso", request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ExceptionDetails> handleJwtTokenException(MalformedJwtException exception, WebRequest request) {
         ExceptionDetails errorDetails = new ExceptionDetails(new Date(), exception.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
