@@ -1,10 +1,12 @@
 package proyecto.dh.resources.users.dto;
 
 import lombok.Data;
+import proyecto.dh.common.enums.Role;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 public class UserCreateDTO {
@@ -24,5 +26,7 @@ public class UserCreateDTO {
     @NotEmpty(message = "La contraseña es obligatoria")
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
+
+    private List<Role> roles;
 
 }
