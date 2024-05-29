@@ -18,6 +18,7 @@ public class RestAuthenticationFailureHandler implements AuthenticationFailureHa
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+        response.setContentType("application/json");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
         ExceptionDetails details = new ExceptionDetails();
