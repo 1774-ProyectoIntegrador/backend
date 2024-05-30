@@ -150,8 +150,8 @@ public class ProductService {
 
     private void validateFileType(Attachment attachment) throws BadRequestException {
         String contentType = attachment.getFileName().substring(attachment.getFileName().lastIndexOf('.') + 1).toLowerCase();
-        if (!"jpeg".equals(contentType) && !"png".equals(contentType) && !"jpg".equals(contentType)) {
-            throw new BadRequestException("Solo se permiten archivos JPEG, PNG y JPG");
+        if (!"jpeg".equals(contentType) && !"png".equals(contentType) && !"jpg".equals(contentType) && !"webp".equals(contentType)) {
+            throw new BadRequestException("Solo se permiten archivos WEBP, JPEG, PNG y JPG");
         }
     }
 

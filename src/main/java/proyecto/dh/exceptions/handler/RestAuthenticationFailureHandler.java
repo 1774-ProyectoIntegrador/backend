@@ -24,7 +24,7 @@ public class RestAuthenticationFailureHandler implements AuthenticationFailureHa
         ExceptionDetails details = new ExceptionDetails();
         details.setTimestamp(new Date());
         details.setError(HttpStatus.UNAUTHORIZED.getReasonPhrase());
-        details.setMessage("Email y/o usuario incorrectos");
+        details.setMessage("Correo electrónico y/o contraseña son incorrectos");
         details.setPath(request.getRequestURI());
 
         OutputStream out = response.getOutputStream();
