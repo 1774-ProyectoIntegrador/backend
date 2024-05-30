@@ -75,41 +75,9 @@ public class ProductService {
         Product existingProduct = findByIdEntity(id);
         modelMapper.map(productUpdateDTO, existingProduct);
 
-        if (productUpdateDTO.getCategoryId() != null) {
-            ProductCategory category = productCategoryRepository.findById(productUpdateDTO.getCategoryId())
-                    .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
-            existingProduct.setCategory(category);
-        }
-
-        if (productUpdateDTO.getAttachmentsIds() != null) {
-            List<Attachment> existingAttachments = new ArrayList<>(existingProduct.getAttachments());
-
-            // Eliminar los adjuntos que no están en la nueva lista de IDs
-            for (Attachment currentAttach : existingAttachments) {
-                if (!productUpdateDTO.getAttachmentsIds().contains(currentAttach.getId())) {
-                    existingProduct.removeAttachment(currentAttach);
-                }
-            }
-
-            // Agregar los nuevos adjuntos
-            for (Long attachmentId : productUpdateDTO.getAttachmentsIds()) {
-                Attachment attachment = attachmentService.findById(attachmentId);
-                if (attachment.getProduct() != existingProduct) {
-                    existingProduct.addAttachment(attachment);
-                }
-            }
-        }
-
-        if (productUpdateDTO.getFeatures() != null) {
-            Set<ProductFeature> newFeatures = new HashSet<>();
-            for (ProductFeature feature : productUpdateDTO.getFeatures()) {
-                feature.setProduct(existingProduct);
-                newFeatures.add(feature);
-            }
-
-            existingProduct.getProductFeatures().clear();
-            existingProduct.getProductFeatures().addAll(newFeatures);
-        }
+        updateCategory(existingProduct, productUpdateDTO.getCategoryId());
+        updateAttachments(existingProduct, productUpdateDTO.getAttachmentsIds());
+        updateFeatures(existingProduct, productUpdateDTO.getFeatures());
 
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToDTO(updatedProduct);
@@ -131,6 +99,53 @@ public class ProductService {
     public ProductDTO findById(Long id) throws NotFoundException {
         Product productSearched = findByIdEntity(id);
         return convertToDTO(productSearched);
+    }
+
+
+    /**
+     *  Métodos adicionales para dividir código
+     */
+
+    private void updateCategory(Product product, Long categoryId) throws NotFoundException {
+        if (categoryId != null) {
+            ProductCategory category = productCategoryRepository.findById(categoryId)
+                    .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
+            product.setCategory(category);
+        }
+    }
+
+    private void updateAttachments(Product product, List<Long> attachmentsIds) throws NotFoundException, BadRequestException {
+        if (attachmentsIds != null) {
+            List<Attachment> existingAttachments = new ArrayList<>(product.getAttachments());
+
+            // Eliminar los adjuntos que no están en la nueva lista de ID
+            for (Attachment currentAttach : existingAttachments) {
+                if (!attachmentsIds.contains(currentAttach.getId())) {
+                    product.removeAttachment(currentAttach);
+                }
+            }
+
+            // Agregar los nuevos adjuntos
+            for (Long attachmentId : attachmentsIds) {
+                Attachment attachment = attachmentService.findById(attachmentId);
+                if (!product.getAttachments().contains(attachment)) {
+                    product.addAttachment(attachment);
+                }
+            }
+        }
+    }
+
+    private void updateFeatures(Product product, List<ProductFeature> features) {
+        if (features != null) {
+            Set<ProductFeature> newFeatures = new HashSet<>();
+            for (ProductFeature feature : features) {
+                feature.setProduct(product);
+                newFeatures.add(feature);
+            }
+
+            product.getProductFeatures().clear();
+            product.getProductFeatures().addAll(newFeatures);
+        }
     }
 
     private void validateFileType(Attachment attachment) throws BadRequestException {
