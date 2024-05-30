@@ -1,3 +1,4 @@
+
 package proyecto.dh.resources.product.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -5,13 +6,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import proyecto.dh.common.responses.ResponseDTO;
 import proyecto.dh.common.responses.ResponseHandler;
@@ -38,8 +39,8 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Categoría no encontrada"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
+    @Secured({"ROLE_ADMIN"})
     @PostMapping
-    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductSaveDTO productSaveDTO) throws NotFoundException, BadRequestException {
         ProductDTO createdProduct = productService.save(productSaveDTO);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
@@ -52,8 +53,8 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Producto o categoría no encontrada"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
+    @Secured({"ROLE_ADMIN"})
     @PutMapping("/{id}")
-    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductUpdateDTO productUpdateDTO) throws NotFoundException, BadRequestException {
         ProductDTO updatedProduct = productService.updateProduct(id, productUpdateDTO);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
@@ -65,7 +66,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @RolesAllowed("ROLE_ADMIN")
+    @Secured({"ROLE_ADMIN"})
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO<Void>> deleteProduct(@PathVariable Long id) throws NotFoundException {
         productService.delete(id);
@@ -77,6 +78,7 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "Productos recuperados con éxito", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
+    @PermitAll
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         List<ProductDTO> products = productService.findAll();
@@ -89,6 +91,7 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
+    @PermitAll
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) throws NotFoundException {
         ProductDTO product = productService.findById(id);
