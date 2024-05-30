@@ -33,12 +33,12 @@ public class GlobalException {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ExceptionDetails> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
-        return buildResponseEntity(ex, HttpStatus.CONFLICT, "Data integrity violation", request);
+        return buildResponseEntity(ex, HttpStatus.CONFLICT, "Vulneración de la integridad de los datos, póngase en contacto con el administrador.", request);
     }
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ExceptionDetails> handleDataAccessException(DataAccessException ex, WebRequest request) {
-        return buildResponseEntity(ex, HttpStatus.INTERNAL_SERVER_ERROR, "Database error", request);
+        return buildResponseEntity(ex, HttpStatus.INTERNAL_SERVER_ERROR, "Error de base de datos", request);
     }
 
     @ExceptionHandler(Exception.class)
@@ -54,25 +54,5 @@ public class GlobalException {
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ExceptionDetails> handleBadRequestException(BadRequestException ex, WebRequest request) {
         return buildResponseEntity(ex, HttpStatus.BAD_REQUEST, ex.getMessage(), request);
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ExceptionDetails> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
-        return buildResponseEntity(ex, HttpStatus.FORBIDDEN, "Acceso denegado: No tienes permisos para acceder a este recurso", request);
-    }
-
-    @ExceptionHandler(InvalidBearerTokenException.class)
-    public ResponseEntity<ExceptionDetails> handleJwtTokenException(InvalidBearerTokenException ex, WebRequest request) {
-        return buildResponseEntity(ex, HttpStatus.BAD_REQUEST, ex.getMessage(), request);
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ExceptionDetails> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
-        return buildResponseEntity(ex, HttpStatus.UNAUTHORIZED, "Email y/o usuario incorrectos", request);
-    }
-
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public ResponseEntity<ExceptionDetails> handleUsernameNotFoundException(UsernameNotFoundException ex, WebRequest request) {
-        return buildResponseEntity(ex, HttpStatus.UNAUTHORIZED, ex.getMessage(), request);
     }
 }

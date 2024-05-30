@@ -13,6 +13,13 @@ spring:
       hibernate:
         dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
     show-sql: ${SPRING_JPA_SHOW_SQL}
+  flyway:
+    enabled: ${FLYWAY_ENABLED}
+    locations: ${FLYWAY_LOCATIONS}
+    baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE}
+    clean-disabled: ${FLYWAY_CLEAN_DISABLED}
+    out-of-order: ${FLYWAY_OUT_OF_ORDER}
+
 
 aws:
   accessKeyId: ${AWS_ACCESS_KEY_ID}
