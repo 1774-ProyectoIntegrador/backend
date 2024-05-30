@@ -31,7 +31,7 @@ public class UserService {
             throw new BadRequestException("Usuario con email '" + userObject.getEmail() + "' ya existe");
         }
         User userEntity = modelMapper.map(userObject, User.class);
-        userEntity.setRoles(userObject.getRoles() != null ? userObject.getRoles() : Collections.singletonList(Role.ROLE_USER));
+        userEntity.setRoles(userObject.getRoles() != null ? userObject.getRoles() : Collections.singletonList(Role.USER));
         userEntity.setPassword(passwordEncoder.encode(userObject.getPassword()));
         User createdUser = userRepository.save(userEntity);
         return convertToDTO(createdUser);
