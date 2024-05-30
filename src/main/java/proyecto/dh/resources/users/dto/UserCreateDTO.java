@@ -1,5 +1,6 @@
 package proyecto.dh.resources.users.dto;
 
+import com.sun.xml.bind.v2.TODO;
 import lombok.Data;
 import proyecto.dh.common.enums.Role;
 
@@ -26,7 +27,5 @@ public class UserCreateDTO {
     @NotEmpty(message = "La contraseña es obligatoria")
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
-
-    private List<Role> roles;
 
 }

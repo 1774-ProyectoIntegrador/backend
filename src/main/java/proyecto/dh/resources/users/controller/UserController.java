@@ -18,17 +18,6 @@ import proyecto.dh.resources.users.service.UserService;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- *  TODO:
- *  ! Se requiere implementar los endpoints faltantes:
- *  DONE - POST = Para la creación de usuarios
- *  PENDING - GET = Para el listado de usuarios
- *  PENDING - GET ("/{id}") = Para la búsqueda por ID
- *  PENDING - GET ("/me") = Para obtener la información del usuario actual (para el front-end)
- *  PENDING - PUT ("/{id}") = Para actualizar un usuario
- *  ? Implementar logica correspondiente para el UserService de cada endpoint.
- */
-
 @RestController
 @RequestMapping("/users")
 public class UserController {
