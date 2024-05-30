@@ -1,6 +1,5 @@
 package proyecto.dh.common.utils;
 
-import org.hibernate.validator.internal.util.logging.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,7 +9,6 @@ import proyecto.dh.resources.users.entity.User;
 import proyecto.dh.resources.users.repository.UserRepository;
 
 import java.util.Collections;
-import java.util.logging.Logger;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -39,7 +37,7 @@ public class DataLoader implements CommandLineRunner {
             User admin = new User();
             admin.setEmail(adminEmail);
             admin.setPassword(passwordEncoder.encode("admin")); // Encripta la contraseña
-            admin.setRoles(Collections.singletonList(Role.ROLE_ADMIN));
+            admin.setRoles(Collections.singletonList(Role.ADMIN));
             admin.setFirstName("admin");
             admin.setLastName("admin");
 
