@@ -33,6 +33,8 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui
+    tags-sorter: alpha
+    operations-sorter: alpha
   servers:
     - url: https://api-digitalhouse.adksolutions.net.ar
 
