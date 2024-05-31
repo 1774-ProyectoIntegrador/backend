@@ -8,8 +8,6 @@ import proyecto.dh.common.enums.Role;
 import proyecto.dh.resources.users.entity.User;
 import proyecto.dh.resources.users.repository.UserRepository;
 
-import java.util.Collections;
-
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -37,7 +35,7 @@ public class DataLoader implements CommandLineRunner {
             User admin = new User();
             admin.setEmail(adminEmail);
             admin.setPassword(passwordEncoder.encode("admin")); // Encripta la contraseña
-            admin.setRoles(Collections.singletonList(Role.ADMIN));
+            admin.setRole(Role.ADMIN);
             admin.setFirstName("admin");
             admin.setLastName("admin");
 

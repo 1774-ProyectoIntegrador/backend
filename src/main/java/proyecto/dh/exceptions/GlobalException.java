@@ -1,6 +1,4 @@
 package proyecto.dh.exceptions;
-
-import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -8,10 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.jwt.BadJwtException;
-import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import proyecto.dh.exceptions.dto.ExceptionDetails;
 import proyecto.dh.exceptions.handler.BadRequestException;
@@ -33,16 +30,22 @@ public class GlobalException {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ExceptionDetails> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request) {
-        return buildResponseEntity(ex, HttpStatus.CONFLICT, "Data integrity violation", request);
+        return buildResponseEntity(ex, HttpStatus.CONFLICT, "Vulneración de la integridad de los datos, póngase en contacto con el administrador.", request);
     }
 
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<ExceptionDetails> handleDataAccessException(DataAccessException ex, WebRequest request) {
-        return buildResponseEntity(ex, HttpStatus.INTERNAL_SERVER_ERROR, "Database error", request);
+        return buildResponseEntity(ex, HttpStatus.INTERNAL_SERVER_ERROR, "Error de base de datos", request);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionDetails> handleGlobalException(Exception ex, WebRequest request) {
+        return buildResponseEntity(ex, HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ExceptionDetails> handleRuntimeException(RuntimeException ex, WebRequest request) {
         return buildResponseEntity(ex, HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), request);
     }
 
@@ -61,14 +64,9 @@ public class GlobalException {
         return buildResponseEntity(ex, HttpStatus.FORBIDDEN, "Acceso denegado: No tienes permisos para acceder a este recurso", request);
     }
 
-    @ExceptionHandler(InvalidBearerTokenException.class)
-    public ResponseEntity<ExceptionDetails> handleJwtTokenException(InvalidBearerTokenException ex, WebRequest request) {
-        return buildResponseEntity(ex, HttpStatus.BAD_REQUEST, ex.getMessage(), request);
-    }
-
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ExceptionDetails> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
-        return buildResponseEntity(ex, HttpStatus.UNAUTHORIZED, "Email y/o usuario incorrectos", request);
+        return buildResponseEntity(ex, HttpStatus.UNAUTHORIZED, "Correo electrónico y/o contraseña incorrectos", request);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
