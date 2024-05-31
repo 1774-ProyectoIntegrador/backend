@@ -38,7 +38,7 @@ public class CustomJwtDecoder implements JwtDecoder {
             decodedJWT.getClaims().forEach((k, v) -> claims.put(k, v.as(Object.class)));
 
             return new Jwt(token, decodedJWT.getIssuedAt().toInstant(), decodedJWT.getExpiresAt().toInstant(), headers, claims);
-        } catch (JwtException e) {
+        } catch (Exception e) {
             throw new JwtException("Token inválido o expirado");
         }
     }

@@ -9,16 +9,16 @@ import proyecto.dh.common.responses.ResponseHandler;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.product.entity.ProductFeature;
-import proyecto.dh.resources.product.service.ProductFeatureService;
+import proyecto.dh.resources.product.service.FeatureService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/products/features")
-public class ProductFeatureController {
+public class FeatureController {
 
     @Autowired
-    private ProductFeatureService service;
+    private FeatureService service;
 
     @GetMapping
     public ResponseEntity<List<ProductFeature>> findAll() {

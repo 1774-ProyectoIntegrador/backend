@@ -4,6 +4,7 @@ package proyecto.dh.resources.users.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,14 +26,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<UserDTO> createUser(@RequestBody UserCreateDTO userCreateDTO) throws BadRequestException {
         UserDTO createdUser = userService.create(userCreateDTO);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping()
+    @Secured({"ROLE_ADMIN"})
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         List<UserDTO> userDTOs = users.stream()
@@ -53,17 +54,9 @@ public class UserController {
         return userService.getUserDetails(jwt);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserCreateDTO userCreateDTO) throws BadRequestException {
         User updatedUser = userService.updateUser(id, userCreateDTO);
-        UserDTO userDTO = userService.convertToDTO(updatedUser);
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
-    }
-
-    @PutMapping("/role/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserDTO> updateUserRole(@PathVariable Long id, @RequestBody List<String> roles) throws BadRequestException {
-        User updatedUser = userService.updateUserRole(id, roles);
         UserDTO userDTO = userService.convertToDTO(updatedUser);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }

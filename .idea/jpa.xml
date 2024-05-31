@@ -4,4 +4,13 @@
     <option name="defaultUnitInitialized" value="true" />
     <option name="renamerInitialized" value="true" />
   </component>
+  <component name="PersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit moduleName="dh" name="Default">
+        <packages>
+          <package value="proyecto.dh" />
+        </packages>
+      </persistence-unit>
+    </persistence-units>
+  </component>
 </project>

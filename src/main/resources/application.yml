@@ -13,6 +13,13 @@ spring:
       hibernate:
         dialect: ${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
     show-sql: ${SPRING_JPA_SHOW_SQL}
+  flyway:
+    enabled: ${FLYWAY_ENABLED}
+    locations: ${FLYWAY_LOCATIONS}
+    baseline-on-migrate: ${FLYWAY_BASELINE_ON_MIGRATE}
+    clean-disabled: ${FLYWAY_CLEAN_DISABLED}
+    out-of-order: ${FLYWAY_OUT_OF_ORDER}
+
 
 aws:
   accessKeyId: ${AWS_ACCESS_KEY_ID}
@@ -26,6 +33,8 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui
+    tags-sorter: alpha
+    operations-sorter: alpha
   servers:
     - url: https://api-digitalhouse.adksolutions.net.ar
 
@@ -34,6 +43,6 @@ server:
 
 logging:
   level:
-    root: ${SPRING_LOGGIN_LEVEL_ROOT}
-    org.springframework: ${SPRING_LOGGIN_LEVEL_FRAMEWORK}
-    proyecto.dh: ${SPRING_LOGGIN_LEVEL_PROJECT}
+    root: ${LOG_LEVEL_ROOT}
+    org.springframework: ${LOG_LEVEL_FRAMEWORK}
+    proyecto.dh: ${LOG_LEVEL_PROJECT}
