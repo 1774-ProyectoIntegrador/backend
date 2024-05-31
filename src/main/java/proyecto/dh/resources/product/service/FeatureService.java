@@ -9,7 +9,7 @@ import proyecto.dh.resources.product.repository.ProductFeatureRepository;
 import java.util.List;
 
 @Service
-public class ProductFeatureService {
+public class FeatureService {
 
     @Autowired
     private ProductFeatureRepository repository;

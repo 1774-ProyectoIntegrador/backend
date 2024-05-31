@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/attachments")
-@Tag(name = "Attachments Controller", description = "Controlador para la gestión de archivos")
+@RequestMapping("attachments")
+@Tag(name = "[Admin] Attachments Controller", description = "Controlador para la gestión de archivos")
 public class AttachmentController {
 
     @Autowired
@@ -35,7 +35,7 @@ public class AttachmentController {
 
     @Operation(summary = "Subir archivos adjuntos", description = "Esta operación sube archivos adjuntos y devuelve sus IDs.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Archivos subidos correctamente", useReturnTypeSchema = false),
+            @ApiResponse(responseCode = "200", description = "Archivos subidos correctamente"),
             @ApiResponse(responseCode = "400", description = "Error al subir archivos"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })

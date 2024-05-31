@@ -61,12 +61,4 @@ public class UserController {
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/role/{id}")
-    @Secured({"ROLE_ADMIN"})
-    public ResponseEntity<UserDTO> updateUserRole(@PathVariable Long id, @RequestBody List<String> roles) throws BadRequestException {
-        User updatedUser = userService.updateUserRole(id, roles);
-        UserDTO userDTO = userService.convertToDTO(updatedUser);
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
-    }
-
 }
