@@ -41,6 +41,6 @@ server:
 
 logging:
   level:
-    root: ${SPRING_LOGGIN_LEVEL_ROOT}
-    org.springframework: ${SPRING_LOGGIN_LEVEL_FRAMEWORK}
-    proyecto.dh: ${SPRING_LOGGIN_LEVEL_PROJECT}
+    root: ${LOG_LEVEL_ROOT}
+    org.springframework: ${LOG_LEVEL_FRAMEWORK}
+    proyecto.dh: ${LOG_LEVEL_PROJECT}
