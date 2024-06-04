@@ -1,9 +1,10 @@
 version: '3.6'
+name: "dh-restapi-prod"
 
 services:
   app:
-    container_name: dh-backend-spring
-    image: digitalhouse-pi:latest
+    container_name: rentstudio-api-prod
+    image: rentstudio-api:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,29 +12,22 @@ services:
     depends_on:
       - postgres
     env_file:
-      - .env
+      - .prod.env
     ports:
       - "6060:8080"
-    networks:
-      - nginx_webnet
 
   postgres:
     image: postgres
     restart: always
-    container_name: dh-backend-postgres
-    hostname: host-postgres-digitalhouse-spring
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: changeme # Change to your Password
+    container_name: rentstudio-db-prod
+    hostname: host-rentstudio-db
+    env_file:
+      - .prod.env
     volumes:
       - ./docker/postgres/data:/var/lib/postgresql/data
       - ./docker/postgres/log:/var/log/postgresql
-      - ./sql:/docker-entrypoint-initdb.d # Modify here INIT DB
     ports:
       - "6061:5432"
-    networks:
-      - nginx_webnet
-
   cleaner:
     build:
       context: .
@@ -42,7 +36,3 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - app
-
-networks:
-  nginx_webnet:
-    external: true
