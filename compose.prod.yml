@@ -41,7 +41,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - app
-      -
+
 networks:
   nginx_webnet:
     external: true
