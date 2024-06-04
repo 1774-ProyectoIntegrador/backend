@@ -8,6 +8,7 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: "no"
+    hostname: host-rentstudio-api-prod
     depends_on:
       - postgres
     env_file:
