@@ -4,7 +4,7 @@
       <settings>
         <option name="envFilePath" value="" />
         <option name="commandLineOptions" value="--build" />
-        <option name="sourceFilePath" value="compose.prod.yml" />
+        <option name="sourceFilePath" value="compose.test.prod.yml" />
       </settings>
     </deployment>
     <method v="2" />
