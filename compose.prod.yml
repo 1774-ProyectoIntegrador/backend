@@ -10,7 +10,8 @@ services:
     restart: "no"
     hostname: host-rentstudio-api-prod
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     env_file:
       - .prod.env
     ports:
@@ -30,6 +31,11 @@ services:
       - ./docker/postgres/log:/var/log/postgresql
     ports:
       - "6061:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
     networks:
       - nginx_webnet
 

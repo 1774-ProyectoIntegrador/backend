@@ -34,9 +34,7 @@ build/
 
 
 ### Java Spring ###
-/docker/postgres
-docker-compose.yml
+/docker/
 /.prod.env
-/.env
 /.env
 /.test.prod.env
