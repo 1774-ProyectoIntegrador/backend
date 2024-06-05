@@ -44,6 +44,10 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ProductFeature> productFeatures;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "policy_id")
+    private ProductPolicy policy;
+
     @OneToMany(mappedBy = "product", orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>();
 
