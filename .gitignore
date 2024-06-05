@@ -38,3 +38,4 @@ build/
 /.prod.env
 /.env
 /.test.prod.env
+/.idea/
