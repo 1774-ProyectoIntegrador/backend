@@ -34,6 +34,7 @@ build/
 
 ### Java Spring ###
 /docker/
-/.prod.env
-/.env
-/.test.prod.env
+/env/prod/.prod.env
+/env/dev/.dev.env
+/env/dev/.test.prod.env
+/env/prod/.db.prod.env

@@ -13,7 +13,7 @@ services:
       postgres:
         condition: service_healthy
     env_file:
-      - .prod.env
+      - env/prod/.prod.env
     ports:
       - "6060:8080"
 
@@ -23,7 +23,7 @@ services:
     container_name: test-rentstudio-db-prod
     hostname: host-test-rentstudio-db
     env_file:
-      - .prod.env
+      - env/prod/.prod.env
     volumes:
       - ./docker/test/postgres/data:/var/lib/postgresql/data
       - ./docker/test/postgres/log:/var/log/postgresql
