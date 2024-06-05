@@ -8,5 +8,8 @@ services:
       - 'POSTGRES_DB=dhapi'
       - 'POSTGRES_PASSWORD=localpassword'
       - 'POSTGRES_USER=dhapi'
+    volumes:
+      - ./docker/dev/postgres/data:/var/lib/postgresql/data
+      - ./docker/dev/postgres/log:/var/log/postgresql
     ports:
       - '8081:5432'
