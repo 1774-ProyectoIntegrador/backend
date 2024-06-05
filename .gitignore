@@ -39,3 +39,4 @@ docker-compose.yml
 /.prod.env
 /.env
 /.env
+/.test.prod.env
