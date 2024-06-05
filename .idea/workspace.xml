@@ -7,21 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b3a059bf-b691-4399-9470-360a9d41c9a5" name="Changes" comment="⚙️ Added Migration for Product Policies">
-      <change afterPath="$PROJECT_DIR$/.idea/diff-generator.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jpa-buddy-datasource.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jpb-settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/env/dev/example.test.prod.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/env/prod/example.db.prod.env" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/.env.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compose.prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/compose.prod.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/compose.test.prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/compose.test.prod.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example.env" beforeDir="false" afterPath="$PROJECT_DIR$/env/dev/example.dev.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example.prod.env" beforeDir="false" afterPath="$PROJECT_DIR$/env/prod/example.prod.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-    </list>
+    <list default="true" id="b3a059bf-b691-4399-9470-360a9d41c9a5" name="Changes" comment="⚙️ Environment Properties modified for Compose and Documentation" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -240,23 +226,7 @@
       <workItem from="1717509932594" duration="262000" />
       <workItem from="1717523880628" duration="716000" />
       <workItem from="1717616286248" duration="3779000" />
-      <workItem from="1717627700787" duration="1118000" />
-    </task>
-    <task id="LOCAL-00088" summary="fix: Modificación de requeridos">
-      <option name="closed" value="true" />
-      <created>1716509597483</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1716509597483</updated>
-    </task>
-    <task id="LOCAL-00089" summary="added: Se añadio el Loggin Level al Docker Compose para su edición variable">
-      <option name="closed" value="true" />
-      <created>1716509625266</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1716509625266</updated>
+      <workItem from="1717627700787" duration="1425000" />
     </task>
     <task id="LOCAL-00090" summary="added: DTO para la eliminación de archivos">
       <option name="closed" value="true" />
@@ -634,7 +604,23 @@
       <option name="project" value="LOCAL" />
       <updated>1717628103226</updated>
     </task>
-    <option name="localTasksCounter" value="137" />
+    <task id="LOCAL-00137" summary="⚙️ Intellij Settings">
+      <option name="closed" value="true" />
+      <created>1717628847207</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1717628847207</updated>
+    </task>
+    <task id="LOCAL-00138" summary="⚙️ Environment Properties modified for Compose and Documentation">
+      <option name="closed" value="true" />
+      <created>1717628876799</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1717628876799</updated>
+    </task>
+    <option name="localTasksCounter" value="139" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -653,8 +639,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="⚙️ changed: Se cambió el &quot;NimbusJwtDecoder&quot; por &quot;Auth0 Jwt Decoder&quot; para mayor flexibilidad." />
-    <MESSAGE value="⚙️ changed: Se actualizó el DataLoader para la implementación de roles." />
     <MESSAGE value="⚙️ changed: Se movieron archivos" />
     <MESSAGE value="⚙️ changed: Implementación para Multiples Roles y JWT" />
     <MESSAGE value="⚠️ fast fix: Actualizar configuración de acceso" />
@@ -678,6 +662,8 @@
     <MESSAGE value="⚙️ Git Ignore" />
     <MESSAGE value="⚙️ Added Intellij Settings for Devs" />
     <MESSAGE value="⚙️ Added Migration for Product Policies" />
-    <option name="LAST_COMMIT_MESSAGE" value="⚙️ Added Migration for Product Policies" />
+    <MESSAGE value="⚙️ Intellij Settings" />
+    <MESSAGE value="⚙️ Environment Properties modified for Compose and Documentation" />
+    <option name="LAST_COMMIT_MESSAGE" value="⚙️ Environment Properties modified for Compose and Documentation" />
   </component>
 </project>
