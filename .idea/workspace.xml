@@ -7,22 +7,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b3a059bf-b691-4399-9470-360a9d41c9a5" name="Changes" comment="⚙️ Git Ignore">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jpa.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_5_2024_18_16_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_5_2024_18_16_[Changes]1/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_5_2024_18_16__Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Changes_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="b3a059bf-b691-4399-9470-360a9d41c9a5" name="Changes" comment="⚙️ Added Migration for Product Policies">
+      <change afterPath="$PROJECT_DIR$/.idea/diff-generator.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jpa-buddy-datasource.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jpb-settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/env/dev/example.test.prod.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/env/prod/example.db.prod.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/.env.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compose.prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/compose.prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/compose.test.prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/compose.test.prod.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example.env" beforeDir="false" afterPath="$PROJECT_DIR$/env/dev/example.dev.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/example.prod.env" beforeDir="false" afterPath="$PROJECT_DIR$/env/prod/example.prod.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -142,7 +140,7 @@
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/santi/Escritorio/Dev-DH/Proyecto Integrador/backend/src/main/resources/db/migration/test",
+    "last_opened_file_path": "C:/Users/santi/Escritorio/Dev-DH/Proyecto Integrador/backend/env/prod",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -160,18 +158,18 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\src\main\resources\db\migration\test" />
+      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\env\prod" />
+      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\env\dev" />
       <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend" />
+      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\src\main\resources\db\migration\test" />
       <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\src\main\resources" />
-      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\digitalhouse" />
-      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\digitalhouse\src\main\resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\env\dev" />
+      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\env\development" />
+      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\env\prod" />
+      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\env" />
       <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\src\main\resources\db\" />
-      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\src\main\resources\db\changelog" />
-      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\src\main\resources\db\changelog\changes" />
-      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\src\main\resources\db\changelog\init" />
-      <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\src\main\resources" />
     </key>
     <key name="ExtractSuperBase.RECENT_KEYS">
       <recent name="proyecto.dh.config" />
@@ -242,23 +240,7 @@
       <workItem from="1717509932594" duration="262000" />
       <workItem from="1717523880628" duration="716000" />
       <workItem from="1717616286248" duration="3779000" />
-      <workItem from="1717627700787" duration="293000" />
-    </task>
-    <task id="LOCAL-00086" summary="added: Filtro de redireccionamiento de barra diagonal final">
-      <option name="closed" value="true" />
-      <created>1716509541895</created>
-      <option name="number" value="00086" />
-      <option name="presentableId" value="LOCAL-00086" />
-      <option name="project" value="LOCAL" />
-      <updated>1716509541895</updated>
-    </task>
-    <task id="LOCAL-00087" summary="modified: Anotaciones de Swagger">
-      <option name="closed" value="true" />
-      <created>1716509579323</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
-      <option name="project" value="LOCAL" />
-      <updated>1716509579323</updated>
+      <workItem from="1717627700787" duration="1118000" />
     </task>
     <task id="LOCAL-00088" summary="fix: Modificación de requeridos">
       <option name="closed" value="true" />
@@ -636,7 +618,23 @@
       <option name="project" value="LOCAL" />
       <updated>1717618824142</updated>
     </task>
-    <option name="localTasksCounter" value="135" />
+    <task id="LOCAL-00135" summary="⚙️ Added Intellij Settings for Devs">
+      <option name="closed" value="true" />
+      <created>1717628083252</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1717628083252</updated>
+    </task>
+    <task id="LOCAL-00136" summary="⚙️ Added Migration for Product Policies">
+      <option name="closed" value="true" />
+      <created>1717628103226</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1717628103226</updated>
+    </task>
+    <option name="localTasksCounter" value="137" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -655,8 +653,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="⚙️ Changed &quot;jwt&quot; to &quot;token&quot; on the Response from Login Dto" />
-    <MESSAGE value="⚙️ Created &quot;AuthService&quot; with roles functionality." />
     <MESSAGE value="⚙️ changed: Se cambió el &quot;NimbusJwtDecoder&quot; por &quot;Auth0 Jwt Decoder&quot; para mayor flexibilidad." />
     <MESSAGE value="⚙️ changed: Se actualizó el DataLoader para la implementación de roles." />
     <MESSAGE value="⚙️ changed: Se movieron archivos" />
@@ -680,6 +676,8 @@
     <MESSAGE value="⚙️ Regeneración de migraciones" />
     <MESSAGE value="⚙️ Actualización Docker Compose Prod" />
     <MESSAGE value="⚙️ Git Ignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="⚙️ Git Ignore" />
+    <MESSAGE value="⚙️ Added Intellij Settings for Devs" />
+    <MESSAGE value="⚙️ Added Migration for Product Policies" />
+    <option name="LAST_COMMIT_MESSAGE" value="⚙️ Added Migration for Product Policies" />
   </component>
 </project>
