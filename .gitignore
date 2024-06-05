@@ -32,10 +32,8 @@ build/
 /docker
 .vscode/
 
-
 ### Java Spring ###
 /docker/
 /.prod.env
 /.env
 /.test.prod.env
-/.idea/
