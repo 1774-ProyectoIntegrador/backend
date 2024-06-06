@@ -7,6 +7,6 @@ sleep 80
 docker image prune -f
 
 # Eliminar volumes sin uso
-docker volume prune
+docker volume prune -f
 
 echo "Limpieza completada."
