@@ -30,16 +30,15 @@ public class DataLoader implements CommandLineRunner {
         if (findAdmin.isPresent()) {
             userRepository.delete(findAdmin.get());
             System.out.println("[DATA-LOADER] Admin User deleted: " + findAdmin);
-        } else {
-            User admin = new User();
-            admin.setEmail(adminEmail);
-            admin.setPassword(passwordEncoder.encode("admin")); // Encripta la contraseña
-            admin.setRole(Role.ROLE_ADMIN);
-            admin.setFirstName("admin");
-            admin.setLastName("admin");
-
-            userRepository.save(admin);
-            System.out.println("[DATA-LOADER] Admin user created: " + admin);
         }
+        User admin = new User();
+        admin.setEmail(adminEmail);
+        admin.setPassword(passwordEncoder.encode("admin")); // Encripta la contraseña
+        admin.setRole(Role.ROLE_ADMIN);
+        admin.setFirstName("admin");
+        admin.setLastName("admin");
+
+        userRepository.save(admin);
+        System.out.println("[DATA-LOADER] Admin user created: " + admin);
     }
 }
