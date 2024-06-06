@@ -261,4 +261,16 @@ public class ProductService {
     public Product convertToEntity(ProductSaveDTO productSaveDTO) {
         return modelMapper.map(productSaveDTO, Product.class);
     }
+
+    /**
+     * Recupera un producto por su ID.
+     *
+     * @param id el ID del producto a recuperar
+     * @return el producto recuperado
+     * @throws NotFoundException si el producto no se encuentra
+     */
+    public Product getProductById(Long id) throws NotFoundException {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Producto no encontrado con ID: " + id));
+    }
 }
