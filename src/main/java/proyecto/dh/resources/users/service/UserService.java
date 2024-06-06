@@ -2,8 +2,8 @@ package proyecto.dh.resources.users.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import proyecto.dh.common.enums.Role;
 import proyecto.dh.exceptions.handler.BadRequestException;
@@ -13,6 +13,7 @@ import proyecto.dh.resources.users.entity.User;
 import proyecto.dh.resources.users.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -32,7 +33,7 @@ public class UserService {
             throw new BadRequestException("Usuario con email '" + userObject.getEmail() + "' ya existe");
         }
         User userEntity = modelMapper.map(userObject, User.class);
-        userEntity.setRole(Role.USER); // Set default role here
+        userEntity.setRole(Role.ROLE_USER); // Set default role here
         userEntity.setPassword(passwordEncoder.encode(userObject.getPassword()));
         User createdUser = userRepository.save(userEntity);
         return convertToDTO(createdUser);
@@ -58,19 +59,19 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public UserDTO getUserDetails(Jwt jwt){
-        String email = jwt.getSubject();
-
-        User user = findByEmail(email);
+    public UserDTO getUserDetails(UserDetails userDetails) throws BadRequestException {
+        String email = userDetails.getUsername();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("Usuario no encontrado"));
 
         return convertToDTO(user);
     }
 
-    public User findByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public UserDTO convertToDTO(User userObject) {
-        return modelMapper.map(userObject, UserDTO.class);
+    private UserDTO convertToDTO(User user) {
+        return modelMapper.map(user, UserDTO.class);
     }
 }

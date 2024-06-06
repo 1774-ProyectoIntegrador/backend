@@ -1,7 +1,7 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
     show-sql: true
   application:
     name: dh-backend
@@ -11,6 +11,11 @@ spring:
       file: compose.dev.yml
   flyway:
     enabled: ${FLYWAY_ENABLED}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration:
+    hours: ${JWT_EXPIRATION_HOURS}
 
 aws:
   accessKeyId: ${AWS_ACCESS_KEY_ID}

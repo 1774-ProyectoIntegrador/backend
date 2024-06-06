@@ -18,7 +18,10 @@ spring:
     clean-disabled: ${FLYWAY_CLEAN_DISABLED}
     out-of-order: ${FLYWAY_OUT_OF_ORDER}
 
-
+jwt:
+  secret: ${JWT_SECRET}
+  expiration:
+    hours: ${JWT_EXPIRATION_HOURS}
 
 aws:
   accessKeyId: ${AWS_ACCESS_KEY_ID}

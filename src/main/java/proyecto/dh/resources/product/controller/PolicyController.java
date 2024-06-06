@@ -17,7 +17,7 @@ import proyecto.dh.resources.product.service.PolicyService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products/policies")
+@RequestMapping("/public/products/policies")
 public class PolicyController {
 
     @Autowired
@@ -33,27 +33,5 @@ public class PolicyController {
     public ResponseEntity<ProductPolicy> findById(@PathVariable Long policyId) throws NotFoundException {
         ProductPolicy policy = service.findById(policyId);
         return ResponseEntity.ok(policy);
-    }
-
-    @PostMapping
-    public ResponseEntity<ProductPolicy> create(@RequestBody ProductPolicy userObject) {
-        ProductPolicy createdPolicy = service.save(userObject);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdPolicy);
-    }
-
-    @PutMapping("/{policyId}")
-    public ResponseEntity<ProductPolicy> update(@PathVariable Long policyId, @RequestBody ProductPolicy policy) throws NotFoundException, BadRequestException {
-        ProductPolicy updatedPolicy = service.updatePolicy(policyId, policy);
-        return ResponseEntity.ok(updatedPolicy);
-    }
-
-    @DeleteMapping("/{policyId}")
-    public ResponseEntity<ResponseDTO<Void>> deletePolicy(@PathVariable Long policyId) throws BadRequestException {
-        try {
-            service.deleteById(policyId);
-            return ResponseHandler.generateResponse("Policy deleted successfully", HttpStatus.OK, null);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
-        }
     }
 }

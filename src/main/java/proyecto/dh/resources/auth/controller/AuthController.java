@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import proyecto.dh.resources.auth.dto.AuthenticationRequestDto;
 import proyecto.dh.resources.auth.dto.AuthenticationResponseDto;
 import proyecto.dh.resources.auth.service.AuthService;
-import proyecto.dh.resources.product.service.ProductService;
 
 @RestController
 @RequestMapping("/auth")
@@ -21,7 +20,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticationRequestDto authRequest) throws Exception {
+    public ResponseEntity<AuthenticationResponseDto> login(@RequestBody AuthenticationRequestDto authRequest) throws Exception {
         AuthenticationResponseDto response = authService.authenticate(authRequest);
         return ResponseEntity.ok(response);
     }
