@@ -8,6 +8,8 @@ import proyecto.dh.common.enums.Role;
 import proyecto.dh.resources.users.entity.User;
 import proyecto.dh.resources.users.repository.UserRepository;
 
+import java.util.Optional;
+
 @Component
 public class DataLoader implements CommandLineRunner {
 
@@ -24,22 +26,20 @@ public class DataLoader implements CommandLineRunner {
 
     private void createAdminUser() {
         String adminEmail = "admin@admin.com";
-        User findAdmin = userRepository.findByEmail(adminEmail);
-        try {
-            userRepository.delete(findAdmin);
+        Optional<User> findAdmin = userRepository.findByEmail(adminEmail);
+        if (findAdmin.isPresent()) {
+            userRepository.delete(findAdmin.get());
             System.out.println("[DATA-LOADER] Admin User deleted: " + findAdmin);
-        } catch (Exception e) {
-            System.err.println("[DATA-LOADER] Admin User NOT deleted: " + findAdmin);
-        }
-
+        } else {
             User admin = new User();
             admin.setEmail(adminEmail);
             admin.setPassword(passwordEncoder.encode("admin")); // Encripta la contraseña
-            admin.setRole(Role.ADMIN);
+            admin.setRole(Role.ROLE_ADMIN);
             admin.setFirstName("admin");
             admin.setLastName("admin");
 
             userRepository.save(admin);
             System.out.println("[DATA-LOADER] Admin user created: " + admin);
+        }
     }
 }
