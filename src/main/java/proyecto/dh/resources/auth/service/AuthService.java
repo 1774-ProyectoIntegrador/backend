@@ -31,7 +31,21 @@ public class AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .findFirst().orElse(null);
         String jwt = jwtTokenProvider.generateToken(userDetails.getUsername(), role);
+        String refreshToken = jwtTokenProvider.generateRefreshToken(userDetails.getUsername());
 
-        return new AuthenticationResponseDto(jwt);
+        return new AuthenticationResponseDto(jwt, refreshToken);
+    }
+
+    public AuthenticationResponseDto refreshToken(String refreshToken) {
+        if (jwtTokenProvider.validateToken(refreshToken)) {
+            String email = jwtTokenProvider.getEmailFromToken(refreshToken);
+            String role = jwtTokenProvider.getRoleFromToken(refreshToken);
+            String newAccessToken = jwtTokenProvider.generateToken(email, role);
+            String newRefreshToken = jwtTokenProvider.generateRefreshToken(email);
+
+            return new AuthenticationResponseDto(newAccessToken, newRefreshToken);
+        } else {
+            throw new RuntimeException("Invalid refresh token");
+        }
     }
 }
