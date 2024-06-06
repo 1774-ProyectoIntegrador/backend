@@ -55,4 +55,7 @@ public class JwtTokenProvider {
             return false;
         }
     }
+    public long getJwtRefreshExpirationInMillis() {
+        return jwtRefreshExpirationDays * 86400000; // Conversión de días a milisegundos
+    }
 }
