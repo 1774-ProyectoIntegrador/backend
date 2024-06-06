@@ -7,34 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b3a059bf-b691-4399-9470-360a9d41c9a5" name="Changes" comment="⚙️ Compose Dev Updated">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/config/filter/TrailingSlashRedirectFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/jwt/JwtAuthenticationFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/jwt/JwtTokenProvider.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/product/controller/admin/PolicyAdminController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/env/prod/example.prod.env" beforeDir="false" afterPath="$PROJECT_DIR$/env/prod/example.prod.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/common/enums/Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/common/enums/Role.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/common/utils/DataLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/common/utils/DataLoader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/common/utils/TestPostman.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/common/utils/TrailingSlashRedirectFilter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/config/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/config/WebConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/config/security/CustomAuthenticationFailureHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/config/security/CustomJwtDecoder.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/config/security/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/config/security/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/service/UserDetailsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/service/CustomUserDetailsService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/product/controller/PolicyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/product/controller/PolicyController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/product/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/product/service/ProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/users/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/users/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/users/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/users/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/users/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/users/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-prod.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-prod.yml" afterDir="false" />
-    </list>
+    <list default="true" id="b3a059bf-b691-4399-9470-360a9d41c9a5" name="Changes" comment="⚙️ Environment Properties modified for Compose and Documentation" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,8 +18,8 @@
       <list>
         <option value="Interface" />
         <option value="com.haulmont.jpb.JpaLiquibaseChangeLog" />
-        <option value="com.intellij.jpb.FlywayMigrationScript" />
         <option value="Class" />
+        <option value="com.intellij.jpb.FlywayMigrationScript" />
       </list>
     </option>
   </component>
@@ -59,7 +32,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="feat/policy" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -150,7 +123,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.Digital House API.executor": "Run",
     "Spring Boot.DigitalHouseApplication.executor": "Run",
-    "git-widget-placeholder": "feat/jack/securityconfig",
+    "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/santi/Escritorio/Dev-DH/Proyecto Integrador/backend/env/prod",
@@ -253,8 +226,15 @@
       <workItem from="1717509932594" duration="262000" />
       <workItem from="1717523880628" duration="716000" />
       <workItem from="1717616286248" duration="3779000" />
-      <workItem from="1717627700787" duration="1880000" />
-      <workItem from="1717630859151" duration="13931000" />
+      <workItem from="1717627700787" duration="1425000" />
+    </task>
+    <task id="LOCAL-00090" summary="added: DTO para la eliminación de archivos">
+      <option name="closed" value="true" />
+      <created>1716509639427</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1716509639427</updated>
     </task>
     <task id="LOCAL-00091" summary="added: Dependencias de Swagger">
       <option name="closed" value="true" />
@@ -640,15 +620,7 @@
       <option name="project" value="LOCAL" />
       <updated>1717628876799</updated>
     </task>
-    <task id="LOCAL-00139" summary="⚙️ Compose Dev Updated">
-      <option name="closed" value="true" />
-      <created>1717629460987</created>
-      <option name="number" value="00139" />
-      <option name="presentableId" value="LOCAL-00139" />
-      <option name="project" value="LOCAL" />
-      <updated>1717629460987</updated>
-    </task>
-    <option name="localTasksCounter" value="140" />
+    <option name="localTasksCounter" value="139" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -667,6 +639,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="⚙️ changed: Se movieron archivos" />
     <MESSAGE value="⚙️ changed: Implementación para Multiples Roles y JWT" />
     <MESSAGE value="⚠️ fast fix: Actualizar configuración de acceso" />
     <MESSAGE value="⚡ refactorings: Se refactorizó el ProductService en su update debido a la alta complejidad" />
@@ -691,7 +664,6 @@
     <MESSAGE value="⚙️ Added Migration for Product Policies" />
     <MESSAGE value="⚙️ Intellij Settings" />
     <MESSAGE value="⚙️ Environment Properties modified for Compose and Documentation" />
-    <MESSAGE value="⚙️ Compose Dev Updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="⚙️ Compose Dev Updated" />
+    <option name="LAST_COMMIT_MESSAGE" value="⚙️ Environment Properties modified for Compose and Documentation" />
   </component>
 </project>
