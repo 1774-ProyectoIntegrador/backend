@@ -1,14 +1,13 @@
 package proyecto.dh.resources.users.controller;
 
 
+import io.jsonwebtoken.Jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.resources.users.dto.UserCreateDTO;
@@ -32,33 +31,9 @@ public class UserController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
-    @GetMapping()
-    @Secured({"ROLE_ADMIN"})
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        List<UserDTO> userDTOs = users.stream()
-                .map(userService::convertToDTO)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(userDTOs);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) throws BadRequestException {
-        User user = userService.getUserById(id);
-        UserDTO userDTO = userService.convertToDTO(user);
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
-    }
-
     @GetMapping("/me")
-    public UserDTO getUserDetails(@AuthenticationPrincipal Jwt jwt) {
-        return userService.getUserDetails(jwt);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserCreateDTO userCreateDTO) throws BadRequestException {
-        User updatedUser = userService.updateUser(id, userCreateDTO);
-        UserDTO userDTO = userService.convertToDTO(updatedUser);
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+    public UserDTO getUserDetails(@AuthenticationPrincipal UserDetails token) throws BadRequestException {
+        return userService.getUserDetails(token);
     }
 
 }
