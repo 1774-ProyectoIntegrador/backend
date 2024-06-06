@@ -21,7 +21,10 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
   expiration:
-    hours: ${JWT_EXPIRATION_HOURS}
+    minutes: ${JWT_EXPIRATION_MINUTES}
+  refresh:
+    expiration:
+      days: ${JWT_REFRESH_EXPIRATION_DAYS}
 
 aws:
   accessKeyId: ${AWS_ACCESS_KEY_ID}
