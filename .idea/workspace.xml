@@ -7,14 +7,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b3a059bf-b691-4399-9470-360a9d41c9a5" name="Changes" comment="⚙️ misc: Se cambio el script de limpieza">
-      <change afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/dto/RefreshTokenRequestDto.java" afterDir="false" />
+    <list default="true" id="b3a059bf-b691-4399-9470-360a9d41c9a5" name="Changes" comment="⚙️ Se añadió soporte para Refresh Token">
+      <change afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/entity/RefreshToken.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/repository/RefreshTokenRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/service/RefreshTokenService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/dto/AuthenticationResponseDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/dto/AuthenticationResponseDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/jwt/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/jwt/JwtTokenProvider.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/proyecto/dh/resources/auth/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,7 +38,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feat/jack/securityconfig" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -108,48 +106,48 @@
     <option name="showLibraryContents" value="true" />
     <option name="showVisibilityIcons" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.DigitalHouseApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.Build Image.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.Dockerfile.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.[DEV] Run with Docker Compose.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.digitalhouse/Dockerfile.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.digitalhouse/docker-compose.dev.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.src/Dockerfile.executor&quot;: &quot;Run&quot;,
-    &quot;Maven.dh [liquibase...].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.dh [liquibase:changelogSync].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.dh [liquibase:diff].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.dh [liquibase:generateChangeLog...].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.dh [liquibase:generateChangeLog].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.dh [spring-boot:run].executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Spring Boot.Digital House API.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.DigitalHouseApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/santi/Escritorio/Dev-DH/Proyecto Integrador/backend/env/prod&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.DigitalHouseApplication.executor": "Run",
+    "Docker.Build Image.executor": "Run",
+    "Docker.Dockerfile.executor": "Run",
+    "Docker.[DEV] Run with Docker Compose.executor": "Run",
+    "Docker.digitalhouse/Dockerfile.executor": "Run",
+    "Docker.digitalhouse/docker-compose.dev.yml: Compose Deployment.executor": "Run",
+    "Docker.src/Dockerfile.executor": "Run",
+    "Maven.dh [liquibase...].executor": "Run",
+    "Maven.dh [liquibase:changelogSync].executor": "Run",
+    "Maven.dh [liquibase:diff].executor": "Run",
+    "Maven.dh [liquibase:generateChangeLog...].executor": "Run",
+    "Maven.dh [liquibase:generateChangeLog].executor": "Run",
+    "Maven.dh [spring-boot:run].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.Digital House API.executor": "Run",
+    "Spring Boot.DigitalHouseApplication.executor": "Run",
+    "git-widget-placeholder": "feat/jack/refresh-token",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/santi/Escritorio/Dev-DH/Proyecto Integrador/backend/env/prod",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.grazie",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\santi\Escritorio\Dev-DH\Proyecto Integrador\backend\env\prod" />
@@ -235,15 +233,7 @@
       <workItem from="1717523880628" duration="716000" />
       <workItem from="1717616286248" duration="3779000" />
       <workItem from="1717627700787" duration="1425000" />
-      <workItem from="1717704574549" duration="1864000" />
-    </task>
-    <task id="LOCAL-00092" summary="modified: Docker Compose">
-      <option name="closed" value="true" />
-      <created>1716517277529</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1716517277529</updated>
+      <workItem from="1717704574549" duration="5686000" />
     </task>
     <task id="LOCAL-00093" summary="modified: Se modifico el Update para incluir los archivos">
       <option name="closed" value="true" />
@@ -629,7 +619,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717653993480</updated>
     </task>
-    <option name="localTasksCounter" value="141" />
+    <task id="LOCAL-00141" summary="⚙️ Se añadió soporte para Refresh Token">
+      <option name="closed" value="true" />
+      <created>1717707469575</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1717707469575</updated>
+    </task>
+    <option name="localTasksCounter" value="142" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -648,7 +646,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="⚙️ changed: Implementación para Multiples Roles y JWT" />
     <MESSAGE value="⚠️ fast fix: Actualizar configuración de acceso" />
     <MESSAGE value="⚡ refactorings: Se refactorizó el ProductService en su update debido a la alta complejidad" />
     <MESSAGE value="⚡ fixes: Se arreglo problema que no validaba los Roles" />
@@ -673,6 +670,7 @@
     <MESSAGE value="⚙️ Intellij Settings" />
     <MESSAGE value="⚙️ Environment Properties modified for Compose and Documentation" />
     <MESSAGE value="⚙️ misc: Minor Fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="⚙️ misc: Minor Fixes" />
+    <MESSAGE value="⚙️ Se añadió soporte para Refresh Token" />
+    <option name="LAST_COMMIT_MESSAGE" value="⚙️ Se añadió soporte para Refresh Token" />
   </component>
 </project>
