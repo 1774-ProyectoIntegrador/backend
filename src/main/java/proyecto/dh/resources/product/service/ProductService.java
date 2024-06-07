@@ -54,7 +54,7 @@ public class ProductService {
             List<Attachment> attachments = new ArrayList<>();
             for (Long attachmentId : productSaveDTO.getAttachments()) {
                 Attachment attachment = attachmentService.findById(attachmentId);
-                validateFileType(attachment);
+                attachmentService.validateFileTypeImages(attachment);
                 attachment.setProduct(product);
                 attachments.add(attachment);
             }
@@ -111,21 +111,15 @@ public class ProductService {
         }
     }
 
-    private void updateAttachments(Product product, List<Long> attachmentsIds) throws NotFoundException, BadRequestException {
+    @Transactional
+    public void updateAttachments(Product product, List<Long> attachmentsIds) throws NotFoundException, BadRequestException {
+        product.getAttachments().clear();
+
         if (attachmentsIds != null) {
-            List<Attachment> existingAttachments = new ArrayList<>(product.getAttachments());
-
-            for (Attachment currentAttach : existingAttachments) {
-                if (!attachmentsIds.contains(currentAttach.getId())) {
-                    product.removeAttachment(currentAttach);
-                }
-            }
-
             for (Long attachmentId : attachmentsIds) {
                 Attachment attachment = attachmentService.findById(attachmentId);
-                if (!product.getAttachments().contains(attachment)) {
-                    product.addAttachment(attachment);
-                }
+                attachmentService.validateFileTypeImages(attachment);
+                product.addAttachment(attachment);
             }
         }
     }
@@ -140,13 +134,6 @@ public class ProductService {
 
             product.getProductFeatures().clear();
             product.getProductFeatures().addAll(newFeatures);
-        }
-    }
-
-    private void validateFileType(Attachment attachment) throws BadRequestException {
-        String contentType = attachment.getFileName().substring(attachment.getFileName().lastIndexOf('.') + 1).toLowerCase();
-        if (!"jpeg".equals(contentType) && !"png".equals(contentType) && !"jpg".equals(contentType) && !"webp".equals(contentType)) {
-            throw new BadRequestException("Solo se permiten archivos WEBP, JPEG, PNG y JPG");
         }
     }
 

@@ -89,4 +89,11 @@ public class AttachmentService {
     public Attachment convertToEntity(AttachmentDTO attachmentDTO) {
         return modelMapper.map(attachmentDTO, Attachment.class);
     }
+
+    public void validateFileTypeImages(Attachment attachment) throws BadRequestException {
+        String contentType = attachment.getFileName().substring(attachment.getFileName().lastIndexOf('.') + 1).toLowerCase();
+        if (!"jpeg".equals(contentType) && !"png".equals(contentType) && !"jpg".equals(contentType) && !"webp".equals(contentType)) {
+            throw new BadRequestException("Solo se permiten archivos WEBP, JPEG, PNG y JPG");
+        }
+    }
 }
