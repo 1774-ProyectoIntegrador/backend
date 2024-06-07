@@ -28,7 +28,7 @@ public class ProductCategory {
     @Column(nullable = false, unique = true)
     private String slug;
 
-    @OneToOne(mappedBy = "productCategory", optional = false, orphanRemoval = true)
+    @OneToOne(mappedBy = "productCategory")
     private Attachment attachment;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
