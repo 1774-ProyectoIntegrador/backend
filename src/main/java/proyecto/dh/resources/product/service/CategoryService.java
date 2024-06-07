@@ -3,6 +3,7 @@ package proyecto.dh.resources.product.service;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
@@ -13,6 +14,7 @@ import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +29,7 @@ public class CategoryService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Transactional
     public ProductCategoryDTO save(ProductCategorySaveDTO categorySaveDTO) throws BadRequestException, NotFoundException {
         validateSlug(categorySaveDTO.getSlug());
 
@@ -35,15 +38,22 @@ public class CategoryService {
         } else if (repository.existsBySlug(categorySaveDTO.getSlug())) {
             throw new BadRequestException("Categoría con el slug '" + categorySaveDTO.getSlug() + "' ya existe");
         }
-
         ProductCategory category = convertToEntity(categorySaveDTO);
+
+        if (categorySaveDTO.getAttachmentId() != null) {
+            Attachment attachment = attachmentService.findById(categorySaveDTO.getAttachmentId());
+            attachmentService.validateFileTypeImages(attachment);
+            category.setAttachment(attachment);
+        }
 
         ProductCategory savedCategory = repository.save(category);
         return convertToDTO(savedCategory);
     }
 
+    @Transactional
     public ProductCategoryDTO updateCategory(Long id, ProductCategorySaveDTO categorySaveDTO) throws NotFoundException, BadRequestException {
-        ProductCategory existingCategory = findByIdEntity(id);
+        ProductCategory existingCategory = findByIdEntity(id)
+                .orElseThrow(() -> new NotFoundException("Categoría con ID " + id + " no encontrada."));
         validateSlug(categorySaveDTO.getSlug());
 
         modelMapper.map(categorySaveDTO, existingCategory);
@@ -55,6 +65,13 @@ public class CategoryService {
         if (categorySaveDTO.getSlug() != null && repository.existsBySlug(categorySaveDTO.getSlug()) && !existingCategory.getSlug().equals(categorySaveDTO.getSlug())) {
             throw new BadRequestException("Categoría con el slug '" + categorySaveDTO.getSlug() + "' ya existe");
         }
+
+        if (categorySaveDTO.getAttachmentId() != null) {
+            Attachment attachment = attachmentService.findById(categorySaveDTO.getAttachmentId());
+            attachmentService.validateFileTypeImages(attachment);
+            existingCategory.setAttachment(attachment);
+        }
+
         ProductCategory savedCategory = repository.save(existingCategory);
         return convertToDTO(savedCategory);
     }
@@ -65,31 +82,26 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteById(Long id) throws BadRequestException, NotFoundException {
-        ProductCategory category = findByIdEntity(id);
+        ProductCategory category = findByIdEntity(id)
+                .orElseThrow(() -> new NotFoundException("Categoría con ID " + id + " no encontrada."));
 
-        //TODO
-        /*if (category.getAttachment() != null) {
+        if (category.getAttachment() != null) {
             attachmentService.deleteAttachment(category.getAttachment().getId());
-        }*/
+        }
+
         repository.deleteById(id);
     }
 
     public ProductCategoryDTO findById(Long id) throws NotFoundException {
-        ProductCategory category = findByIdEntity(id);
+        ProductCategory category = findByIdEntity(id)
+                .orElseThrow(() -> new NotFoundException("Categoría con ID " + id + " no encontrada."));
         return convertToDTO(category);
     }
 
-    private ProductCategory findByIdEntity(Long id) throws NotFoundException {
-        return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
-    }
-
-    private void validateFileType(Attachment attachment) throws BadRequestException {
-        String contentType = attachment.getFileName().substring(attachment.getFileName().lastIndexOf('.') + 1).toLowerCase();
-        if (!"jpeg".equals(contentType) && !"png".equals(contentType) && !"jpg".equals(contentType)) {
-            throw new BadRequestException("Solo se permiten archivos JPEG, PNG y JPG");
-        }
+    private Optional<ProductCategory> findByIdEntity(Long id) {
+        return repository.findById(id);
     }
 
     private void validateSlug(String slug) throws BadRequestException {

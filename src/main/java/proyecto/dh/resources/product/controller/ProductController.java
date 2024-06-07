@@ -59,7 +59,6 @@ public class ProductController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @PermitAll
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) throws NotFoundException {
         ProductDTO product = productService.findById(id);

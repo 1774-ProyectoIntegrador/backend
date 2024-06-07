@@ -31,4 +31,9 @@ public class Attachment {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(unique = true)
+    private ProductCategory productCategory;
+
 }

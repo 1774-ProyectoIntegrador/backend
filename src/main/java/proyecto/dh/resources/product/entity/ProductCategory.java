@@ -19,18 +19,17 @@ public class ProductCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 30)
     private String name;
 
-    @Column()
+    @Column(length = 300)
     private String description;
 
     @Column(nullable = false, unique = true)
     private String slug;
 
-    @OneToOne(orphanRemoval = true)
-    @JoinColumn(name = "attachments_id")
-    private Attachment attachments;
+    @OneToOne(mappedBy = "productCategory", optional = false, orphanRemoval = true)
+    private Attachment attachment;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
