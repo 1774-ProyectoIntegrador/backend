@@ -1,5 +1,8 @@
 package proyecto.dh.resources.product.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,11 +21,14 @@ import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.entity.ProductFeature;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
+import proyecto.dh.resources.product.repository.ProductSearchRepository;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +45,9 @@ public class ProductService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private ProductSearchRepository productSearchRepository;
 
     @Transactional
     public ProductDTO save(ProductSaveDTO productSaveDTO) throws NotFoundException, BadRequestException {
@@ -102,6 +111,14 @@ public class ProductService {
         Product productSearched = findByIdEntity(id);
         return convertToDTO(productSearched);
     }
+
+
+    @Transactional(readOnly = true)
+    public List<ProductDTO> searchProducts(String searchText, Long categoryId) {
+        return productSearchRepository.searchProducts(searchText, categoryId);
+    }
+
+
 
     private void updateCategory(Product product, Long categoryId) throws NotFoundException {
         if (categoryId != null) {

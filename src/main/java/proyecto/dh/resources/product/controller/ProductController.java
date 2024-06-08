@@ -64,4 +64,8 @@ public class ProductController {
         ProductDTO product = productService.findById(id);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
+    @GetMapping("/search")
+    public List<ProductDTO> search(@RequestParam String searchText, @RequestParam(required = false) Long categoryId) {
+        return productService.searchProducts(searchText, categoryId);
+    }
 }
