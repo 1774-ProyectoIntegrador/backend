@@ -32,19 +32,10 @@ public class CategoryService {
     @Transactional
     public ProductCategoryDTO save(ProductCategorySaveDTO categorySaveDTO) throws BadRequestException, NotFoundException {
         validateSlug(categorySaveDTO.getSlug());
+        checkCategoryExistence(categorySaveDTO.getName(), categorySaveDTO.getSlug());
 
-        if (repository.existsByName(categorySaveDTO.getName())) {
-            throw new BadRequestException("Categoría con el nombre '" + categorySaveDTO.getName() + "' ya existe");
-        } else if (repository.existsBySlug(categorySaveDTO.getSlug())) {
-            throw new BadRequestException("Categoría con el slug '" + categorySaveDTO.getSlug() + "' ya existe");
-        }
         ProductCategory category = convertToEntity(categorySaveDTO);
-
-        if (categorySaveDTO.getAttachmentId() != null) {
-            Attachment attachment = attachmentService.findById(categorySaveDTO.getAttachmentId());
-            attachmentService.validateFileTypeImages(attachment);
-            category.setAttachment(attachment);
-        }
+        handleAttachment(category, categorySaveDTO.getAttachmentId());
 
         ProductCategory savedCategory = repository.save(category);
         return convertToDTO(savedCategory);
@@ -55,22 +46,10 @@ public class CategoryService {
         ProductCategory existingCategory = findByIdEntity(id)
                 .orElseThrow(() -> new NotFoundException("Categoría con ID " + id + " no encontrada."));
         validateSlug(categorySaveDTO.getSlug());
+        checkCategoryExistenceForUpdate(categorySaveDTO.getName(), categorySaveDTO.getSlug(), existingCategory);
 
         modelMapper.map(categorySaveDTO, existingCategory);
-
-        if (categorySaveDTO.getName() != null && repository.existsByName(categorySaveDTO.getName()) && !existingCategory.getName().equals(categorySaveDTO.getName())) {
-            throw new BadRequestException("Categoría con el nombre '" + categorySaveDTO.getName() + "' ya existe");
-        }
-
-        if (categorySaveDTO.getSlug() != null && repository.existsBySlug(categorySaveDTO.getSlug()) && !existingCategory.getSlug().equals(categorySaveDTO.getSlug())) {
-            throw new BadRequestException("Categoría con el slug '" + categorySaveDTO.getSlug() + "' ya existe");
-        }
-
-        if (categorySaveDTO.getAttachmentId() != null) {
-            Attachment attachment = attachmentService.findById(categorySaveDTO.getAttachmentId());
-            attachmentService.validateFileTypeImages(attachment);
-            existingCategory.setAttachment(attachment);
-        }
+        handleAttachment(existingCategory, categorySaveDTO.getAttachmentId());
 
         ProductCategory savedCategory = repository.save(existingCategory);
         return convertToDTO(savedCategory);
@@ -86,10 +65,6 @@ public class CategoryService {
     public void deleteById(Long id) throws BadRequestException, NotFoundException {
         ProductCategory category = findByIdEntity(id)
                 .orElseThrow(() -> new NotFoundException("Categoría con ID " + id + " no encontrada."));
-
-        if (category.getAttachment() != null) {
-            attachmentService.deleteAttachment(category.getAttachment().getId());
-        }
 
         repository.deleteById(id);
     }
@@ -116,5 +91,31 @@ public class CategoryService {
 
     private ProductCategory convertToEntity(ProductCategorySaveDTO categorySaveDTO) {
         return modelMapper.map(categorySaveDTO, ProductCategory.class);
+    }
+
+    private void checkCategoryExistence(String name, String slug) throws BadRequestException {
+        if (repository.existsByName(name)) {
+            throw new BadRequestException("Categoría con el nombre '" + name + "' ya existe");
+        }
+        if (repository.existsBySlug(slug)) {
+            throw new BadRequestException("Categoría con el slug '" + slug + "' ya existe");
+        }
+    }
+
+    private void checkCategoryExistenceForUpdate(String name, String slug, ProductCategory existingCategory) throws BadRequestException {
+        if (name != null && repository.existsByName(name) && !existingCategory.getName().equals(name)) {
+            throw new BadRequestException("Categoría con el nombre '" + name + "' ya existe");
+        }
+        if (slug != null && repository.existsBySlug(slug) && !existingCategory.getSlug().equals(slug)) {
+            throw new BadRequestException("Categoría con el slug '" + slug + "' ya existe");
+        }
+    }
+
+    private void handleAttachment(ProductCategory category, Long attachmentId) throws NotFoundException, BadRequestException {
+        if (attachmentId != null) {
+            Attachment attachment = attachmentService.findById(attachmentId);
+            attachmentService.validateFileTypeImages(attachment);
+            category.setAttachment(attachment);
+        }
     }
 }

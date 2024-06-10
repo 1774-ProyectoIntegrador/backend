@@ -2,6 +2,7 @@ package proyecto.dh.resources.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.entity.Attachment;
@@ -37,8 +38,9 @@ public class Product {
     @Column(nullable = false)
     private RentType rentType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(nullable = false)
     private ProductCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -48,7 +50,7 @@ public class Product {
     @JoinColumn(name = "policy_id")
     private ProductPolicy policy;
 
-    @OneToMany(mappedBy = "product", orphanRemoval = true)
+    @OneToMany(mappedBy = "product")
     private List<Attachment> attachments = new ArrayList<>();
 
 

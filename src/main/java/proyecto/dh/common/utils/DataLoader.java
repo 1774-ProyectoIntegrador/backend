@@ -35,8 +35,8 @@ public class DataLoader implements CommandLineRunner {
         admin.setEmail(adminEmail);
         admin.setPassword(passwordEncoder.encode("admin")); // Encripta la contraseña
         admin.setRole(Role.ROLE_ADMIN);
-        admin.setFirstName("admin");
-        admin.setLastName("admin");
+        admin.setFirstName("Admin");
+        admin.setLastName("User");
 
         userRepository.save(admin);
         System.out.println("[DATA-LOADER] Admin user created: " + admin);

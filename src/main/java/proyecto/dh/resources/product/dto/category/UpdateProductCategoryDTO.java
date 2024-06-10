@@ -1,4 +1,4 @@
-package proyecto.dh.resources.product.dto;
+package proyecto.dh.resources.product.dto.category;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;

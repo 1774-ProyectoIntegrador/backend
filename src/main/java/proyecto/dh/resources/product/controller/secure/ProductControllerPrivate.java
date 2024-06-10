@@ -1,4 +1,4 @@
-package proyecto.dh.resources.product.controller.admin;
+package proyecto.dh.resources.product.controller.secure;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

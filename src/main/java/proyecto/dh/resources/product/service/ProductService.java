@@ -114,7 +114,7 @@ public class ProductService {
 
 
     @Transactional(readOnly = true)
-    public List<ProductDTO> searchProducts(String searchText, Long categoryId) {
+    public List<ProductDTO> searchProducts(String searchText, Long categoryId) throws NotFoundException {
         return productSearchRepository.searchProducts(searchText, categoryId);
     }
 
