@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.entity.Attachment;
+import proyecto.dh.resources.product.entity.ProductFavorite;
 import proyecto.dh.resources.product.entity.ProductFeature;
 
 import jakarta.validation.constraints.*;
@@ -33,4 +34,6 @@ public class ProductUpdateDTO {
     private List<Long> attachmentsIds;
 
     private List<ProductFeature> features;
+
+    private List<ProductFavorite> favorites;
 }
