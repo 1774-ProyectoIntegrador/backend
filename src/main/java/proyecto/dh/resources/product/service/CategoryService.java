@@ -8,8 +8,8 @@ import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
-import proyecto.dh.resources.product.dto.category.ProductCategoryDTO;
-import proyecto.dh.resources.product.dto.category.ProductCategorySaveDTO;
+import proyecto.dh.resources.product.dto.CategoryDTO;
+import proyecto.dh.resources.product.dto.CategorySaveDTO;
 import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 
@@ -30,7 +30,7 @@ public class CategoryService {
     private ModelMapper modelMapper;
 
     @Transactional
-    public ProductCategoryDTO save(ProductCategorySaveDTO categorySaveDTO) throws BadRequestException, NotFoundException {
+    public CategoryDTO save(CategorySaveDTO categorySaveDTO) throws BadRequestException, NotFoundException {
         validateSlug(categorySaveDTO.getSlug());
         checkCategoryExistence(categorySaveDTO.getName(), categorySaveDTO.getSlug());
 
@@ -42,7 +42,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public ProductCategoryDTO updateCategory(Long id, ProductCategorySaveDTO categorySaveDTO) throws NotFoundException, BadRequestException {
+    public CategoryDTO updateCategory(Long id, CategorySaveDTO categorySaveDTO) throws NotFoundException, BadRequestException {
         ProductCategory existingCategory = findByIdEntity(id)
                 .orElseThrow(() -> new NotFoundException("Categoría con ID " + id + " no encontrada."));
         validateSlug(categorySaveDTO.getSlug());
@@ -55,7 +55,7 @@ public class CategoryService {
         return convertToDTO(savedCategory);
     }
 
-    public List<ProductCategoryDTO> findAll() {
+    public List<CategoryDTO> findAll() {
         return repository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -69,7 +69,7 @@ public class CategoryService {
         repository.deleteById(id);
     }
 
-    public ProductCategoryDTO findById(Long id) throws NotFoundException {
+    public CategoryDTO findById(Long id) throws NotFoundException {
         ProductCategory category = findByIdEntity(id)
                 .orElseThrow(() -> new NotFoundException("Categoría con ID " + id + " no encontrada."));
         return convertToDTO(category);
@@ -85,11 +85,11 @@ public class CategoryService {
         }
     }
 
-    private ProductCategoryDTO convertToDTO(ProductCategory category) {
-        return modelMapper.map(category, ProductCategoryDTO.class);
+    private CategoryDTO convertToDTO(ProductCategory category) {
+        return modelMapper.map(category, CategoryDTO.class);
     }
 
-    private ProductCategory convertToEntity(ProductCategorySaveDTO categorySaveDTO) {
+    private ProductCategory convertToEntity(CategorySaveDTO categorySaveDTO) {
         return modelMapper.map(categorySaveDTO, ProductCategory.class);
     }
 

@@ -1,10 +1,6 @@
 package proyecto.dh.resources.product.service;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.*;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import proyecto.dh.exceptions.handler.BadRequestException;
@@ -12,42 +8,37 @@ import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.dto.AttachmentDTO;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
-import proyecto.dh.resources.product.dto.ProductDTO;
-import proyecto.dh.resources.product.dto.ProductSaveDTO;
-import proyecto.dh.resources.product.dto.ProductUpdateDTO;
-import proyecto.dh.resources.product.dto.category.ProductCategoryDTO;
+import proyecto.dh.resources.product.dto.*;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.entity.ProductFeature;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
+import proyecto.dh.resources.product.repository.ProductFeatureRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
 import proyecto.dh.resources.product.repository.ProductSearchRepository;
 
-import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final ProductCategoryRepository productCategoryRepository;
+    private final AttachmentService attachmentService;
+    private final ModelMapper modelMapper;
+    private final ProductSearchRepository productSearchRepository;
 
-    @Autowired
-    private ProductCategoryRepository productCategoryRepository;
-
-    @Autowired
-    private AttachmentService attachmentService;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private ProductSearchRepository productSearchRepository;
+    public ProductService(ProductRepository productRepository, ProductCategoryRepository productCategoryRepository, AttachmentService attachmentService, ModelMapper modelMapper, ProductSearchRepository productSearchRepository) {
+        this.productRepository = productRepository;
+        this.productCategoryRepository = productCategoryRepository;
+        this.attachmentService = attachmentService;
+        this.modelMapper = modelMapper;
+        this.productSearchRepository = productSearchRepository;
+    }
 
     @Transactional
     public ProductDTO save(ProductSaveDTO productSaveDTO) throws NotFoundException, BadRequestException {
@@ -55,27 +46,9 @@ public class ProductService {
             throw new BadRequestException("Producto con nombre '" + productSaveDTO.getName() + "' ya existe");
         }
         Product product = convertToEntity(productSaveDTO);
-        ProductCategory category = productCategoryRepository.findById(productSaveDTO.getCategoryId())
-                .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
-        product.setCategory(category);
-
-        if (productSaveDTO.getAttachments() != null) {
-            List<Attachment> attachments = new ArrayList<>();
-            for (Long attachmentId : productSaveDTO.getAttachments()) {
-                Attachment attachment = attachmentService.findById(attachmentId);
-                attachmentService.validateFileTypeImages(attachment);
-                attachment.setProduct(product);
-                attachments.add(attachment);
-            }
-            product.setAttachments(attachments);
-        }
-
-        if (productSaveDTO.getFeatures() != null) {
-            List<ProductFeature> features = productSaveDTO.getFeatures().stream()
-                    .peek(feature -> feature.setProduct(product))
-                    .toList();
-            product.setProductFeatures(new HashSet<>(features));
-        }
+        setProductCategory(product, productSaveDTO.getCategoryId());
+        setProductAttachments(product, productSaveDTO.getAttachments());
+        setProductFeatures(product, productSaveDTO.getFeatures());
 
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
@@ -112,13 +85,46 @@ public class ProductService {
         return convertToDTO(productSearched);
     }
 
-
     @Transactional(readOnly = true)
     public List<ProductDTO> searchProducts(String searchText, Long categoryId) throws NotFoundException {
         return productSearchRepository.searchProducts(searchText, categoryId);
     }
 
+    private void setProductCategory(Product product, Long categoryId) throws NotFoundException {
+        ProductCategory category = productCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
+        product.setCategory(category);
+    }
 
+    private void setProductAttachments(Product product, List<Long> attachmentsIds) throws BadRequestException, NotFoundException {
+        if (attachmentsIds != null) {
+            List<Attachment> attachments = new ArrayList<>();
+            for (Long attachmentId : attachmentsIds) {
+                Attachment attachment = attachmentService.findById(attachmentId);
+                attachmentService.validateFileTypeImages(attachment);
+                attachment.setProduct(product);
+                attachments.add(attachment);
+            }
+            product.setAttachments(attachments);
+        }
+    }
+
+    private void setProductFeatures(Product product, List<ProductFeatureSaveDTO> features) throws NotFoundException, BadRequestException {
+        Set<ProductFeature> featureSet = new HashSet<>();
+
+        if (features != null) {
+            for (ProductFeatureSaveDTO featureSaveDTO : features) {
+                ProductFeature feature = modelMapper.map(featureSaveDTO, ProductFeature.class);
+                if (feature.getProduct() == null) {
+                    feature.setProduct(new HashSet<>());
+                }
+                feature.getProduct().add(product);
+                featureSet.add(feature);
+            }
+        }
+
+        product.setProductFeatures(featureSet);
+    }
 
     private void updateCategory(Product product, Long categoryId) throws NotFoundException {
         if (categoryId != null) {
@@ -129,10 +135,9 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateAttachments(Product product, List<Long> attachmentsIds) throws NotFoundException, BadRequestException {
-        product.getAttachments().clear();
-
+    public void updateAttachments(Product product, List<Long> attachmentsIds) throws BadRequestException, NotFoundException {
         if (attachmentsIds != null) {
+            product.getAttachments().clear();
             for (Long attachmentId : attachmentsIds) {
                 Attachment attachment = attachmentService.findById(attachmentId);
                 attachmentService.validateFileTypeImages(attachment);
@@ -141,17 +146,9 @@ public class ProductService {
         }
     }
 
-    private void updateFeatures(Product product, List<ProductFeature> features) {
-        if (features != null) {
-            Set<ProductFeature> newFeatures = new HashSet<>();
-            for (ProductFeature feature : features) {
-                feature.setProduct(product);
-                newFeatures.add(feature);
-            }
-
-            product.getProductFeatures().clear();
-            product.getProductFeatures().addAll(newFeatures);
-        }
+    private void updateFeatures(Product product, List<ProductFeatureSaveDTO> features) throws NotFoundException, BadRequestException {
+        product.getProductFeatures().clear();
+        setProductFeatures(product, features);
     }
 
     private Product findByIdEntity(Long id) throws NotFoundException {
@@ -163,19 +160,24 @@ public class ProductService {
         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
 
         if (product.getCategory() != null) {
-            ProductCategoryDTO categoryDTO = modelMapper.map(product.getCategory(), ProductCategoryDTO.class);
+            CategoryDTO categoryDTO = modelMapper.map(product.getCategory(), CategoryDTO.class);
             productDTO.setCategory(categoryDTO);
         }
 
         if (product.getAttachments() != null) {
-            productDTO.setAttachments(product.getAttachments().stream()
+            List<AttachmentDTO> attachments = product.getAttachments().stream()
                     .map(attachment -> modelMapper.map(attachment, AttachmentDTO.class))
-                    .collect(Collectors.toList()));
+                    .collect(Collectors.toList());
+            productDTO.setAttachments(attachments);
         }
 
         if (product.getProductFeatures() != null) {
-            productDTO.setFeatures(new ArrayList<>(product.getProductFeatures()));
+            List<ProductFeatureDTO> features = product.getProductFeatures().stream()
+                    .map(feature -> modelMapper.map(feature, ProductFeatureDTO.class))
+                    .collect(Collectors.toList());
+            productDTO.setFeatures(features);
         }
+
         return productDTO;
     }
 

@@ -28,7 +28,7 @@ import proyecto.dh.resources.product.service.ProductService;
 @RestController
 @RequestMapping("/products")
 @Tag(name = "[Admin] Products Controller", description = "Controlador para gestionar productos como administrador")
-public class ProductControllerPrivate {
+public class ProductSecuredController {
 
     @Autowired
     private ProductService productService;

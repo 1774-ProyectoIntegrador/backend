@@ -32,5 +32,5 @@ public class ProductUpdateDTO {
 
     private List<Long> attachmentsIds;
 
-    private List<ProductFeature> features;
+    private List<ProductFeatureSaveDTO> features;
 }

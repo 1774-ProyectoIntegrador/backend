@@ -34,6 +34,6 @@ public class ProductCategory {
     private Set<Product> products;
 
     @ManyToOne
-    @JoinColumn(name = "attachment_id", unique = false)
+    @JoinColumn(name = "attachment_id")
     private Attachment attachment;
 }

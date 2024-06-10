@@ -7,6 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,18 +26,17 @@ public class ProductFeature {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String name;
 
-    @Column
+    @Column(length = 300)
     private String description;
 
     @Column(nullable = false)
     private String icon;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(nullable = false)
-    @JsonIgnore
-    private Product product;
+    @ManyToMany(mappedBy = "productFeatures", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @Fetch(FetchMode.JOIN)
+    private Set<Product> product;
 
 }

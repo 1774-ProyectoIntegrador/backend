@@ -43,5 +43,5 @@ public class ProductSaveDTO {
 
     private List<Long> attachments;
 
-    private List<ProductFeature> features;
+    private List<ProductFeatureSaveDTO> features;
 }

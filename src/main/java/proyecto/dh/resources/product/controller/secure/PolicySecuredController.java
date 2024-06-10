@@ -13,7 +13,7 @@ import proyecto.dh.resources.product.service.PolicyService;
 
 @RestController
 @RequestMapping("/products/policies")
-public class PolicyAdminController {
+public class PolicySecuredController {
 
     @Autowired
     private PolicyService service;

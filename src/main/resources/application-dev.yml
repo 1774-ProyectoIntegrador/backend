@@ -29,9 +29,9 @@ aws:
 
 springdoc:
   api-docs:
-    path: /api-docs
+    path: /public/api-docs
   swagger-ui:
-    path: /swagger-ui
+    path: /public/swagger-ui
     tags-sorter: alpha
     operations-sorter: alpha
 
