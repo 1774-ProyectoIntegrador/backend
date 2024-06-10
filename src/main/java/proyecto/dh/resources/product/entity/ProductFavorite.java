@@ -1,12 +1,12 @@
-package proyecto.dh.resources.favorite.entity;
+package proyecto.dh.resources.product.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.users.entity.User;
 
 @AllArgsConstructor
@@ -16,16 +16,18 @@ import proyecto.dh.resources.users.entity.User;
 @Entity
 @Table(name = "favorites")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Favorite {
+public class ProductFavorite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
