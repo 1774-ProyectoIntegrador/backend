@@ -51,6 +51,9 @@ public class Product {
     @OneToMany(mappedBy = "product", orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "product", /*cascade = CascadeType.ALL,*/ orphanRemoval = true)
+    private List<ProductFavorite> favorites = new ArrayList<>();
+
 
     // Métodos para sincronizar las relaciones
     public void addAttachment(Attachment attachment) {
@@ -65,6 +68,21 @@ public class Product {
         if (attachments != null) {
             attachment.setProduct(null);
             attachments.remove(attachment);
+        }
+    }
+
+    public void addFavorite(ProductFavorite favorite) {
+        if (favorites == null) {
+            favorites = new ArrayList<>();
+        }
+        favorite.setProduct(this);
+        favorites.add(favorite);
+    }
+
+    public void removeFavorite(ProductFavorite favorite) {
+        if (favorites != null) {
+            favorite.setProduct(null);
+            favorites.remove(favorite);
         }
     }
 
