@@ -13,8 +13,7 @@ import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.entity.ProductFeature;
 
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -40,7 +39,8 @@ public class ProductSearchRepository {
 
         if (searchText != null && !searchText.isEmpty()) {
             String normalizedSearchText = Normalizer.normalize(searchText, Normalizer.Form.NFD)
-                    .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+                    .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                    .replaceAll("\\s", "");
 
             Predicate namePredicate = cb.like(
                     cb.function("unaccent", String.class, cb.lower(product.get("name"))),
@@ -48,6 +48,10 @@ public class ProductSearchRepository {
             );
             Predicate descriptionPredicate = cb.like(
                     cb.function("unaccent", String.class, cb.lower(product.get("description"))),
+                    "%" + normalizedSearchText.toLowerCase() + "%"
+            );
+            Predicate categoryNamePredicate = cb.like(
+                    cb.function("unaccent", String.class, cb.lower(category.get("name"))),
                     "%" + normalizedSearchText.toLowerCase() + "%"
             );
             Predicate featureNamePredicate = cb.like(
@@ -59,7 +63,7 @@ public class ProductSearchRepository {
                     "%" + normalizedSearchText.toLowerCase() + "%"
             );
 
-            predicates.add(cb.or(namePredicate, descriptionPredicate, featureNamePredicate, featureDescriptionPredicate));
+            predicates.add(cb.or(namePredicate, descriptionPredicate, categoryNamePredicate, featureNamePredicate, featureDescriptionPredicate));
         }
 
         if (categoryId != null) {
@@ -79,5 +83,59 @@ public class ProductSearchRepository {
         return results.stream()
                 .map(productEntity -> modelMapper.map(productEntity, ProductDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    public List<String> findSuggestionsByPartialName(String partialName) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Object[]> query = cb.createQuery(Object[].class);
+        Root<Product> product = query.from(Product.class);
+        Join<Product, ProductCategory> category = product.join("category", JoinType.LEFT);
+
+        String normalizedPartialName = Normalizer.normalize(partialName, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .replaceAll("\\s", "");
+
+        Predicate namePredicate = cb.like(
+                cb.function("unaccent", String.class, cb.lower(product.get("name"))),
+                "%" + normalizedPartialName.toLowerCase() + "%"
+        );
+        Predicate descriptionPredicate = cb.like(
+                cb.function("unaccent", String.class, cb.lower(product.get("description"))),
+                "%" + normalizedPartialName.toLowerCase() + "%"
+        );
+        Predicate categoryNamePredicate = cb.like(
+                cb.function("unaccent", String.class, cb.lower(category.get("name"))),
+                "%" + normalizedPartialName.toLowerCase() + "%"
+        );
+
+        query.multiselect(
+                product.get("name"),
+                product.get("description"),
+                category.get("name")
+        ).where(cb.or(namePredicate, descriptionPredicate, categoryNamePredicate));
+
+        List<Object[]> results = entityManager.createQuery(query).getResultList();
+
+        Set<String> suggestions = new HashSet<>();
+        for (Object[] result : results) {
+            suggestions.addAll(extractWords((String) result[0], normalizedPartialName));
+            suggestions.addAll(extractWords((String) result[1], normalizedPartialName));
+            suggestions.addAll(extractWords((String) result[2], normalizedPartialName));
+        }
+
+        return new ArrayList<>(suggestions);
+    }
+
+    private Set<String> extractWords(String text, String normalizedPartialName) {
+        if (text == null || text.isEmpty()) {
+            return Collections.emptySet();
+        }
+
+        return Arrays.stream(text.split("\\s+"))
+                .map(word -> Normalizer.normalize(word, Normalizer.Form.NFD)
+                        .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                        .replaceAll("\\s", ""))
+                .filter(word -> word.toLowerCase().contains(normalizedPartialName.toLowerCase()))
+                .collect(Collectors.toSet());
     }
 }

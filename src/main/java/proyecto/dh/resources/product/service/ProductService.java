@@ -131,6 +131,10 @@ public class ProductService {
         return productSearchRepository.searchProducts(searchText, categoryId);
     }
 
+    public List<String> getSuggestions(String partialName) {
+        return productSearchRepository.findSuggestionsByPartialName(partialName);
+    }
+
     private void setProductCategory(Product product, Long categoryId) throws NotFoundException {
         ProductCategory category = productCategoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
