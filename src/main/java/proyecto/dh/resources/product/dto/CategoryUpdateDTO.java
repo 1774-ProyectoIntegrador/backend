@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UpdateProductCategoryDTO {
+public class CategoryUpdateDTO {
     private String name;
     private String slug;
     private String description;

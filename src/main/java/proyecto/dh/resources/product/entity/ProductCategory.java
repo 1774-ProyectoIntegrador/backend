@@ -12,11 +12,12 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "product_categories")
+@Table(name = "product_category")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long id;
 
     @Column(nullable = false, unique = true, length = 30)
@@ -28,10 +29,11 @@ public class ProductCategory {
     @Column(nullable = false, unique = true)
     private String slug;
 
-    @OneToOne(mappedBy = "productCategory")
-    private Attachment attachment;
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category")
     @JsonIgnore
     private Set<Product> products;
+
+    @ManyToOne
+    @JoinColumn(name = "attachment_id")
+    private Attachment attachment;
 }

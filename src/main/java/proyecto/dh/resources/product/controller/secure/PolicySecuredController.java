@@ -1,4 +1,4 @@
-package proyecto.dh.resources.product.controller.admin;
+package proyecto.dh.resources.product.controller.secure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,7 @@ import proyecto.dh.resources.product.service.PolicyService;
 
 @RestController
 @RequestMapping("/products/policies")
-public class PolicyAdminController {
+public class PolicySecuredController {
 
     @Autowired
     private PolicyService service;

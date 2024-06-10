@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
-import proyecto.dh.resources.product.dto.category.ProductCategorySaveDTO;
-import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.entity.ProductPolicy;
 import proyecto.dh.resources.product.repository.ProductPolicyRepository;
 

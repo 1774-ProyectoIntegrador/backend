@@ -1,4 +1,4 @@
-package proyecto.dh.resources.product.controller.admin;
+package proyecto.dh.resources.product.controller.secure;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,7 +28,7 @@ import proyecto.dh.resources.product.service.ProductService;
 @RestController
 @RequestMapping("/products")
 @Tag(name = "[Admin] Products Controller", description = "Controlador para gestionar productos como administrador")
-public class ProductControllerPrivate {
+public class ProductSecuredController {
 
     @Autowired
     private ProductService productService;

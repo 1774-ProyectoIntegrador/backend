@@ -2,18 +2,19 @@ package proyecto.dh.resources.product.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.entity.Attachment;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "products")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -37,19 +38,23 @@ public class Product {
     @Column(nullable = false)
     private RentType rentType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(nullable = false)
     private ProductCategory category;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ProductFeature> productFeatures;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "policy_id")
     private ProductPolicy policy;
 
-    @OneToMany(mappedBy = "product", orphanRemoval = true)
+    @OneToMany(mappedBy = "product")
     private List<Attachment> attachments = new ArrayList<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinTable(name = "products_productFeatures",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "productFeatures_id"))
+    private Set<ProductFeature> productFeatures = new LinkedHashSet<>();
 
 
     // Métodos para sincronizar las relaciones

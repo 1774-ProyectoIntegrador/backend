@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.dto.AttachmentDTO;
-import proyecto.dh.resources.product.dto.category.ProductCategoryDTO;
 import proyecto.dh.resources.product.entity.ProductFeature;
 
 import java.util.List;
@@ -20,7 +19,7 @@ public class ProductDTO {
     private int stock;
     private double price;
     private RentType rentType;
-    private ProductCategoryDTO category;
+    private CategoryDTO category;
     private List<AttachmentDTO> attachments;
-    private List<ProductFeature> features;
+    private List<ProductFeatureDTO> features;
 }
