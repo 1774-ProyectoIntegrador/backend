@@ -29,7 +29,7 @@ public class OpenApiConfig {
                                         .bearerFormat("JWT")))
                 .servers(List.of(
                         new Server().url("https://apidh.jackmoon.dev").description("Servidor de Producción"),
-                        new Server().url("http://localhost:6060").description("Local")
+                        new Server().url("http://localhost:8080").description("Local")
                 ));
     }
 
