@@ -39,7 +39,7 @@ public class Product {
     private RentType rentType;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, optional = false)
     @JoinColumn(nullable = false)
     private ProductCategory category;
 
@@ -47,13 +47,13 @@ public class Product {
     @JoinColumn(name = "policy_id")
     private ProductPolicy policy;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.DETACH)
     private List<Attachment> attachments = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "products_productFeatures",
+    @JoinTable(name = "products_features",
             joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "productFeatures_id"))
+            inverseJoinColumns = @JoinColumn(name = "features_id"))
     private Set<ProductFeature> productFeatures = new LinkedHashSet<>();
 
 

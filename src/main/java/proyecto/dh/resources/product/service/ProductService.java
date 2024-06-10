@@ -176,7 +176,9 @@ public class ProductService {
     @Transactional
     public void updateAttachments(Product product, List<Long> attachmentsIds) throws BadRequestException {
         if (attachmentsIds != null) {
-            product.getAttachments().clear();
+            for (Attachment attachment : new ArrayList<>(product.getAttachments())) {
+                product.removeAttachment(attachment);
+            }
             setProductAttachments(product, attachmentsIds);
         }
     }
