@@ -8,6 +8,7 @@ import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.dto.AttachmentDTO;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
+import proyecto.dh.resources.product.entity.ProductFavorite;
 import proyecto.dh.resources.product.dto.ProductDTO;
 import proyecto.dh.resources.product.dto.ProductSaveDTO;
 import proyecto.dh.resources.product.dto.ProductUpdateDTO;
@@ -39,6 +40,9 @@ public class ProductService {
 
     @Autowired
     private AttachmentService attachmentService;
+
+    @Autowired
+    private FavoriteService favoriteService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -78,6 +82,20 @@ public class ProductService {
             product.setProductFeatures(new HashSet<>(features));
         }
 
+        if (productSaveDTO.getFavorites() != null) {
+            List<ProductFavorite> favorites = new ArrayList<>();
+            for (Long favoriteId : productSaveDTO.getFavorites()){
+                ProductFavorite favorite = favoriteService.findById(favoriteId);
+                favorite.setProduct(product);
+                favorites.add(favorite);
+            }
+            product.setFavorites(favorites);
+            //List<Favorite> favorites = productSaveDTO.getFavorites().stream()
+            //        .peek(favorite -> favorite.setProduct(product))
+            //         .toList();
+            //product.setFavorites(favorites);
+        }
+
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
     }
@@ -98,6 +116,7 @@ public class ProductService {
         updateCategory(existingProduct, productUpdateDTO.getCategoryId());
         updateAttachments(existingProduct, productUpdateDTO.getAttachmentsIds());
         updateFeatures(existingProduct, productUpdateDTO.getFeatures());
+        updateFavorites(existingProduct, productUpdateDTO.getFavorites());
 
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToDTO(updatedProduct);
@@ -200,6 +219,26 @@ public class ProductService {
             product.getProductFeatures().addAll(newFeatures);
         }
     }
+
+    /**
+     * Actualiza los favoritos de un producto.
+     *
+     * @param product el producto a actualizar
+     * @param favorites los nuevos favoritos del producto
+     */
+    private void updateFavorites(Product product, List<ProductFavorite> favorites) {
+        if (favorites != null) {
+            List<ProductFavorite> newFavorites = new ArrayList<>();
+            for (ProductFavorite favorite : favorites) {
+                favorite.setProduct(product);
+                newFavorites.add(favorite);
+            }
+
+            product.getFavorites().clear();
+            product.getFavorites().addAll(newFavorites);
+        }
+    }
+
 
     /**
      * Valida el tipo de archivo de un adjunto.
