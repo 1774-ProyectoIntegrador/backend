@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.dto.AttachmentDTO;
+import proyecto.dh.resources.product.entity.ProductFavorite;
 import proyecto.dh.resources.product.dto.category.ProductCategoryDTO;
 import proyecto.dh.resources.product.entity.ProductFeature;
 
@@ -23,4 +24,5 @@ public class ProductDTO {
     private ProductCategoryDTO category;
     private List<AttachmentDTO> attachments;
     private List<ProductFeature> features;
+    private List<ProductFavorite> favorites;
 }
