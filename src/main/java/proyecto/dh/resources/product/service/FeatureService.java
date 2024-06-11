@@ -11,6 +11,7 @@ import proyecto.dh.resources.product.entity.ProductFeature;
 import proyecto.dh.resources.product.repository.ProductFeatureRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,7 +43,12 @@ public class FeatureService {
                 .orElseThrow(() -> new NotFoundException("Caracteristica con ID " + id + " no encontrada"));
 
         modelMapper.map(featureSaveDTO, existingFeature);
-        existingFeature.getProduct().clear();
+
+        // Limpia la relación antigua en ambas entidades
+        if (existingFeature.getProduct() != null) {
+            existingFeature.getProduct().forEach(product -> product.getProductFeatures().remove(existingFeature));
+            existingFeature.getProduct().clear();
+        }
         syncFeatureWithProducts(existingFeature, featureSaveDTO.getProductIds());
 
         ProductFeature savedFeature = featureRepository.save(existingFeature);
@@ -96,6 +102,12 @@ public class FeatureService {
             for (Long productId : productIds) {
                 Product product = productRepository.findById(productId)
                         .orElseThrow(() -> new NotFoundException("El producto no existe"));
+
+                // Se añade para manejar los valores nulos
+                if (feature.getProduct() == null) {
+                    feature.setProduct(new HashSet<>());
+                }
+
                 feature.getProduct().add(product);
                 product.getProductFeatures().add(feature);
             }

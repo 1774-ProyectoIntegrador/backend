@@ -22,4 +22,5 @@ public class ProductDTO {
     private CategoryDTO category;
     private List<AttachmentDTO> attachments;
     private List<ProductFeatureDTO> features;
+    private List<ProductPolicyDTO> policies;
 }

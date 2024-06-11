@@ -12,13 +12,12 @@ import proyecto.dh.resources.product.dto.*;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
 import proyecto.dh.resources.product.entity.ProductFeature;
+import proyecto.dh.resources.product.entity.ProductPolicy;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
 import proyecto.dh.resources.product.repository.ProductSearchRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +42,7 @@ public class ProductService {
      *
      * @param productSaveDTO DTO con la información del producto a guardar.
      * @return El producto guardado convertido a DTO.
-     * @throws NotFoundException Si no se encuentra la categoría.
+     * @throws NotFoundException   Si no se encuentra la categoría.
      * @throws BadRequestException Si el nombre del producto ya existe.
      */
     @Transactional
@@ -55,6 +54,7 @@ public class ProductService {
         setProductCategory(product, productSaveDTO.getCategoryId());
         setProductAttachments(product, productSaveDTO.getAttachments());
         setProductFeatures(product, productSaveDTO.getFeatures());
+        setProductPolicies(product, productSaveDTO.getPolicies());
 
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
@@ -63,10 +63,10 @@ public class ProductService {
     /**
      * Actualiza un producto existente.
      *
-     * @param id ID del producto a actualizar.
+     * @param id               ID del producto a actualizar.
      * @param productUpdateDTO DTO con la información del producto a actualizar.
      * @return El producto actualizado convertido a DTO.
-     * @throws NotFoundException Si no se encuentra el producto o la categoría.
+     * @throws NotFoundException   Si no se encuentra el producto o la categoría.
      * @throws BadRequestException Si hay algún problema con las características o los archivos adjuntos.
      */
     @Transactional
@@ -154,7 +154,8 @@ public class ProductService {
         }
     }
 
-    private void setProductFeatures(Product product, List<ProductFeatureSaveDTO> features) {
+    /*private void setProductFeatures(Product product, List<ProductFeatureSaveDTO> features) {
+
         Set<ProductFeature> featureSet = features.stream()
                 .map(featureSaveDTO -> modelMapper.map(featureSaveDTO, ProductFeature.class))
                 .peek(feature -> {
@@ -167,6 +168,58 @@ public class ProductService {
                 .collect(Collectors.toSet());
 
         product.setProductFeatures(featureSet);
+    }*/
+
+    private void setProductFeatures(Product product, List<ProductFeatureSaveDTO> features) {
+        // Se añade para manejar los valores nulos
+        Set<ProductFeature> featureSet = Optional.ofNullable(features)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(featureSaveDTO -> modelMapper.map(featureSaveDTO, ProductFeature.class))
+                .peek(feature -> {
+                    if (feature.getProduct() == null) {
+                        feature.setProduct(Set.of(product));
+                    } else {
+                        feature.getProduct().add(product);
+                    }
+                })
+                .collect(Collectors.toSet());
+
+        product.setProductFeatures(featureSet);
+    }
+
+
+    /*private void setProductPolicies(Product product, List<ProductPolicySaveDTO> policies) {
+        Set<ProductPolicy> policiySet = policies.stream()
+                .map(policySaveDTO -> modelMapper.map(policySaveDTO, ProductPolicy.class))
+                .peek(policy -> {
+                    if (policy.getProduct() == null) {
+                        policy.setProduct(Set.of(product));
+                    } else {
+                        policy.getProduct().add(product);
+                    }
+                })
+                .collect(Collectors.toSet());
+
+        product.setProductPolicies(policiySet);
+    }*/
+
+    private void setProductPolicies(Product product, List<ProductPolicySaveDTO> policies) {
+        // Se añade para manejar los valores nulos
+        Set<ProductPolicy> policySet = Optional.ofNullable(policies)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(policySaveDTO -> modelMapper.map(policySaveDTO, ProductPolicy.class))
+                .peek(policy -> {
+                    if (policy.getProduct() == null) {
+                        policy.setProduct(Set.of(product));
+                    } else {
+                        policy.getProduct().add(product);
+                    }
+                })
+                .collect(Collectors.toSet());
+
+        product.setProductPolicies(policySet);
     }
 
     private void updateCategory(Product product, Long categoryId) throws NotFoundException {
@@ -216,6 +269,13 @@ public class ProductService {
                     .map(feature -> modelMapper.map(feature, ProductFeatureDTO.class))
                     .collect(Collectors.toList());
             productDTO.setFeatures(features);
+        }
+
+        if (product.getProductPolicies() != null) {
+            List<ProductPolicyDTO> policies = product.getProductPolicies().stream()
+                    .map(policy -> modelMapper.map(policy, ProductPolicyDTO.class))
+                    .collect(Collectors.toList());
+            productDTO.setPolicies(policies);
         }
 
         return productDTO;

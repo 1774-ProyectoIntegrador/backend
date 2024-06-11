@@ -43,10 +43,6 @@ public class Product {
     @JoinColumn(nullable = false)
     private ProductCategory category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "policy_id")
-    private ProductPolicy policy;
-
     @OneToMany(mappedBy = "product", cascade = CascadeType.DETACH)
     private List<Attachment> attachments = new ArrayList<>();
 
@@ -55,6 +51,12 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "features_id"))
     private Set<ProductFeature> productFeatures = new LinkedHashSet<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinTable(name = "products_policies",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "policy_id"))
+    private Set<ProductPolicy> productPolicies = new LinkedHashSet<>();
 
 
     // Métodos para sincronizar las relaciones
