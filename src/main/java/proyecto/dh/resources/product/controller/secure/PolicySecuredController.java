@@ -8,6 +8,10 @@ import proyecto.dh.common.responses.ResponseDTO;
 import proyecto.dh.common.responses.ResponseHandler;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
+import proyecto.dh.resources.product.dto.ProductFeatureDTO;
+import proyecto.dh.resources.product.dto.ProductFeatureSaveDTO;
+import proyecto.dh.resources.product.dto.ProductPolicyDTO;
+import proyecto.dh.resources.product.dto.ProductPolicySaveDTO;
 import proyecto.dh.resources.product.entity.ProductPolicy;
 import proyecto.dh.resources.product.service.PolicyService;
 
@@ -15,28 +19,27 @@ import proyecto.dh.resources.product.service.PolicyService;
 @RequestMapping("/products/policies")
 public class PolicySecuredController {
 
-    @Autowired
-    private PolicyService service;
+    private final PolicyService policyService;
+
+    public PolicySecuredController(PolicyService service) {
+        this.policyService = service;
+    }
 
     @PostMapping
-    public ResponseEntity<ProductPolicy> create(@RequestBody ProductPolicy userObject) {
-        ProductPolicy createdPolicy = service.save(userObject);
+    public ResponseEntity<ProductPolicyDTO> create(@RequestBody ProductPolicySaveDTO policySaveDTO) {
+        ProductPolicyDTO createdPolicy = policyService.save(policySaveDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPolicy);
     }
 
     @PutMapping("/{policyId}")
-    public ResponseEntity<ProductPolicy> update(@PathVariable Long policyId, @RequestBody ProductPolicy policy) throws NotFoundException, BadRequestException {
-        ProductPolicy updatedPolicy = service.updatePolicy(policyId, policy);
+    public ResponseEntity<ProductPolicyDTO> update(@PathVariable Long policyId, @RequestBody ProductPolicySaveDTO policySaveDTO) throws NotFoundException {
+        ProductPolicyDTO updatedPolicy = policyService.updatePolicy(policyId, policySaveDTO);
         return ResponseEntity.ok(updatedPolicy);
     }
 
     @DeleteMapping("/{policyId}")
-    public ResponseEntity<ResponseDTO<Void>> deletePolicy(@PathVariable Long policyId) throws BadRequestException {
-        try {
-            service.deleteById(policyId);
-            return ResponseHandler.generateResponse("Policy deleted successfully", HttpStatus.OK, null);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
-        }
+    public ResponseEntity<Void> delete(@PathVariable Long policyId) throws NotFoundException {
+        policyService.deleteById(policyId);
+        return ResponseEntity.ok().build();
     }
 }
