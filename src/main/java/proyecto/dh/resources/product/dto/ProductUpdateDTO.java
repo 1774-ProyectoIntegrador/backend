@@ -33,4 +33,6 @@ public class ProductUpdateDTO {
     private List<Long> attachmentsIds;
 
     private List<ProductFeatureSaveDTO> features;
+
+    private List<ProductPolicySaveDTO> policies;
 }

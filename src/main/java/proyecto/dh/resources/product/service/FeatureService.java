@@ -14,6 +14,7 @@ import proyecto.dh.resources.product.repository.ProductRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,11 +45,6 @@ public class FeatureService {
 
         modelMapper.map(featureSaveDTO, existingFeature);
 
-        // Limpia la relación antigua en ambas entidades
-        if (existingFeature.getProduct() != null) {
-            existingFeature.getProduct().forEach(product -> product.getProductFeatures().remove(existingFeature));
-            existingFeature.getProduct().clear();
-        }
         syncFeatureWithProducts(existingFeature, featureSaveDTO.getProductIds());
 
         ProductFeature savedFeature = featureRepository.save(existingFeature);
@@ -99,18 +95,30 @@ public class FeatureService {
 
     private void syncFeatureWithProducts(ProductFeature feature, List<Long> productIds) {
         if (productIds != null) {
-            for (Long productId : productIds) {
-                Product product = productRepository.findById(productId)
-                        .orElseThrow(() -> new NotFoundException("El producto no existe"));
 
-                // Se añade para manejar los valores nulos
-                if (feature.getProduct() == null) {
-                    feature.setProduct(new HashSet<>());
-                }
-
-                feature.getProduct().add(product);
-                product.getProductFeatures().add(feature);
+            Set<Product> currentProducts = feature.getProduct();
+            if (currentProducts == null) {
+                currentProducts = new HashSet<>();
             }
+            Set<Product> newProducts = new HashSet<>(productRepository.findAllById(productIds));
+
+            // Elimina relaciones que ya no son válidas
+            for (Product product : currentProducts) {
+                if (!newProducts.contains(product)) {
+                    product.getProductFeatures().remove(feature);
+                }
+            }
+
+            // Añade nuevas relaciones
+            for (Product product : newProducts) {
+                if (!currentProducts.contains(product)) {
+                    product.getProductFeatures().add(feature);
+                }
+            }
+
+            // Actualiza la colección en la entidad feature
+            feature.setProduct(newProducts);
+
         }
     }
 }

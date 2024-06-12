@@ -38,8 +38,8 @@ public class PolicySecuredController {
     }
 
     @DeleteMapping("/{policyId}")
-    public ResponseEntity<Void> delete(@PathVariable Long policyId) throws NotFoundException {
+    public ResponseEntity<ResponseDTO<Void>> delete(@PathVariable Long policyId) throws NotFoundException {
         policyService.deleteById(policyId);
-        return ResponseEntity.ok().build();
+        return ResponseHandler.generateResponse("Política eliminada correctamente", HttpStatus.OK, null);
     }
 }

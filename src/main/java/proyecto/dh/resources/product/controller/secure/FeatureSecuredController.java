@@ -35,8 +35,8 @@ public class FeatureSecuredController {
     }
 
     @DeleteMapping("/{featureId}")
-    public ResponseEntity<Void> delete(@PathVariable Long featureId) throws NotFoundException {
+    public ResponseEntity<ResponseDTO<Void>> delete(@PathVariable Long featureId) throws NotFoundException {
         featureService.deleteById(featureId);
-        return ResponseEntity.ok().build();
+        return ResponseHandler.generateResponse("Política eliminada correctamente", HttpStatus.OK, null);
     }
 }

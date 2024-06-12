@@ -2,16 +2,12 @@ package proyecto.dh.resources.product.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import proyecto.dh.exceptions.handler.BadRequestException;
-import proyecto.dh.resources.product.dto.ProductFeatureDTO;
-import proyecto.dh.resources.product.dto.ProductFeatureSaveDTO;
 import proyecto.dh.resources.product.dto.ProductPolicyDTO;
 import proyecto.dh.resources.product.dto.ProductPolicySaveDTO;
 import proyecto.dh.resources.product.entity.Product;
-import proyecto.dh.resources.product.entity.ProductFeature;
 import proyecto.dh.resources.product.entity.ProductPolicy;
 import proyecto.dh.resources.product.repository.ProductPolicyRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
@@ -19,6 +15,7 @@ import proyecto.dh.resources.product.repository.ProductRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,17 +43,10 @@ public class PolicyService {
     }
 
     @Transactional
-    public ProductPolicyDTO updatePolicy(Long id, ProductPolicySaveDTO policySaveDTO) throws com.amazonaws.services.kms.model.NotFoundException {
-        ProductPolicy existingPolicy = findByIdEntity(id)
-                .orElseThrow(() -> new NotFoundException("Política con ID " + id + " no encontrada"));
+    public ProductPolicyDTO updatePolicy(Long id, ProductPolicySaveDTO policySaveDTO) throws NotFoundException {
+        ProductPolicy existingPolicy = findByIdEntity(id).orElseThrow(() -> new NotFoundException("Política con ID " + id + " no encontrada"));
 
         modelMapper.map(policySaveDTO, existingPolicy);
-
-        // Limpia la relación antigua en ambas entidades
-        if (existingPolicy.getProduct() != null) {
-            existingPolicy.getProduct().forEach(product -> product.getProductPolicies().remove(existingPolicy));
-            existingPolicy.getProduct().clear();
-        }
 
         syncPolicyWithProducts(existingPolicy, policySaveDTO.getProductIds());
 
@@ -65,15 +55,12 @@ public class PolicyService {
     }
 
     public List<ProductPolicyDTO> findAll() {
-        return policyRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return policyRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Transactional
     public void deleteById(Long id) throws NotFoundException {
-        ProductPolicy policy = findByIdEntity(id)
-                .orElseThrow(() -> new NotFoundException("Política con ID " + id + " no encontrada"));
+        ProductPolicy policy = findByIdEntity(id).orElseThrow(() -> new NotFoundException("Política con ID " + id + " no encontrada"));
 
         for (Product product : policy.getProduct()) {
             product.getProductPolicies().remove(policy);
@@ -83,8 +70,7 @@ public class PolicyService {
     }
 
     public ProductPolicyDTO findById(Long id) throws NotFoundException {
-        ProductPolicy policy = findByIdEntity(id)
-                .orElseThrow(() -> new NotFoundException("Política con ID " + id + " no encontrada"));
+        ProductPolicy policy = findByIdEntity(id).orElseThrow(() -> new NotFoundException("Política con ID " + id + " no encontrada"));
         return convertToDTO(policy);
     }
 
@@ -97,30 +83,34 @@ public class PolicyService {
 
 
     private void syncPolicyWithProducts(ProductPolicy policy, List<Long> productIds) {
-
-
         if (productIds != null) {
-            for (Long productId : productIds) {
-                Product product = productRepository.findById(productId)
-                        .orElseThrow(() -> new com.amazonaws.services.kms.model.NotFoundException("La política no existe"));
-
-                // Se añade para manejar los valores nulos
-                if (policy.getProduct() == null) {
-                    policy.setProduct(new HashSet<>());
-                }
-                policy.getProduct().add(product);
-                product.getProductPolicies().add(policy);
+            Set<Product> currentProducts = policy.getProduct();
+            if (currentProducts == null) {
+                currentProducts = new HashSet<>();
             }
+            Set<Product> newProducts = new HashSet<>(productRepository.findAllById(productIds));
+            // Elimina relaciones que ya no son válidas
+            for (Product product : currentProducts) {
+                if (!newProducts.contains(product)) {
+                    product.getProductPolicies().remove(policy);
+                }
+            }
+
+            // Añade nuevas relaciones
+            for (Product product : newProducts) {
+                if (!currentProducts.contains(product)) {
+                    product.getProductPolicies().add(policy);
+                }
+            }
+
+            // Actualiza la colección en la entidad policy
+            policy.setProduct(newProducts);
         }
     }
 
     private ProductPolicyDTO convertToDTO(ProductPolicy policy) {
         ProductPolicyDTO policyDTO = modelMapper.map(policy, ProductPolicyDTO.class);
-        policyDTO.setProductIds(
-                policy.getProduct().stream()
-                        .map(Product::getId)
-                        .collect(Collectors.toList())
-        );
+        policyDTO.setProductIds(policy.getProduct().stream().map(Product::getId).collect(Collectors.toList()));
         return policyDTO;
     }
 

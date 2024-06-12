@@ -77,6 +77,7 @@ public class ProductService {
         updateCategory(existingProduct, productUpdateDTO.getCategoryId());
         updateAttachments(existingProduct, productUpdateDTO.getAttachmentsIds());
         updateFeatures(existingProduct, productUpdateDTO.getFeatures());
+        updatePolicies(existingProduct, productUpdateDTO.getPolicies());
 
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToDTO(updatedProduct);
@@ -154,22 +155,6 @@ public class ProductService {
         }
     }
 
-    /*private void setProductFeatures(Product product, List<ProductFeatureSaveDTO> features) {
-
-        Set<ProductFeature> featureSet = features.stream()
-                .map(featureSaveDTO -> modelMapper.map(featureSaveDTO, ProductFeature.class))
-                .peek(feature -> {
-                    if (feature.getProduct() == null) {
-                        feature.setProduct(Set.of(product));
-                    } else {
-                        feature.getProduct().add(product);
-                    }
-                })
-                .collect(Collectors.toSet());
-
-        product.setProductFeatures(featureSet);
-    }*/
-
     private void setProductFeatures(Product product, List<ProductFeatureSaveDTO> features) {
         // Se añade para manejar los valores nulos
         Set<ProductFeature> featureSet = Optional.ofNullable(features)
@@ -188,22 +173,6 @@ public class ProductService {
         product.setProductFeatures(featureSet);
     }
 
-
-    /*private void setProductPolicies(Product product, List<ProductPolicySaveDTO> policies) {
-        Set<ProductPolicy> policiySet = policies.stream()
-                .map(policySaveDTO -> modelMapper.map(policySaveDTO, ProductPolicy.class))
-                .peek(policy -> {
-                    if (policy.getProduct() == null) {
-                        policy.setProduct(Set.of(product));
-                    } else {
-                        policy.getProduct().add(product);
-                    }
-                })
-                .collect(Collectors.toSet());
-
-        product.setProductPolicies(policiySet);
-    }*/
-
     private void setProductPolicies(Product product, List<ProductPolicySaveDTO> policies) {
         // Se añade para manejar los valores nulos
         Set<ProductPolicy> policySet = Optional.ofNullable(policies)
@@ -212,7 +181,7 @@ public class ProductService {
                 .map(policySaveDTO -> modelMapper.map(policySaveDTO, ProductPolicy.class))
                 .peek(policy -> {
                     if (policy.getProduct() == null) {
-                        policy.setProduct(Set.of(product));
+                        policy.setProduct(new HashSet<>());
                     } else {
                         policy.getProduct().add(product);
                     }
@@ -243,6 +212,11 @@ public class ProductService {
     private void updateFeatures(Product product, List<ProductFeatureSaveDTO> features) {
         product.getProductFeatures().clear();
         setProductFeatures(product, features);
+    }
+
+    private void updatePolicies(Product product, List<ProductPolicySaveDTO> policies) {
+        product.getProductPolicies().clear();
+        setProductPolicies(product, policies);
     }
 
     private Product findByIdEntity(Long id) throws NotFoundException {
