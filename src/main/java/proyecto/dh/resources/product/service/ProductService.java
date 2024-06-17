@@ -8,6 +8,10 @@ import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.dto.AttachmentDTO;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
+import proyecto.dh.resources.favorites.dto.ProductFavoriteDTO;
+import proyecto.dh.resources.favorites.dto.ProductFavoriteSaveDTO;
+import proyecto.dh.resources.favorites.entity.ProductFavorite;
+import proyecto.dh.resources.favorites.service.FavoriteService;
 import proyecto.dh.resources.product.dto.*;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
@@ -26,13 +30,15 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final AttachmentService attachmentService;
+    private final FavoriteService favoriteService;
     private final ModelMapper modelMapper;
     private final ProductSearchRepository productSearchRepository;
 
-    public ProductService(ProductRepository productRepository, ProductCategoryRepository productCategoryRepository, AttachmentService attachmentService, ModelMapper modelMapper, ProductSearchRepository productSearchRepository) {
+    public ProductService(ProductRepository productRepository, ProductCategoryRepository productCategoryRepository, AttachmentService attachmentService, FavoriteService favoriteService, ModelMapper modelMapper, ProductSearchRepository productSearchRepository) {
         this.productRepository = productRepository;
         this.productCategoryRepository = productCategoryRepository;
         this.attachmentService = attachmentService;
+        this.favoriteService = favoriteService;
         this.modelMapper = modelMapper;
         this.productSearchRepository = productSearchRepository;
     }
@@ -55,6 +61,8 @@ public class ProductService {
         setProductAttachments(product, productSaveDTO.getAttachments());
         setProductFeatures(product, productSaveDTO.getFeatures());
         setProductPolicies(product, productSaveDTO.getPolicies());
+        setProductFavorites(product, productSaveDTO.getFavorites());
+
 
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
@@ -222,6 +230,24 @@ public class ProductService {
         product.setProductPolicies(policySet);
     }
 
+    private void setProductFavorites(Product product, List<ProductFavoriteSaveDTO> favoriteSaveDtos) {
+        // Se añade para manejar los valores nulos
+        Set<ProductFavorite> favoriteSet = Optional.ofNullable(favoriteSaveDtos)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(favoriteSaveDTO -> modelMapper.map(favoriteSaveDTO, ProductFavorite.class))
+                .peek(favorite -> {
+                    if (favorite.getProduct() == null) {
+                        favorite.setProduct(Set.of(product));
+                    } else {
+                        favorite.getProduct().add(product);
+                    }
+                })
+                .collect(Collectors.toSet());
+
+        product.setProductFavorite(favoriteSet);
+    }
+
     private void updateCategory(Product product, Long categoryId) throws NotFoundException {
         if (categoryId != null) {
             ProductCategory category = productCategoryRepository.findById(categoryId)
@@ -276,6 +302,13 @@ public class ProductService {
                     .map(policy -> modelMapper.map(policy, ProductPolicyDTO.class))
                     .collect(Collectors.toList());
             productDTO.setPolicies(policies);
+        }
+
+        if (product.getProductFavorite() != null) {
+            List<ProductFavoriteDTO> favorites = product.getProductFavorite().stream()
+                    .map(favorite -> modelMapper.map(favorite, ProductFavoriteDTO.class))
+                    .collect(Collectors.toList());
+            productDTO.setFavorites(favorites);
         }
 
         return productDTO;

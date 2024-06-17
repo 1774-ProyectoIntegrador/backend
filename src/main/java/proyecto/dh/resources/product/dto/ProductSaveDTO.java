@@ -2,13 +2,10 @@ package proyecto.dh.resources.product.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import proyecto.dh.common.enums.RentType;
-import proyecto.dh.resources.product.entity.ProductFeature;
+import proyecto.dh.resources.favorites.dto.ProductFavoriteSaveDTO;
+
 import java.util.List;
 
 @Getter
@@ -46,4 +43,8 @@ public class ProductSaveDTO {
     private List<ProductFeatureSaveDTO> features;
 
     private List<ProductPolicySaveDTO> policies;
+
+    private List<ProductFavoriteSaveDTO> favorites;
+
+
 }
