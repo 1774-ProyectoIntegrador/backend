@@ -41,6 +41,13 @@ public class FavoriteService {
         User user = userRepository.findById(favoriteSaveDTO.getUserId())
                 .orElseThrow(()-> new NotFoundException("Usuario no encontrado"));
 
+        for (Long productId: favoriteSaveDTO.getProductIds()) {
+            Optional<ProductFavorite> existingFavorite = favoriteRepository.findByUserIdAndProductId(user.getId(), productId);
+            if(existingFavorite.isPresent()) {
+                throw new IllegalArgumentException(("El ususario ya tiene un favorito para el producto con el id: " + productId));
+            }
+        }
+
         ProductFavorite productFavorite = convertToEntity(favoriteSaveDTO);
         productFavorite.setUser(user);
 
