@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.entity.Attachment;
+import proyecto.dh.resources.favorites.entity.ProductFavorite;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -57,6 +58,12 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "policy_id"))
     private Set<ProductPolicy> productPolicies = new LinkedHashSet<>();
+
+    @ManyToMany(/*mappedBy = "product", */cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinTable(name = "products_favorites",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "favorite_id"))
+    private Set<ProductFavorite> productFavorite = new LinkedHashSet<>();
 
 
     // Métodos para sincronizar las relaciones
