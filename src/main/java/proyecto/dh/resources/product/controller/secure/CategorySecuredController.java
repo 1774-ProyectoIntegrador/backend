@@ -18,21 +18,21 @@ public class CategorySecuredController {
     private CategoryService categoryService;
 
     @PostMapping
-    @Secured({"ROLE_ADMIN"})
+    @Secured({"ROLE_ADMIN", "ROLE_EDITOR"})
     public ResponseEntity<CategoryDTO> create(@RequestBody CategorySaveDTO categorySaveDTO) throws BadRequestException, NotFoundException {
         CategoryDTO savedCategory = categoryService.save(categorySaveDTO);
         return ResponseEntity.ok(savedCategory);
     }
 
     @PutMapping("/{id}")
-    @Secured({"ROLE_ADMIN"})
+    @Secured({"ROLE_ADMIN", "ROLE_EDITOR"})
     public ResponseEntity<CategoryDTO> update(@PathVariable Long id, @RequestBody CategorySaveDTO categorySaveDTO) throws NotFoundException, BadRequestException {
         CategoryDTO updatedCategory = categoryService.updateCategory(id, categorySaveDTO);
         return ResponseEntity.ok(updatedCategory);
     }
 
     @DeleteMapping("/{id}")
-    @Secured({"ROLE_ADMIN"})
+    @Secured({"ROLE_ADMIN", "ROLE_EDITOR"})
     public ResponseEntity<Void> delete(@PathVariable Long id) throws BadRequestException, NotFoundException {
         categoryService.deleteById(id);
         return ResponseEntity.ok().build();
