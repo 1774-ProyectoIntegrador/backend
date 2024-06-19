@@ -37,6 +37,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private User admin;
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
     private List<ProductFavorite> productFavorite;
+
+    @OneToMany(mappedBy = "admin")
+    private List<User> usersManaged;
 }

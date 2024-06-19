@@ -38,7 +38,7 @@ public class ProductSecuredController {
      *
      * @param productSaveDTO el DTO que contiene los datos del producto a crear
      * @return el producto creado con un estado HTTP 201 (Created)
-     * @throws NotFoundException si no se encuentra la categoría del producto
+     * @throws NotFoundException   si no se encuentra la categoría del producto
      * @throws BadRequestException si los datos de entrada son inválidos
      */
     @Operation(summary = "Crear un nuevo producto", description = "Esta operación crea un nuevo producto en el sistema.")
@@ -48,7 +48,7 @@ public class ProductSecuredController {
             @ApiResponse(responseCode = "404", description = "Categoría no encontrada"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @Secured({"ROLE_ADMIN"})
+    @Secured({"ROLE_ADMIN", "ROLE_EDITOR"})
     @PostMapping()
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductSaveDTO productSaveDTO) throws NotFoundException, BadRequestException {
         ProductDTO createdProduct = productService.save(productSaveDTO);
@@ -58,10 +58,10 @@ public class ProductSecuredController {
     /**
      * Actualiza un producto existente en el sistema.
      *
-     * @param id el ID del producto a actualizar
+     * @param id               el ID del producto a actualizar
      * @param productUpdateDTO el DTO que contiene los nuevos datos del producto
      * @return el producto actualizado con un estado HTTP 200 (OK)
-     * @throws NotFoundException si el producto o la categoría no se encuentran
+     * @throws NotFoundException   si el producto o la categoría no se encuentran
      * @throws BadRequestException si los datos de entrada son inválidos
      */
     @Operation(summary = "Actualizar un producto existente", description = "Esta operación actualiza un producto existente en el sistema.")
@@ -71,7 +71,7 @@ public class ProductSecuredController {
             @ApiResponse(responseCode = "404", description = "Producto o categoría no encontrada"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @Secured({"ROLE_ADMIN"})
+    @Secured({"ROLE_ADMIN", "ROLE_EDITOR"})
     @PutMapping("{id}")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductUpdateDTO productUpdateDTO) throws NotFoundException, BadRequestException {
         ProductDTO updatedProduct = productService.updateProduct(id, productUpdateDTO);
@@ -91,7 +91,7 @@ public class ProductSecuredController {
             @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @Secured({"ROLE_ADMIN"})
+    @Secured({"ROLE_ADMIN", "ROLE_EDITOR"})
     @DeleteMapping("{id}")
     public ResponseEntity<ResponseDTO<Void>> deleteProduct(@PathVariable Long id) throws NotFoundException {
         productService.delete(id);
