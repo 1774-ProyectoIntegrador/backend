@@ -4,6 +4,7 @@ package proyecto.dh.resources.users.controller.secured;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,8 @@ public class UserSecuredController {
     private UserService userService;
 
     @GetMapping("/me")
-    public UserDTO getUserDetails(@AuthenticationPrincipal UserDetails token) throws BadRequestException {
-        return userService.getUserDetails(token);
+    public ResponseEntity<UserDTO> getUserDetails(@AuthenticationPrincipal UserDetails token) throws BadRequestException {
+        return ResponseEntity.ok(userService.getUserDetails(token));
     }
 
     @PostMapping
@@ -43,4 +44,17 @@ public class UserSecuredController {
         UserDTO updatedUser = userService.updateUser(id, userUpdateDTO, currentUser);
         return ResponseEntity.ok(updatedUser);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long id, @AuthenticationPrincipal UserDetails currentUser) throws BadRequestException, AccessDeniedException {
+        userService.deleteUserById(id, currentUser);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteAdminAccount(@AuthenticationPrincipal UserDetails currentUser) throws BadRequestException, AccessDeniedException {
+        userService.deleteAdminAccount(currentUser);
+        return ResponseEntity.noContent().build();
+    }
+
 }
