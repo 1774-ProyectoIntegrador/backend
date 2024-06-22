@@ -6,9 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto.dh.common.enums.Role;
-import proyecto.dh.resources.favorites.entity.ProductFavorite;
+import proyecto.dh.resources.favorite.entity.ProductFavorite;
+import proyecto.dh.resources.reservation.entity.Reservation;
 
-import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -38,5 +39,8 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
-    private List<ProductFavorite> productFavorite;
+    private Set<ProductFavorite> favorites;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
+    private Set<Reservation> reservations;
 }
