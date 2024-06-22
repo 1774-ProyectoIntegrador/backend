@@ -1,13 +1,13 @@
-package proyecto.dh.resources.favorites.controller;
+package proyecto.dh.resources.favorite.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import proyecto.dh.exceptions.handler.NotFoundException;
-import proyecto.dh.resources.favorites.dto.ProductFavoriteDTO;
-import proyecto.dh.resources.favorites.dto.ProductFavoriteSaveDTO;
-import proyecto.dh.resources.favorites.service.FavoriteService;
+import proyecto.dh.resources.favorite.dto.ProductFavoriteDTO;
+import proyecto.dh.resources.favorite.dto.ProductFavoriteSaveDTO;
+import proyecto.dh.resources.favorite.service.FavoriteService;
 import proyecto.dh.resources.users.repository.UserRepository;
 
 import javax.validation.Valid;
