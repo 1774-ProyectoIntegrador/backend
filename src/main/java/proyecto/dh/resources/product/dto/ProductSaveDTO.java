@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import proyecto.dh.common.enums.RentType;
-import proyecto.dh.resources.favorites.dto.ProductFavoriteSaveDTO;
+import proyecto.dh.resources.favorite.dto.ProductFavoriteSaveDTO;
+import proyecto.dh.resources.reservation.dto.ReservationSaveDTO;
 
 import java.util.List;
 
@@ -46,5 +47,5 @@ public class ProductSaveDTO {
 
     private List<ProductFavoriteSaveDTO> favorites;
 
-
+    private List<ReservationSaveDTO> reservations;
 }
