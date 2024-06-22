@@ -1,4 +1,4 @@
-package proyecto.dh.resources.favorites.entity;
+package proyecto.dh.resources.favorite.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
@@ -8,6 +8,7 @@ import lombok.Setter;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.users.entity.User;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,10 +30,18 @@ public class ProductFavorite {
     private User user;
 
     //@JsonIgnore
-    @ManyToMany(mappedBy = "productFavorite", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    private Set<Product> product = new HashSet<>();
+    @ManyToMany(mappedBy = "favorites", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    private Set<Product> product;
+
+    @Column(name = "creation_data_time", nullable = false)
+    private LocalDateTime creationDateTime;
     public ProductFavorite() {
         this.product = new HashSet<>();
+        this.creationDateTime = LocalDateTime.now();
+    }
+
+    public void prePersist() {
+        this.creationDateTime = LocalDateTime.now();
     }
 
 }
