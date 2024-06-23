@@ -11,9 +11,7 @@ import proyecto.dh.resources.product.entity.ProductCategoryFeature;
 import proyecto.dh.resources.product.repository.CategoryFeatureRepository;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,20 +37,78 @@ public class FeatureService {
 
 
     public List<CategoryFeatureDTO> findAll() {
-        return featureRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return featureRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     public CategoryFeatureDTO findById(Long id) throws NotFoundException {
-        ProductCategoryFeature feature = findByIdEntity(id)
-                .orElseThrow(() -> new NotFoundException("Caracteristica con ID " + id + " no encontrada"));
+        ProductCategoryFeature feature = findByIdEntity(id).orElseThrow(() -> new NotFoundException("Caracteristica con ID " + id + " no encontrada"));
         return convertToDTO(feature);
     }
 
     private Optional<ProductCategoryFeature> findByIdEntity(Long id) {
         return featureRepository.findById(id);
     }
+
+
+    private CategoryFeatureDTO convertToDTO(ProductCategoryFeature feature) {
+        CategoryFeatureDTO featureDTO = modelMapper.map(feature, CategoryFeatureDTO.class);
+        featureDTO.setCategoryIds(feature.getCategories().stream().map(ProductCategory::getId).collect(Collectors.toList()));
+        return featureDTO;
+    }
+
+    private ProductCategoryFeature convertToEntity(CategoryFeatureSaveDTO featureSaveDTO) {
+        return modelMapper.map(featureSaveDTO, ProductCategoryFeature.class);
+    }
+
+    private void syncFeatureWithCategories(ProductCategoryFeature feature, List<Long> categoryIds) {
+        if (categoryIds == null) {
+            categoryIds = new ArrayList<>();
+        }
+
+        // La colección de categorías no debe ser nula
+        Set<ProductCategory> currentCategories = feature.getCategories();
+        if (currentCategories == null) {
+            currentCategories = new HashSet<>();
+            feature.setCategories(currentCategories);
+        }
+        Set<ProductCategory> newCategories = new HashSet<>(categoryRepository.findAllById(categoryIds));
+
+        // Elimina relaciones que ya no son válidas
+        for (ProductCategory category : currentCategories) {
+            if (!newCategories.contains(category)) {
+                category.getProductCategoryFeatures().remove(feature);
+            }
+        }
+
+        // Añade nuevas relaciones
+        for (ProductCategory category : newCategories) {
+            if (!currentCategories.contains(category)) {
+                category.getProductCategoryFeatures().add(feature);
+            }
+        }
+
+        // Actualiza la colección en la entidad feature
+        feature.setCategories(newCategories);
+
+
+
+        /*        if (categoryIds != null) {
+            for (Long categoryId : categoryIds) {
+                ProductCategory category = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("La categoría no existe"));
+
+                // Se añade para manejar los valores nulos
+                if (feature.getCategories() == null) {
+                    feature.setCategories(new HashSet<>());
+                }
+
+                feature.getCategories().add(category);
+                category.getProductCategoryFeatures().add(feature);
+            }
+        }*/
+
+    }
+}
+
 
 /*
     @Transactional
@@ -89,30 +145,3 @@ public class FeatureService {
 
 
 */
-
-    private CategoryFeatureDTO convertToDTO(ProductCategoryFeature feature) {
-        CategoryFeatureDTO featureDTO = modelMapper.map(feature, CategoryFeatureDTO.class);
-        featureDTO.setCategoryIds(feature.getCategories().stream().map(ProductCategory::getId).collect(Collectors.toList()));
-        return featureDTO;
-    }
-
-    private ProductCategoryFeature convertToEntity(CategoryFeatureSaveDTO featureSaveDTO) {
-        return modelMapper.map(featureSaveDTO, ProductCategoryFeature.class);
-    }
-
-    private void syncFeatureWithCategories(ProductCategoryFeature feature, List<Long> categoryIds) {
-        if (categoryIds != null) {
-            for (Long categoryId : categoryIds) {
-                ProductCategory category = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("La categoría no existe"));
-
-                // Se añade para manejar los valores nulos
-                if (feature.getCategories() == null) {
-                    feature.setCategories(new HashSet<>());
-                }
-
-                feature.getCategories().add(category);
-                category.getProductCategoryFeatures().add(feature);
-            }
-        }
-    }
-}
