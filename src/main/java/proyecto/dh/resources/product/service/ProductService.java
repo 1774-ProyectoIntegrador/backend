@@ -8,10 +8,10 @@ import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.dto.AttachmentDTO;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
-import proyecto.dh.resources.favorites.dto.ProductFavoriteDTO;
-import proyecto.dh.resources.favorites.dto.ProductFavoriteSaveDTO;
-import proyecto.dh.resources.favorites.entity.ProductFavorite;
-import proyecto.dh.resources.favorites.service.FavoriteService;
+import proyecto.dh.resources.favorite.dto.ProductFavoriteDTO;
+import proyecto.dh.resources.favorite.dto.ProductFavoriteSaveDTO;
+import proyecto.dh.resources.favorite.entity.ProductFavorite;
+import proyecto.dh.resources.favorite.service.FavoriteService;
 import proyecto.dh.resources.product.dto.*;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
@@ -20,6 +20,9 @@ import proyecto.dh.resources.product.entity.ProductPolicy;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
 import proyecto.dh.resources.product.repository.ProductSearchRepository;
+import proyecto.dh.resources.reservation.dto.ReservationDTO;
+import proyecto.dh.resources.reservation.dto.ReservationSaveDTO;
+import proyecto.dh.resources.reservation.entity.Reservation;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -62,6 +65,8 @@ public class ProductService {
         setProductFeatures(product, productSaveDTO.getFeatures());
         setProductPolicies(product, productSaveDTO.getPolicies());
         setProductFavorites(product, productSaveDTO.getFavorites());
+        setReservations(product, productSaveDTO.getReservations());
+
 
 
         Product savedProduct = productRepository.save(product);
@@ -245,7 +250,23 @@ public class ProductService {
                 })
                 .collect(Collectors.toSet());
 
-        product.setProductFavorite(favoriteSet);
+        product.setFavorites(favoriteSet);
+    }
+
+    private void setReservations(Product product, List<ReservationSaveDTO> reservationSaveDTOS) {
+        Set<Reservation> reservationSet = Optional.ofNullable(reservationSaveDTOS)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(reservationSaveDTO -> modelMapper.map(reservationSaveDTO, Reservation.class))
+                .peek(reservation -> {
+                    if(reservation.getProduct() == null){
+                        reservation.setProduct(Set.of(product));
+                    } else {
+                        reservation.getProduct().add(product);
+                    }
+                })
+                .collect(Collectors.toSet());
+        product.setReservations(reservationSet);
     }
 
     private void updateCategory(Product product, Long categoryId) throws NotFoundException {
@@ -304,11 +325,18 @@ public class ProductService {
             productDTO.setPolicies(policies);
         }
 
-        if (product.getProductFavorite() != null) {
-            List<ProductFavoriteDTO> favorites = product.getProductFavorite().stream()
+        if (product.getFavorites() != null) {
+            List<ProductFavoriteDTO> favorites = product.getFavorites().stream()
                     .map(favorite -> modelMapper.map(favorite, ProductFavoriteDTO.class))
                     .collect(Collectors.toList());
             productDTO.setFavorites(favorites);
+        }
+
+        if(product.getReservations() != null) {
+            List<ReservationDTO> reservations = product.getReservations().stream()
+                    .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
+                    .collect(Collectors.toList());
+            productDTO.setReservations(reservations);
         }
 
         return productDTO;

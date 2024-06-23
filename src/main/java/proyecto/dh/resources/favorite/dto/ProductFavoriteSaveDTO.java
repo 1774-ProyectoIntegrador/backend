@@ -1,8 +1,9 @@
-package proyecto.dh.resources.favorites.dto;
+package proyecto.dh.resources.favorite.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -15,4 +16,6 @@ public class ProductFavoriteSaveDTO {
 
     private Long userId;
     private List<Long> productIds;
+    private LocalDateTime creationDateTime;
+
 }

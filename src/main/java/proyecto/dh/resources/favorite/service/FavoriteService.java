@@ -1,24 +1,27 @@
-package proyecto.dh.resources.favorites.service;
+package proyecto.dh.resources.favorite.service;
 
+import org.springframework.validation.annotation.Validated;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import proyecto.dh.resources.favorites.dto.ProductFavoriteDTO;
-import proyecto.dh.resources.favorites.dto.ProductFavoriteSaveDTO;
-import proyecto.dh.resources.favorites.entity.ProductFavorite;
-import proyecto.dh.resources.favorites.repository.ProductFavoriteRepository;
+import proyecto.dh.resources.favorite.dto.ProductFavoriteDTO;
+import proyecto.dh.resources.favorite.dto.ProductFavoriteSaveDTO;
+import proyecto.dh.resources.favorite.entity.ProductFavorite;
+import proyecto.dh.resources.favorite.repository.ProductFavoriteRepository;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.repository.ProductRepository;
 import proyecto.dh.resources.users.entity.User;
 import proyecto.dh.resources.users.repository.UserRepository;
 
+import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class FavoriteService {
 
     private final ProductFavoriteRepository favoriteRepository;
@@ -37,7 +40,7 @@ public class FavoriteService {
     }
 
     @Transactional
-    public ProductFavoriteDTO save(ProductFavoriteSaveDTO favoriteSaveDTO) throws NotFoundException {
+    public ProductFavoriteDTO save(@Valid ProductFavoriteSaveDTO favoriteSaveDTO) throws NotFoundException {
         User user = userRepository.findById(favoriteSaveDTO.getUserId())
                 .orElseThrow(()-> new NotFoundException("Usuario no encontrado"));
 
@@ -69,7 +72,7 @@ public class FavoriteService {
                 .orElseThrow(() -> new NotFoundException("Favorito con id " + id + " no encontrado"));
 
         for (Product product: favorite.getProduct()){
-            product.getProductFavorite().remove(favorite);
+            product.getFavorites().remove(favorite);
         }
 
         favoriteRepository.deleteById(id);
@@ -96,8 +99,12 @@ public class FavoriteService {
                     favorite.setProduct(new HashSet<>());
                 }
 
+               if (product.getFavorites() == null) {
+                   product.setFavorites(new HashSet<>());
+               }
+
                 favorite.getProduct().add(product);
-                product.getProductFavorite().add(favorite);
+                product.getFavorites().add(favorite);
             }
         }
     }
