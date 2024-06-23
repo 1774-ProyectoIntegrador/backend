@@ -9,6 +9,7 @@ import proyecto.dh.common.enums.Role;
 import proyecto.dh.resources.favorite.entity.ProductFavorite;
 import proyecto.dh.resources.reservation.entity.Reservation;
 
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -38,9 +39,17 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @ManyToOne
+    @JoinColumn(name = "admin_id")
+    private User admin;
+
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
     private Set<ProductFavorite> favorites;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
     private Set<Reservation> reservations;
+    private List<ProductFavorite> productFavorite;
+
+    @OneToMany(mappedBy = "admin")
+    private List<User> usersManaged;
 }

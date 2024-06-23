@@ -1,6 +1,5 @@
 package proyecto.dh.resources.users.dto;
 
-import com.sun.xml.bind.v2.TODO;
 import lombok.Data;
 import proyecto.dh.common.enums.Role;
 
@@ -9,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 @Data
-public class UserCreateDTO {
+public class UserUpdateDTO {
 
     @NotEmpty(message = "El nombre es obligatorio")
     @Size(min = 2, max = 30, message = "El nombre debe tener entre 2 y 30 caracteres")
