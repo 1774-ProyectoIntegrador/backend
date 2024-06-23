@@ -48,7 +48,6 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
     private Set<Reservation> reservations;
-    private List<ProductFavorite> productFavorite;
 
     @OneToMany(mappedBy = "admin")
     private List<User> usersManaged;
