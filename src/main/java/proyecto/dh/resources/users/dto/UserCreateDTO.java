@@ -1,14 +1,10 @@
 package proyecto.dh.resources.users.dto;
 
-import com.sun.xml.bind.v2.TODO;
 import lombok.Data;
-import proyecto.dh.common.enums.Role;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.List;
-
 @Data
 public class UserCreateDTO {
 
