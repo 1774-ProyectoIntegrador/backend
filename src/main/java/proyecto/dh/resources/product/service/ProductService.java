@@ -15,7 +15,7 @@ import proyecto.dh.resources.favorite.service.FavoriteService;
 import proyecto.dh.resources.product.dto.*;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
-import proyecto.dh.resources.product.entity.ProductFeature;
+import proyecto.dh.resources.product.entity.ProductCategoryFeature;
 import proyecto.dh.resources.product.entity.ProductPolicy;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
@@ -62,7 +62,6 @@ public class ProductService {
         Product product = convertToEntity(productSaveDTO);
         setProductCategory(product, productSaveDTO.getCategoryId());
         setProductAttachments(product, productSaveDTO.getAttachments());
-        setProductFeatures(product, productSaveDTO.getFeatures());
         setProductPolicies(product, productSaveDTO.getPolicies());
         setProductFavorites(product, productSaveDTO.getFavorites());
         setReservations(product, productSaveDTO.getReservations());
@@ -89,7 +88,7 @@ public class ProductService {
 
         updateCategory(existingProduct, productUpdateDTO.getCategoryId());
         updateAttachments(existingProduct, productUpdateDTO.getAttachmentsIds());
-        updateFeatures(existingProduct, productUpdateDTO.getFeatures());
+        //updateFeatures(existingProduct, productUpdateDTO.getFeatures());
 
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToDTO(updatedProduct);
@@ -167,56 +166,6 @@ public class ProductService {
         }
     }
 
-    /*private void setProductFeatures(Product product, List<ProductFeatureSaveDTO> features) {
-
-        Set<ProductFeature> featureSet = features.stream()
-                .map(featureSaveDTO -> modelMapper.map(featureSaveDTO, ProductFeature.class))
-                .peek(feature -> {
-                    if (feature.getProduct() == null) {
-                        feature.setProduct(Set.of(product));
-                    } else {
-                        feature.getProduct().add(product);
-                    }
-                })
-                .collect(Collectors.toSet());
-
-        product.setProductFeatures(featureSet);
-    }*/
-
-    private void setProductFeatures(Product product, List<ProductFeatureSaveDTO> features) {
-        // Se añade para manejar los valores nulos
-        Set<ProductFeature> featureSet = Optional.ofNullable(features)
-                .orElseGet(Collections::emptyList)
-                .stream()
-                .map(featureSaveDTO -> modelMapper.map(featureSaveDTO, ProductFeature.class))
-                .peek(feature -> {
-                    if (feature.getProduct() == null) {
-                        feature.setProduct(Set.of(product));
-                    } else {
-                        feature.getProduct().add(product);
-                    }
-                })
-                .collect(Collectors.toSet());
-
-        product.setProductFeatures(featureSet);
-    }
-
-
-    /*private void setProductPolicies(Product product, List<ProductPolicySaveDTO> policies) {
-        Set<ProductPolicy> policiySet = policies.stream()
-                .map(policySaveDTO -> modelMapper.map(policySaveDTO, ProductPolicy.class))
-                .peek(policy -> {
-                    if (policy.getProduct() == null) {
-                        policy.setProduct(Set.of(product));
-                    } else {
-                        policy.getProduct().add(product);
-                    }
-                })
-                .collect(Collectors.toSet());
-
-        product.setProductPolicies(policiySet);
-    }*/
-
     private void setProductPolicies(Product product, List<ProductPolicySaveDTO> policies) {
         // Se añade para manejar los valores nulos
         Set<ProductPolicy> policySet = Optional.ofNullable(policies)
@@ -287,10 +236,7 @@ public class ProductService {
         }
     }
 
-    private void updateFeatures(Product product, List<ProductFeatureSaveDTO> features) {
-        product.getProductFeatures().clear();
-        setProductFeatures(product, features);
-    }
+
 
     private Product findByIdEntity(Long id) throws NotFoundException {
         return productRepository.findById(id)
@@ -309,13 +255,6 @@ public class ProductService {
                     .map(attachment -> modelMapper.map(attachment, AttachmentDTO.class))
                     .collect(Collectors.toList());
             productDTO.setAttachments(attachments);
-        }
-
-        if (product.getProductFeatures() != null) {
-            List<ProductFeatureDTO> features = product.getProductFeatures().stream()
-                    .map(feature -> modelMapper.map(feature, ProductFeatureDTO.class))
-                    .collect(Collectors.toList());
-            productDTO.setFeatures(features);
         }
 
         if (product.getProductPolicies() != null) {

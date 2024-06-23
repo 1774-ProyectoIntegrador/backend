@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductFeatureSaveDTO {
+public class CategoryFeatureSaveDTO {
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 30, message = "El nombre no puede tener más de 30 caracteres")
@@ -19,5 +19,5 @@ public class ProductFeatureSaveDTO {
     private String description;
     @NotBlank(message = "El icono es obligatorio")
     private String icon;
-    private List<Long> productIds;
+    private List<Long> categoryIds;
 }

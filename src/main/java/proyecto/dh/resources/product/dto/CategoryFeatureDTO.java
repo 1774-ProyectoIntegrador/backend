@@ -8,10 +8,10 @@ import java.util.List;
 
 @Getter @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductFeatureDTO {
+public class CategoryFeatureDTO {
     private Long id;
     private String name;
     private String description;
     private String icon;
-    private List<Long> productIds;
+    private List<Long> categoryIds;
 }

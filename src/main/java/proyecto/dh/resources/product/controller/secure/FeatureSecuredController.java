@@ -5,8 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import proyecto.dh.exceptions.handler.NotFoundException;
-import proyecto.dh.resources.product.dto.ProductFeatureDTO;
-import proyecto.dh.resources.product.dto.ProductFeatureSaveDTO;
+import proyecto.dh.resources.product.dto.CategoryFeatureDTO;
+import proyecto.dh.resources.product.dto.CategoryFeatureSaveDTO;
 import proyecto.dh.resources.product.service.FeatureService;
 
 @RestController
@@ -21,15 +21,15 @@ public class FeatureSecuredController {
 
     @PostMapping
     @Secured({"ROLE_ADMIN", "ROLE_EDITOR"})
-    public ResponseEntity<ProductFeatureDTO> create(@RequestBody ProductFeatureSaveDTO featureSaveDTO) throws NotFoundException {
-        ProductFeatureDTO createdFeature = featureService.save(featureSaveDTO);
+    public ResponseEntity<CategoryFeatureDTO> create(@RequestBody CategoryFeatureSaveDTO featureSaveDTO) throws NotFoundException {
+        CategoryFeatureDTO createdFeature = featureService.save(featureSaveDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFeature);
     }
 
-    @PutMapping("/{featureId}")
+/*    @PutMapping("/{featureId}")
     @Secured({"ROLE_ADMIN", "ROLE_EDITOR"})
-    public ResponseEntity<ProductFeatureDTO> update(@PathVariable Long featureId, @RequestBody ProductFeatureSaveDTO featureSaveDTO) throws NotFoundException {
-        ProductFeatureDTO updatedFeature = featureService.updateFeature(featureId, featureSaveDTO);
+    public ResponseEntity<CategoryFeatureDTO> update(@PathVariable Long featureId, @RequestBody CategoryFeatureSaveDTO featureSaveDTO) throws NotFoundException {
+        CategoryFeatureDTO updatedFeature = featureService.updateFeature(featureId, featureSaveDTO);
         return ResponseEntity.ok(updatedFeature);
     }
 
@@ -38,5 +38,5 @@ public class FeatureSecuredController {
     public ResponseEntity<Void> delete(@PathVariable Long featureId) throws NotFoundException {
         featureService.deleteById(featureId);
         return ResponseEntity.ok().build();
-    }
+    }*/
 }

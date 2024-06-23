@@ -2,16 +2,11 @@ package proyecto.dh.resources.product.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import proyecto.dh.exceptions.handler.BadRequestException;
-import proyecto.dh.resources.product.dto.ProductFeatureDTO;
-import proyecto.dh.resources.product.dto.ProductFeatureSaveDTO;
 import proyecto.dh.resources.product.dto.ProductPolicyDTO;
 import proyecto.dh.resources.product.dto.ProductPolicySaveDTO;
 import proyecto.dh.resources.product.entity.Product;
-import proyecto.dh.resources.product.entity.ProductFeature;
 import proyecto.dh.resources.product.entity.ProductPolicy;
 import proyecto.dh.resources.product.repository.ProductPolicyRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;

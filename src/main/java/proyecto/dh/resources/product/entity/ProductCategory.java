@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import proyecto.dh.resources.attachment.entity.Attachment;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Getter
@@ -14,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "product_category")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductCategory {
+public class ProductCategory{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -32,6 +33,12 @@ public class ProductCategory {
     @OneToMany(mappedBy = "category")
     @JsonIgnore
     private Set<Product> products;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinTable(name = "categories_features",
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "feature_id"))
+    private Set<ProductCategoryFeature> productCategoryFeatures = new LinkedHashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "attachment_id")

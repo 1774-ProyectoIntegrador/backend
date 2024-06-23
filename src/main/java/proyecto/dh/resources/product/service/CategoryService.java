@@ -8,13 +8,16 @@ import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
-import proyecto.dh.resources.product.dto.CategoryDTO;
-import proyecto.dh.resources.product.dto.CategorySaveDTO;
+import proyecto.dh.resources.product.dto.*;
+import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
+import proyecto.dh.resources.product.entity.ProductCategoryFeature;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +38,8 @@ public class CategoryService {
         checkCategoryExistence(categorySaveDTO.getName(), categorySaveDTO.getSlug());
 
         ProductCategory category = convertToEntity(categorySaveDTO);
+
+        setCategoryFeatures(category, categorySaveDTO.getFeatures());
         handleAttachment(category, categorySaveDTO.getAttachmentId());
 
         ProductCategory savedCategory = repository.save(category);
@@ -86,7 +91,22 @@ public class CategoryService {
     }
 
     private CategoryDTO convertToDTO(ProductCategory category) {
-        return modelMapper.map(category, CategoryDTO.class);
+        CategoryDTO categoryDTO = modelMapper.map(category, CategoryDTO.class);
+        if (category.getProductCategoryFeatures() != null) {
+            List<CategoryFeatureDTO> features = category.getProductCategoryFeatures().stream()
+                    .map(feature -> modelMapper.map(feature, CategoryFeatureDTO.class))
+                    .collect(Collectors.toList());
+            categoryDTO.setFeatures(features);
+        }
+
+/*        if (category.getProductPolicies() != null) {
+            List<ProductPolicyDTO> policies = category.getProductPolicies().stream()
+                    .map(policy -> modelMapper.map(policy, ProductPolicyDTO.class))
+                    .collect(Collectors.toList());
+            categoryDTO.setPolicies(policies);
+        }*/
+
+        return categoryDTO;
     }
 
     private ProductCategory convertToEntity(CategorySaveDTO categorySaveDTO) {
@@ -118,4 +138,30 @@ public class CategoryService {
             category.setAttachment(attachment);
         }
     }
+
+
+
+    private void setCategoryFeatures(ProductCategory category, List<CategoryFeatureSaveDTO> features) {
+        // Se añade para manejar los valores nulos
+        Set<ProductCategoryFeature> featureSet = Optional.ofNullable(features)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .map(featureSaveDTO -> modelMapper.map(featureSaveDTO, ProductCategoryFeature.class))
+                .peek(feature -> {
+                    if (feature.getCategories() == null) {
+                        feature.setCategories(Set.of(category));
+                    } else {
+                        feature.getCategories().add(category);
+                    }
+                })
+                .collect(Collectors.toSet());
+
+        category.setProductCategoryFeatures(featureSet);
+    }
+
+/*    private void updateFeatures(ProductCategory category, List<CategoryFeatureSaveDTO> features) {
+        category.getProductCategoryFeatures().clear();
+        setCategoryFeatures(category, features);
+    }*/
+
 }

@@ -4,12 +4,12 @@ import com.amazonaws.services.kms.model.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import proyecto.dh.resources.product.dto.ProductFeatureDTO;
-import proyecto.dh.resources.product.dto.ProductFeatureSaveDTO;
-import proyecto.dh.resources.product.entity.Product;
-import proyecto.dh.resources.product.entity.ProductFeature;
-import proyecto.dh.resources.product.repository.ProductFeatureRepository;
-import proyecto.dh.resources.product.repository.ProductRepository;
+import proyecto.dh.resources.product.dto.CategoryFeatureDTO;
+import proyecto.dh.resources.product.dto.CategoryFeatureSaveDTO;
+import proyecto.dh.resources.product.entity.ProductCategory;
+import proyecto.dh.resources.product.entity.ProductCategoryFeature;
+import proyecto.dh.resources.product.repository.CategoryFeatureRepository;
+import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 
 import java.util.HashSet;
 import java.util.List;
@@ -19,97 +19,99 @@ import java.util.stream.Collectors;
 @Service
 public class FeatureService {
 
-    private final ProductFeatureRepository featureRepository;
-    private final ProductRepository productRepository;
+    private final CategoryFeatureRepository featureRepository;
+    private final ProductCategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
 
-    public FeatureService(ProductFeatureRepository featureRepository, ProductRepository productRepository, ModelMapper modelMapper) {
+    public FeatureService(CategoryFeatureRepository featureRepository, ProductCategoryRepository categoryRepository, ModelMapper modelMapper) {
         this.featureRepository = featureRepository;
-        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
     }
 
     @Transactional
-    public ProductFeatureDTO save(ProductFeatureSaveDTO featureSaveDTO) {
-        ProductFeature feature = convertToEntity(featureSaveDTO);
-        syncFeatureWithProducts(feature, featureSaveDTO.getProductIds());
-        ProductFeature savedFeature = featureRepository.save(feature);
+    public CategoryFeatureDTO save(CategoryFeatureSaveDTO featureSaveDTO) {
+        ProductCategoryFeature feature = convertToEntity(featureSaveDTO);
+        syncFeatureWithCategories(feature, featureSaveDTO.getCategoryIds());
+        ProductCategoryFeature savedFeature = featureRepository.save(feature);
         return convertToDTO(savedFeature);
     }
 
+
+    public List<CategoryFeatureDTO> findAll() {
+        return featureRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public CategoryFeatureDTO findById(Long id) throws NotFoundException {
+        ProductCategoryFeature feature = findByIdEntity(id)
+                .orElseThrow(() -> new NotFoundException("Caracteristica con ID " + id + " no encontrada"));
+        return convertToDTO(feature);
+    }
+
+    private Optional<ProductCategoryFeature> findByIdEntity(Long id) {
+        return featureRepository.findById(id);
+    }
+
+/*
     @Transactional
-    public ProductFeatureDTO updateFeature(Long id, ProductFeatureSaveDTO featureSaveDTO) throws NotFoundException {
-        ProductFeature existingFeature = findByIdEntity(id)
+    public CategoryFeatureDTO updateFeature(Long id, CategoryFeatureSaveDTO featureSaveDTO) throws NotFoundException {
+        ProductCategoryFeature existingFeature = findByIdEntity(id)
                 .orElseThrow(() -> new NotFoundException("Caracteristica con ID " + id + " no encontrada"));
 
         modelMapper.map(featureSaveDTO, existingFeature);
 
         // Limpia la relación antigua en ambas entidades
         if (existingFeature.getProduct() != null) {
-            existingFeature.getProduct().forEach(product -> product.getProductFeatures().remove(existingFeature));
+            existingFeature.getProduct().forEach(product -> product.getProductCategoryFeatures().remove(existingFeature));
             existingFeature.getProduct().clear();
         }
-        syncFeatureWithProducts(existingFeature, featureSaveDTO.getProductIds());
+        syncFeatureWithCategories(existingFeature, featureSaveDTO.getProductIds());
 
-        ProductFeature savedFeature = featureRepository.save(existingFeature);
+        ProductCategoryFeature savedFeature = featureRepository.save(existingFeature);
         return convertToDTO(savedFeature);
-    }
-
-    public List<ProductFeatureDTO> findAll() {
-        return featureRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
     }
 
     @Transactional
     public void deleteById(Long id) throws NotFoundException {
-        ProductFeature feature = findByIdEntity(id)
+        ProductCategoryFeature feature = findByIdEntity(id)
                 .orElseThrow(() -> new NotFoundException("Caracteristica con ID " + id + " no encontrada"));
 
         for (Product product : feature.getProduct()) {
-            product.getProductFeatures().remove(feature);
+            product.getProductCategoryFeatures().remove(feature);
         }
 
         featureRepository.deleteById(id);
     }
 
-    public ProductFeatureDTO findById(Long id) throws NotFoundException {
-        ProductFeature feature = findByIdEntity(id)
-                .orElseThrow(() -> new NotFoundException("Caracteristica con ID " + id + " no encontrada"));
-        return convertToDTO(feature);
-    }
 
-    private Optional<ProductFeature> findByIdEntity(Long id) {
-        return featureRepository.findById(id);
-    }
 
-    private ProductFeatureDTO convertToDTO(ProductFeature feature) {
-        ProductFeatureDTO featureDTO = modelMapper.map(feature, ProductFeatureDTO.class);
-        featureDTO.setProductIds(
-                feature.getProduct().stream()
-                        .map(Product::getId)
-                        .collect(Collectors.toList())
-        );
+
+*/
+
+    private CategoryFeatureDTO convertToDTO(ProductCategoryFeature feature) {
+        CategoryFeatureDTO featureDTO = modelMapper.map(feature, CategoryFeatureDTO.class);
+        featureDTO.setCategoryIds(feature.getCategories().stream().map(ProductCategory::getId).collect(Collectors.toList()));
         return featureDTO;
     }
 
-    private ProductFeature convertToEntity(ProductFeatureSaveDTO featureSaveDTO) {
-        return modelMapper.map(featureSaveDTO, ProductFeature.class);
+    private ProductCategoryFeature convertToEntity(CategoryFeatureSaveDTO featureSaveDTO) {
+        return modelMapper.map(featureSaveDTO, ProductCategoryFeature.class);
     }
 
-    private void syncFeatureWithProducts(ProductFeature feature, List<Long> productIds) {
-        if (productIds != null) {
-            for (Long productId : productIds) {
-                Product product = productRepository.findById(productId)
-                        .orElseThrow(() -> new NotFoundException("El producto no existe"));
+    private void syncFeatureWithCategories(ProductCategoryFeature feature, List<Long> categoryIds) {
+        if (categoryIds != null) {
+            for (Long categoryId : categoryIds) {
+                ProductCategory category = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("La categoría no existe"));
 
                 // Se añade para manejar los valores nulos
-                if (feature.getProduct() == null) {
-                    feature.setProduct(new HashSet<>());
+                if (feature.getCategories() == null) {
+                    feature.setCategories(new HashSet<>());
                 }
 
-                feature.getProduct().add(product);
-                product.getProductFeatures().add(feature);
+                feature.getCategories().add(category);
+                category.getProductCategoryFeatures().add(feature);
             }
         }
     }
