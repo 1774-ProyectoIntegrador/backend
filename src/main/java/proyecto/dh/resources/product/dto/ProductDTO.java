@@ -22,7 +22,6 @@ public class ProductDTO {
     private RentType rentType;
     private CategoryDTO category;
     private List<AttachmentDTO> attachments;
-    private List<CategoryPolicyDTO> policies;
     private List<ProductFavoriteDTO> favorites;
     private List<ReservationDTO> reservations;
 }

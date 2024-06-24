@@ -15,7 +15,6 @@ import proyecto.dh.resources.favorite.service.FavoriteService;
 import proyecto.dh.resources.product.dto.*;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
-import proyecto.dh.resources.product.entity.CategoryPolicy;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
 import proyecto.dh.resources.product.repository.ProductSearchRepository;
@@ -30,15 +29,15 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final ProductCategoryRepository productCategoryRepository;
+    private final ProductCategoryRepository categoryRepository;
     private final AttachmentService attachmentService;
     private final FavoriteService favoriteService;
     private final ModelMapper modelMapper;
     private final ProductSearchRepository productSearchRepository;
 
-    public ProductService(ProductRepository productRepository, ProductCategoryRepository productCategoryRepository, AttachmentService attachmentService, FavoriteService favoriteService, ModelMapper modelMapper, ProductSearchRepository productSearchRepository) {
+    public ProductService(ProductRepository productRepository, ProductCategoryRepository categoryRepository, AttachmentService attachmentService, FavoriteService favoriteService, ModelMapper modelMapper, ProductSearchRepository productSearchRepository) {
         this.productRepository = productRepository;
-        this.productCategoryRepository = productCategoryRepository;
+        this.categoryRepository = categoryRepository;
         this.attachmentService = attachmentService;
         this.favoriteService = favoriteService;
         this.modelMapper = modelMapper;
@@ -64,8 +63,6 @@ public class ProductService {
         setProductFavorites(product, productSaveDTO.getFavorites());
         setReservations(product, productSaveDTO.getReservations());
 
-
-
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
     }
@@ -86,7 +83,6 @@ public class ProductService {
 
         updateCategory(existingProduct, productUpdateDTO.getCategoryId());
         updateAttachments(existingProduct, productUpdateDTO.getAttachmentsIds());
-        //updateFeatures(existingProduct, productUpdateDTO.getFeatures());
 
         Product updatedProduct = productRepository.save(existingProduct);
         return convertToDTO(updatedProduct);
@@ -146,7 +142,7 @@ public class ProductService {
     }
 
     private void setProductCategory(Product product, Long categoryId) throws NotFoundException {
-        ProductCategory category = productCategoryRepository.findById(categoryId)
+        ProductCategory category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
         product.setCategory(category);
     }
@@ -188,7 +184,7 @@ public class ProductService {
                 .stream()
                 .map(reservationSaveDTO -> modelMapper.map(reservationSaveDTO, Reservation.class))
                 .peek(reservation -> {
-                    if(reservation.getProduct() == null){
+                    if (reservation.getProduct() == null) {
                         reservation.setProduct(Set.of(product));
                     } else {
                         reservation.getProduct().add(product);
@@ -200,7 +196,7 @@ public class ProductService {
 
     private void updateCategory(Product product, Long categoryId) throws NotFoundException {
         if (categoryId != null) {
-            ProductCategory category = productCategoryRepository.findById(categoryId)
+            ProductCategory category = categoryRepository.findById(categoryId)
                     .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
             product.setCategory(category);
         }
@@ -217,7 +213,6 @@ public class ProductService {
     }
 
 
-
     private Product findByIdEntity(Long id) throws NotFoundException {
         return productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("El producto no existe."));
@@ -226,9 +221,16 @@ public class ProductService {
     public ProductDTO convertToDTO(Product product) {
         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
 
-        if (product.getCategory() != null) {
-            productDTO.setCategory(modelMapper.map(product.getCategory(), CategoryDTO.class));
+        if (product.getCategory().getCategoryFeatures() != null) {
+            List<CategoryFeatureDTO> features = product.getCategory().getCategoryFeatures().stream().map(feature -> modelMapper.map(feature, CategoryFeatureDTO.class)).collect(Collectors.toList());
+            productDTO.getCategory().setFeatures(features);
         }
+
+        if (product.getCategory().getCategoryPolicies() != null) {
+            List<CategoryPolicyDTO> policies = product.getCategory().getCategoryPolicies().stream().map(policy -> modelMapper.map(policy, CategoryPolicyDTO.class)).collect(Collectors.toList());
+            productDTO.getCategory().setPolicies(policies);
+        }
+
 
         if (product.getAttachments() != null) {
             List<AttachmentDTO> attachments = product.getAttachments().stream()
@@ -244,7 +246,7 @@ public class ProductService {
             productDTO.setFavorites(favorites);
         }
 
-        if(product.getReservations() != null) {
+        if (product.getReservations() != null) {
             List<ReservationDTO> reservations = product.getReservations().stream()
                     .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
                     .collect(Collectors.toList());
