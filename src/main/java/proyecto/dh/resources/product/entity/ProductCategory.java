@@ -38,7 +38,13 @@ public class ProductCategory{
     @JoinTable(name = "categories_features",
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "feature_id"))
-    private Set<ProductCategoryFeature> productCategoryFeatures = new LinkedHashSet<>();
+    private Set<CategoryFeature> categoryFeatures = new LinkedHashSet<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinTable(name = "categories_policies",
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "policy_id"))
+    private Set<CategoryPolicy> categoryPolicies = new LinkedHashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "attachment_id")

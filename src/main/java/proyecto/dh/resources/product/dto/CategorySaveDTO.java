@@ -19,4 +19,5 @@ public class CategorySaveDTO {
     private String slug;
     private Long attachmentId;
     private List<CategoryFeatureSaveDTO> features;
+    private List<CategoryPolicySaveDTO> policies;
 }

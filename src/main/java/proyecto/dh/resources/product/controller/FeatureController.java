@@ -10,7 +10,7 @@ import proyecto.dh.resources.product.service.FeatureService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/public/products/features")
+@RequestMapping("/public/categories/features")
 public class FeatureController {
 
     @Autowired

@@ -41,7 +41,7 @@ public class ProductSaveDTO {
 
     private List<Long> attachments;
 
-    private List<ProductPolicySaveDTO> policies;
+    private List<CategoryPolicySaveDTO> policies;
 
     private List<ProductFavoriteSaveDTO> favorites;
 

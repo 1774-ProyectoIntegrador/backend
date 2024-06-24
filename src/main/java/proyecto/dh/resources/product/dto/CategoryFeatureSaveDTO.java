@@ -6,8 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CategoryFeatureSaveDTO {
@@ -19,5 +17,4 @@ public class CategoryFeatureSaveDTO {
     private String description;
     @NotBlank(message = "El icono es obligatorio")
     private String icon;
-    private List<Long> categoryIds;
 }

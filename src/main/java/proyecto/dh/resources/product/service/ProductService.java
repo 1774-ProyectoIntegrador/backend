@@ -15,8 +15,7 @@ import proyecto.dh.resources.favorite.service.FavoriteService;
 import proyecto.dh.resources.product.dto.*;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
-import proyecto.dh.resources.product.entity.ProductCategoryFeature;
-import proyecto.dh.resources.product.entity.ProductPolicy;
+import proyecto.dh.resources.product.entity.CategoryPolicy;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
 import proyecto.dh.resources.product.repository.ProductSearchRepository;
@@ -62,7 +61,6 @@ public class ProductService {
         Product product = convertToEntity(productSaveDTO);
         setProductCategory(product, productSaveDTO.getCategoryId());
         setProductAttachments(product, productSaveDTO.getAttachments());
-        setProductPolicies(product, productSaveDTO.getPolicies());
         setProductFavorites(product, productSaveDTO.getFavorites());
         setReservations(product, productSaveDTO.getReservations());
 
@@ -166,24 +164,6 @@ public class ProductService {
         }
     }
 
-    private void setProductPolicies(Product product, List<ProductPolicySaveDTO> policies) {
-        // Se añade para manejar los valores nulos
-        Set<ProductPolicy> policySet = Optional.ofNullable(policies)
-                .orElseGet(Collections::emptyList)
-                .stream()
-                .map(policySaveDTO -> modelMapper.map(policySaveDTO, ProductPolicy.class))
-                .peek(policy -> {
-                    if (policy.getProduct() == null) {
-                        policy.setProduct(Set.of(product));
-                    } else {
-                        policy.getProduct().add(product);
-                    }
-                })
-                .collect(Collectors.toSet());
-
-        product.setProductPolicies(policySet);
-    }
-
     private void setProductFavorites(Product product, List<ProductFavoriteSaveDTO> favoriteSaveDtos) {
         // Se añade para manejar los valores nulos
         Set<ProductFavorite> favoriteSet = Optional.ofNullable(favoriteSaveDtos)
@@ -255,13 +235,6 @@ public class ProductService {
                     .map(attachment -> modelMapper.map(attachment, AttachmentDTO.class))
                     .collect(Collectors.toList());
             productDTO.setAttachments(attachments);
-        }
-
-        if (product.getProductPolicies() != null) {
-            List<ProductPolicyDTO> policies = product.getProductPolicies().stream()
-                    .map(policy -> modelMapper.map(policy, ProductPolicyDTO.class))
-                    .collect(Collectors.toList());
-            productDTO.setPolicies(policies);
         }
 
         if (product.getFavorites() != null) {

@@ -17,4 +17,5 @@ public class CategoryDTO {
     private String slug;
     private AttachmentDTO attachment;
     private List<CategoryFeatureDTO> features;
+    private List<CategoryPolicyDTO> policies;
 }

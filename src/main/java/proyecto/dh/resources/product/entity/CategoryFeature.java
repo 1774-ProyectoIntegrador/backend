@@ -1,6 +1,5 @@
 package proyecto.dh.resources.product.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,20 +16,24 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "product_policies")
-@JsonInclude(JsonInclude.Include.NON_NULL) // Consultar si es necesario agregar
-public class ProductPolicy {
+@Table(name = "category_features")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class CategoryFeature {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String title;
+    @Column(nullable = false, length = 30)
+    private String name;
 
-    @Column
+    @Column(length = 300)
     private String description;
 
-    @ManyToMany(mappedBy = "productPolicies", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @Column(nullable = false)
+    private String icon;
+
+    @ManyToMany(mappedBy = "categoryFeatures", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @Fetch(FetchMode.JOIN)
-    private Set<Product> product;
+    private Set<ProductCategory> categories;
+
 }
