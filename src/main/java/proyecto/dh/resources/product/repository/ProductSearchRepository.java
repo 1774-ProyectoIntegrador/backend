@@ -10,7 +10,6 @@ import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.product.dto.ProductDTO;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
-import proyecto.dh.resources.product.entity.CategoryFeature;
 
 import java.text.Normalizer;
 import java.util.*;
@@ -32,7 +31,6 @@ public class ProductSearchRepository {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<Product> product = query.from(Product.class);
-        Join<Product, CategoryFeature> feature = product.join("productFeatures", JoinType.LEFT);
         Join<Product, ProductCategory> category = product.join("category", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
@@ -54,16 +52,8 @@ public class ProductSearchRepository {
                     cb.function("unaccent", String.class, cb.lower(category.get("name"))),
                     "%" + normalizedSearchText.toLowerCase() + "%"
             );
-            Predicate featureNamePredicate = cb.like(
-                    cb.function("unaccent", String.class, cb.lower(feature.get("name"))),
-                    "%" + normalizedSearchText.toLowerCase() + "%"
-            );
-            Predicate featureDescriptionPredicate = cb.like(
-                    cb.function("unaccent", String.class, cb.lower(feature.get("description"))),
-                    "%" + normalizedSearchText.toLowerCase() + "%"
-            );
 
-            predicates.add(cb.or(namePredicate, descriptionPredicate, categoryNamePredicate, featureNamePredicate, featureDescriptionPredicate));
+            predicates.add(cb.or(namePredicate, descriptionPredicate, categoryNamePredicate));
         }
 
         if (categoryId != null) {
