@@ -16,7 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "product_policies")
+@Table(name = "category_policies")
 @JsonInclude(JsonInclude.Include.NON_NULL) // Consultar si es necesario agregar
 public class CategoryPolicy {
     @Id
