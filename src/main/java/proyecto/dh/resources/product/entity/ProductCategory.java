@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "product_category")
+@Table(name = "categories")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductCategory{
     @Id
