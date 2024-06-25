@@ -41,10 +41,6 @@ public class ProductSaveDTO {
 
     private List<Long> attachments;
 
-    private List<ProductFeatureSaveDTO> features;
-
-    private List<ProductPolicySaveDTO> policies;
-
     private List<ProductFavoriteSaveDTO> favorites;
 
     private List<ReservationSaveDTO> reservations;

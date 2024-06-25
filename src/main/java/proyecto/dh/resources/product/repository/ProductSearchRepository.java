@@ -10,7 +10,7 @@ import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.product.dto.ProductDTO;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
-import proyecto.dh.resources.product.entity.ProductFeature;
+import proyecto.dh.resources.product.entity.CategoryFeature;
 
 import java.text.Normalizer;
 import java.util.*;
@@ -32,7 +32,7 @@ public class ProductSearchRepository {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Product> query = cb.createQuery(Product.class);
         Root<Product> product = query.from(Product.class);
-        Join<Product, ProductFeature> feature = product.join("productFeatures", JoinType.LEFT);
+        Join<Product, CategoryFeature> feature = product.join("productFeatures", JoinType.LEFT);
         Join<Product, ProductCategory> category = product.join("category", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();

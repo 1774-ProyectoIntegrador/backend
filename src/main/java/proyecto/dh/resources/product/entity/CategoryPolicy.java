@@ -1,6 +1,5 @@
 package proyecto.dh.resources.product.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,8 +9,6 @@ import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -19,24 +16,20 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "product_features")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductFeature {
+@Table(name = "product_policies")
+@JsonInclude(JsonInclude.Include.NON_NULL) // Consultar si es necesario agregar
+public class CategoryPolicy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 30)
-    private String name;
+    @Column(nullable = false)
+    private String title;
 
-    @Column(length = 300)
+    @Column
     private String description;
 
-    @Column(nullable = false)
-    private String icon;
-
-    @ManyToMany(mappedBy = "productFeatures", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToMany(mappedBy = "categoryPolicies", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @Fetch(FetchMode.JOIN)
-    private Set<Product> product;
-
+    private Set<ProductCategory> categories;
 }

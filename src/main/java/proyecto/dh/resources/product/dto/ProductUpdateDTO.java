@@ -3,12 +3,9 @@ package proyecto.dh.resources.product.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import proyecto.dh.common.enums.RentType;
-import proyecto.dh.resources.attachment.entity.Attachment;
-import proyecto.dh.resources.product.entity.ProductFeature;
 
 import jakarta.validation.constraints.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -32,5 +29,5 @@ public class ProductUpdateDTO {
 
     private List<Long> attachmentsIds;
 
-    private List<ProductFeatureSaveDTO> features;
+    private List<CategoryFeatureSaveDTO> features;
 }
