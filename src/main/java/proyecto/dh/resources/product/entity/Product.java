@@ -3,16 +3,15 @@ package proyecto.dh.resources.product.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.favorite.entity.ProductFavorite;
 import proyecto.dh.resources.reservation.entity.Reservation;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -49,16 +48,16 @@ public class Product {
     private List<Attachment> attachments = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "products_favorites",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "favorite_id"))
+    @JoinTable(name = "products_features", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "feature_id"))
+    private Set<CategoryFeature> features = new LinkedHashSet<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    @JoinTable(name = "products_favorites", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "favorite_id"))
     private Set<ProductFavorite> favorites = new LinkedHashSet<>();
 
     //@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "products_reservations",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "reservation_id"))
+    @JoinTable(name = "products_reservations", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "reservation_id"))
     private Set<Reservation> reservations = new LinkedHashSet<>();
 
 

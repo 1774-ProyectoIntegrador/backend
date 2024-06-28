@@ -13,8 +13,10 @@ import proyecto.dh.resources.favorite.dto.ProductFavoriteSaveDTO;
 import proyecto.dh.resources.favorite.entity.ProductFavorite;
 import proyecto.dh.resources.favorite.service.FavoriteService;
 import proyecto.dh.resources.product.dto.*;
+import proyecto.dh.resources.product.entity.CategoryFeature;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
+import proyecto.dh.resources.product.repository.CategoryFeatureRepository;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
 import proyecto.dh.resources.product.repository.ProductSearchRepository;
@@ -30,14 +32,16 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductCategoryRepository categoryRepository;
+    private final CategoryFeatureRepository featureRepository;
     private final AttachmentService attachmentService;
     private final FavoriteService favoriteService;
     private final ModelMapper modelMapper;
     private final ProductSearchRepository productSearchRepository;
 
-    public ProductService(ProductRepository productRepository, ProductCategoryRepository categoryRepository, AttachmentService attachmentService, FavoriteService favoriteService, ModelMapper modelMapper, ProductSearchRepository productSearchRepository) {
+    public ProductService(ProductRepository productRepository, ProductCategoryRepository categoryRepository, CategoryFeatureRepository featureRepository, AttachmentService attachmentService, FavoriteService favoriteService, ModelMapper modelMapper, ProductSearchRepository productSearchRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
+        this.featureRepository = featureRepository;
         this.attachmentService = attachmentService;
         this.favoriteService = favoriteService;
         this.modelMapper = modelMapper;
@@ -59,6 +63,8 @@ public class ProductService {
         }
         Product product = convertToEntity(productSaveDTO);
         setProductCategory(product, productSaveDTO.getCategoryId());
+        setProductFeatures(product, productSaveDTO.getFeatureIds());
+
         setProductAttachments(product, productSaveDTO.getAttachments());
         setProductFavorites(product, productSaveDTO.getFavorites());
         setReservations(product, productSaveDTO.getReservations());
@@ -82,6 +88,7 @@ public class ProductService {
         modelMapper.map(productUpdateDTO, existingProduct);
 
         updateCategory(existingProduct, productUpdateDTO.getCategoryId());
+        updateFeatures(existingProduct, productUpdateDTO.getFeatureIds());
         updateAttachments(existingProduct, productUpdateDTO.getAttachmentsIds());
 
         Product updatedProduct = productRepository.save(existingProduct);
@@ -107,9 +114,7 @@ public class ProductService {
      * @return Lista de productos convertidos a DTO.
      */
     public List<ProductDTO> findAll() {
-        return productRepository.findAll().stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        return productRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     /**
@@ -137,13 +142,18 @@ public class ProductService {
         return productSearchRepository.searchProducts(searchText, categoryId);
     }
 
+    /**
+     * Obtiene sugerencias de nombres de productos basadas en un nombre parcial.
+     *
+     * @param partialName Nombre parcial del producto.
+     * @return Lista de sugerencias de nombres de productos.
+     */
     public List<String> getSuggestions(String partialName) {
         return productSearchRepository.findSuggestionsByPartialName(partialName);
     }
 
     private void setProductCategory(Product product, Long categoryId) throws NotFoundException {
-        ProductCategory category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
+        ProductCategory category = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
         product.setCategory(category);
     }
 
@@ -160,44 +170,41 @@ public class ProductService {
         }
     }
 
+    private void setProductFeatures(Product product, List<Long> featureIds) throws NotFoundException {
+        if (featureIds != null) {
+            List<CategoryFeature> featureList = featureRepository.findAllById(featureIds);
+            Set<CategoryFeature> features = new HashSet<>(featureList);
+            product.setFeatures(features);
+        }
+    }
+
     private void setProductFavorites(Product product, List<ProductFavoriteSaveDTO> favoriteSaveDtos) {
         // Se añade para manejar los valores nulos
-        Set<ProductFavorite> favoriteSet = Optional.ofNullable(favoriteSaveDtos)
-                .orElseGet(Collections::emptyList)
-                .stream()
-                .map(favoriteSaveDTO -> modelMapper.map(favoriteSaveDTO, ProductFavorite.class))
-                .peek(favorite -> {
-                    if (favorite.getProduct() == null) {
-                        favorite.setProduct(Set.of(product));
-                    } else {
-                        favorite.getProduct().add(product);
-                    }
-                })
-                .collect(Collectors.toSet());
+        Set<ProductFavorite> favoriteSet = Optional.ofNullable(favoriteSaveDtos).orElseGet(Collections::emptyList).stream().map(favoriteSaveDTO -> modelMapper.map(favoriteSaveDTO, ProductFavorite.class)).peek(favorite -> {
+            if (favorite.getProduct() == null) {
+                favorite.setProduct(Set.of(product));
+            } else {
+                favorite.getProduct().add(product);
+            }
+        }).collect(Collectors.toSet());
 
         product.setFavorites(favoriteSet);
     }
 
     private void setReservations(Product product, List<ReservationSaveDTO> reservationSaveDTOS) {
-        Set<Reservation> reservationSet = Optional.ofNullable(reservationSaveDTOS)
-                .orElseGet(Collections::emptyList)
-                .stream()
-                .map(reservationSaveDTO -> modelMapper.map(reservationSaveDTO, Reservation.class))
-                .peek(reservation -> {
-                    if (reservation.getProduct() == null) {
-                        reservation.setProduct(Set.of(product));
-                    } else {
-                        reservation.getProduct().add(product);
-                    }
-                })
-                .collect(Collectors.toSet());
+        Set<Reservation> reservationSet = Optional.ofNullable(reservationSaveDTOS).orElseGet(Collections::emptyList).stream().map(reservationSaveDTO -> modelMapper.map(reservationSaveDTO, Reservation.class)).peek(reservation -> {
+            if (reservation.getProduct() == null) {
+                reservation.setProduct(Set.of(product));
+            } else {
+                reservation.getProduct().add(product);
+            }
+        }).collect(Collectors.toSet());
         product.setReservations(reservationSet);
     }
 
     private void updateCategory(Product product, Long categoryId) throws NotFoundException {
         if (categoryId != null) {
-            ProductCategory category = categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
+            ProductCategory category = categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Categoría no encontrada"));
             product.setCategory(category);
         }
     }
@@ -212,10 +219,17 @@ public class ProductService {
         }
     }
 
+    private void updateFeatures(Product product, List<Long> featureIds) throws NotFoundException {
+        if (featureIds != null) {
+            List<CategoryFeature> featureList = featureRepository.findAllById(featureIds);
+            Set<CategoryFeature> features = new HashSet<>(featureList);
+            product.setFeatures(features);
+        }
+    }
+
 
     private Product findByIdEntity(Long id) throws NotFoundException {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("El producto no existe."));
+        return productRepository.findById(id).orElseThrow(() -> new NotFoundException("El producto no existe."));
     }
 
     public ProductDTO convertToDTO(Product product) {
@@ -231,25 +245,23 @@ public class ProductService {
             productDTO.getCategory().setPolicies(policies);
         }
 
-
         if (product.getAttachments() != null) {
-            List<AttachmentDTO> attachments = product.getAttachments().stream()
-                    .map(attachment -> modelMapper.map(attachment, AttachmentDTO.class))
-                    .collect(Collectors.toList());
+            List<AttachmentDTO> attachments = product.getAttachments().stream().map(attachment -> modelMapper.map(attachment, AttachmentDTO.class)).collect(Collectors.toList());
             productDTO.setAttachments(attachments);
         }
 
+        if (product.getFeatures() != null) {
+            List<CategoryFeatureDTO> features = product.getFeatures().stream().map(feature -> modelMapper.map(feature, CategoryFeatureDTO.class)).collect(Collectors.toList());
+            productDTO.setFeatures(features);
+        }
+
         if (product.getFavorites() != null) {
-            List<ProductFavoriteDTO> favorites = product.getFavorites().stream()
-                    .map(favorite -> modelMapper.map(favorite, ProductFavoriteDTO.class))
-                    .collect(Collectors.toList());
+            List<ProductFavoriteDTO> favorites = product.getFavorites().stream().map(favorite -> modelMapper.map(favorite, ProductFavoriteDTO.class)).collect(Collectors.toList());
             productDTO.setFavorites(favorites);
         }
 
         if (product.getReservations() != null) {
-            List<ReservationDTO> reservations = product.getReservations().stream()
-                    .map(reservation -> modelMapper.map(reservation, ReservationDTO.class))
-                    .collect(Collectors.toList());
+            List<ReservationDTO> reservations = product.getReservations().stream().map(reservation -> modelMapper.map(reservation, ReservationDTO.class)).collect(Collectors.toList());
             productDTO.setReservations(reservations);
         }
 

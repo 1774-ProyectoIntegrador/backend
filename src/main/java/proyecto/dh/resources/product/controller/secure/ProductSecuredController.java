@@ -42,12 +42,7 @@ public class ProductSecuredController {
      * @throws BadRequestException si los datos de entrada son inválidos
      */
     @Operation(summary = "Crear un nuevo producto", description = "Esta operación crea un nuevo producto en el sistema.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Producto creado con éxito", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Entrada inválida"),
-            @ApiResponse(responseCode = "404", description = "Categoría no encontrada"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Producto creado con éxito", content = @Content(schema = @Schema(implementation = ProductDTO.class))), @ApiResponse(responseCode = "400", description = "Entrada inválida"), @ApiResponse(responseCode = "404", description = "Categoría no encontrada"), @ApiResponse(responseCode = "500", description = "Error interno del servidor")})
     @Secured({"ROLE_ADMIN", "ROLE_EDITOR"})
     @PostMapping()
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductSaveDTO productSaveDTO) throws NotFoundException, BadRequestException {
@@ -65,12 +60,7 @@ public class ProductSecuredController {
      * @throws BadRequestException si los datos de entrada son inválidos
      */
     @Operation(summary = "Actualizar un producto existente", description = "Esta operación actualiza un producto existente en el sistema.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Producto actualizado con éxito", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Entrada inválida"),
-            @ApiResponse(responseCode = "404", description = "Producto o categoría no encontrada"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Producto actualizado con éxito", content = @Content(schema = @Schema(implementation = ProductDTO.class))), @ApiResponse(responseCode = "400", description = "Entrada inválida"), @ApiResponse(responseCode = "404", description = "Producto o categoría no encontrada"), @ApiResponse(responseCode = "500", description = "Error interno del servidor")})
     @Secured({"ROLE_ADMIN", "ROLE_EDITOR"})
     @PutMapping("{id}")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductUpdateDTO productUpdateDTO) throws NotFoundException, BadRequestException {
@@ -86,11 +76,7 @@ public class ProductSecuredController {
      * @throws NotFoundException si el producto no se encuentra
      */
     @Operation(summary = "Eliminar un producto", description = "Esta operación elimina un producto del sistema.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Producto eliminado con éxito"),
-            @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Producto eliminado con éxito"), @ApiResponse(responseCode = "404", description = "Producto no encontrado"), @ApiResponse(responseCode = "500", description = "Error interno del servidor")})
     @Secured({"ROLE_ADMIN", "ROLE_EDITOR"})
     @DeleteMapping("{id}")
     public ResponseEntity<ResponseDTO<Void>> deleteProduct(@PathVariable Long id) throws NotFoundException {
