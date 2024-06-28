@@ -15,6 +15,7 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String phone;
+    private UserAddressDTO address;
     private String email;
     private Role role;
     private List<ProductFavoriteDTO> favorites;

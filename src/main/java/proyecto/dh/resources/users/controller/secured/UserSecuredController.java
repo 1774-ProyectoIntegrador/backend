@@ -2,14 +2,17 @@ package proyecto.dh.resources.users.controller.secured;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import proyecto.dh.exceptions.handler.BadRequestException;
+import proyecto.dh.resources.users.dto.UserAddressDTO;
 import proyecto.dh.resources.users.dto.UserDTO;
 import proyecto.dh.resources.users.dto.UserUpdateDTO;
+import proyecto.dh.resources.users.service.UserAddressService;
 import proyecto.dh.resources.users.service.UserService;
 
 import java.util.List;
@@ -20,6 +23,9 @@ public class UserSecuredController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserAddressService userAddressService;
 
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getUserDetails(@AuthenticationPrincipal UserDetails token) throws BadRequestException {
@@ -47,16 +53,10 @@ public class UserSecuredController {
         userService.deleteUserById(id, currentUser);
         return ResponseEntity.noContent().build();
     }
-/*    @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserCreateDTO userCreateDTO, @AuthenticationPrincipal UserDetails currentUser) throws BadRequestException {
-        UserDTO createdUser = userService.createByAdmin(userCreateDTO, currentUser);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-    }*/
 
-/*    @DeleteMapping("/me")
-    public ResponseEntity<Void> deleteAdminAccount(@AuthenticationPrincipal UserDetails currentUser) throws BadRequestException, AccessDeniedException {
-        userService.deleteAdminAccount(currentUser);
-        return ResponseEntity.noContent().build();
-    }*/
-
+    @PostMapping("/address/create")
+    public ResponseEntity<UserAddressDTO> createAddress(@RequestBody UserAddressDTO addressDTO, @AuthenticationPrincipal UserDetails currentUser) throws BadRequestException {
+        UserAddressDTO createdAddress = userAddressService.createAddress(addressDTO, currentUser);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAddress);
+    }
 }
