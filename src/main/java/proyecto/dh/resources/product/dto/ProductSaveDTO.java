@@ -39,6 +39,8 @@ public class ProductSaveDTO {
     @NotNull(message = "Category ID is mandatory")
     private Long categoryId;
 
+    private List<Long> featureIds;
+
     private List<Long> attachments;
 
     private List<ProductFavoriteSaveDTO> favorites;

@@ -6,6 +6,7 @@ import lombok.Data;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.dto.AttachmentDTO;
 import proyecto.dh.resources.favorite.dto.ProductFavoriteDTO;
+import proyecto.dh.resources.product.entity.CategoryFeature;
 import proyecto.dh.resources.reservation.dto.ReservationDTO;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class ProductDTO {
     private RentType rentType;
     private CategoryDTO category;
     private List<AttachmentDTO> attachments;
+    private List<CategoryFeatureDTO> features;
     private List<ProductFavoriteDTO> favorites;
     private List<ReservationDTO> reservations;
 }

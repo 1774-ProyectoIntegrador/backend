@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "categories")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductCategory{
+public class ProductCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -35,15 +35,11 @@ public class ProductCategory{
     private Set<Product> products;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "categories_features",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "feature_id"))
+    @JoinTable(name = "categories_features", joinColumns = @JoinColumn(name = "category_id"), inverseJoinColumns = @JoinColumn(name = "feature_id"))
     private Set<CategoryFeature> categoryFeatures = new LinkedHashSet<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "categories_policies",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "policy_id"))
+    @JoinTable(name = "categories_policies", joinColumns = @JoinColumn(name = "category_id"), inverseJoinColumns = @JoinColumn(name = "policy_id"))
     private Set<CategoryPolicy> categoryPolicies = new LinkedHashSet<>();
 
     @ManyToOne

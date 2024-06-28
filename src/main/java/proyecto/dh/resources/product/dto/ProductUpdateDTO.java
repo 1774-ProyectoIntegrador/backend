@@ -1,10 +1,11 @@
 package proyecto.dh.resources.product.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
 import proyecto.dh.common.enums.RentType;
-
-import jakarta.validation.constraints.*;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class ProductUpdateDTO {
 
     private Long categoryId;
 
-    private List<Long> attachmentsIds;
+    private List<Long> featureIds;
 
-    private List<CategoryFeatureSaveDTO> features;
+    private List<Long> attachmentsIds;
 }
