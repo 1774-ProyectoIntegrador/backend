@@ -126,10 +126,7 @@ public class UserService {
 
     public UserDTO getUserDetails(UserDetails userDetails) throws BadRequestException {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow(() -> new BadRequestException("Usuario no encontrado"));
-        UserDTO userDTO = convertToDTO(user);
-        UserAddressDTO addressDTO = userAddressService.getCurrentUserAddress(userDetails);
-        userDTO.setAddress(addressDTO);
-        return userDTO;
+        return convertToDTO(user);
     }
 
 

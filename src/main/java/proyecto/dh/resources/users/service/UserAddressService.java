@@ -27,11 +27,11 @@ public class UserAddressService {
     public UserAddressDTO createAddress(UserAddressDTO addressDTO, UserDetails currentUser) throws BadRequestException {
         User user = userRepository.findByEmail(currentUser.getUsername()).orElseThrow(() -> new BadRequestException("Usuario no encontrado"));
 
-        UserAddress addressEntity = modelMapper.map(addressDTO, UserAddress.class);
+        UserAddress addressEntity = convertToEntity(addressDTO);
         user.setAddress(addressEntity);
         userRepository.save(user);
 
-        return modelMapper.map(addressEntity, UserAddressDTO.class);
+        return convertToDTO(addressEntity);
     }
 
     public UserAddressDTO getCurrentUserAddress(UserDetails currentUser) throws BadRequestException {
@@ -42,6 +42,27 @@ public class UserAddressService {
             throw new BadRequestException("No se encontró dirección para el usuario");
         }
 
+        return convertToDTO(address);
+    }
+
+    @Transactional
+    public void deleteCurrentUserAddress(UserDetails currentUser) throws BadRequestException {
+        User user = userRepository.findByEmail(currentUser.getUsername()).orElseThrow(() -> new BadRequestException("Usuario no encontrado"));
+
+        UserAddress address = user.getAddress();
+        if (address == null) {
+            throw new BadRequestException("No se encontró dirección para el usuario");
+        }
+
+        user.setAddress(null);
+        userRepository.save(user);
+    }
+
+    private UserAddressDTO convertToDTO(UserAddress address) {
         return modelMapper.map(address, UserAddressDTO.class);
+    }
+
+    private UserAddress convertToEntity(UserAddressDTO addressDTO) {
+        return modelMapper.map(addressDTO, UserAddress.class);
     }
 }

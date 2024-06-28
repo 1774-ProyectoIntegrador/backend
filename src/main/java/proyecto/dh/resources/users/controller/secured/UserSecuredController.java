@@ -59,4 +59,9 @@ public class UserSecuredController {
         UserAddressDTO createdAddress = userAddressService.createAddress(addressDTO, currentUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAddress);
     }
+    @DeleteMapping("/address/delete")
+    public ResponseEntity<String> createAddress(@AuthenticationPrincipal UserDetails currentUser) throws BadRequestException {
+        userAddressService.deleteCurrentUserAddress(currentUser);
+        return ResponseEntity.status(HttpStatus.OK).body("Address Deleted");
+    }
 }
