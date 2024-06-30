@@ -15,13 +15,13 @@ public class ReservationDTO {
 
     private Long userId;
 
-    private List<Long> productIds;
+    private Long productId;
 
     private LocalDate startDate;
 
     private LocalDate endDate;
 
-    private String paymentType;
+    private List<Long> paymentIds;
 
     private LocalDateTime creationDateTime;
 
