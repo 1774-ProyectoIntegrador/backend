@@ -6,6 +6,8 @@ import lombok.Data;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.dto.AttachmentDTO;
 import proyecto.dh.resources.favorite.dto.ProductFavoriteDTO;
+import proyecto.dh.resources.payment.dto.card.CardDTO;
+import proyecto.dh.resources.payment.dto.payment.PaymentDTO;
 import proyecto.dh.resources.reservation.dto.ReservationDTO;
 
 import java.util.List;
@@ -25,5 +27,8 @@ public class ProductDTO {
     private List<ProductFeatureDTO> features;
     private List<ProductPolicyDTO> policies;
     private List<ProductFavoriteDTO> favorites;
-    private List<ReservationDTO> reservations;
+    private ReservationDTO reservation;
+    private List<PaymentDTO> payments;
+    private List<CardDTO> cards;
+    //private List<PaymentDTO> payments;
 }

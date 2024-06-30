@@ -3,10 +3,14 @@ package proyecto.dh.resources.product.entity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.favorite.entity.ProductFavorite;
+import proyecto.dh.resources.payment.entity.Card;
+import proyecto.dh.resources.payment.entity.Payment;
 import proyecto.dh.resources.reservation.entity.Reservation;
 
 import java.util.ArrayList;
@@ -66,12 +70,18 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "favorite_id"))
     private Set<ProductFavorite> favorites = new LinkedHashSet<>();
 
-    //@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JoinColumn(name = "reservation_id")
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Reservation reservation;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "products_reservations",
+    @JoinTable(name = "products_cards",
             joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "reservation_id"))
-    private Set<Reservation> reservations = new LinkedHashSet<>();
+            inverseJoinColumns = @JoinColumn(name = "payment_id"))
+    private Set<Card> cards = new LinkedHashSet<>();
+
+    @ManyToMany(mappedBy = "products", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    private Set<Payment> payments = new LinkedHashSet<>();
 
 
     // Métodos para sincronizar las relaciones
