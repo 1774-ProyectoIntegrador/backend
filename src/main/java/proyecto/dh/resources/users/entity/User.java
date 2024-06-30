@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto.dh.common.enums.Role;
 import proyecto.dh.resources.favorite.entity.ProductFavorite;
+import proyecto.dh.resources.payment.entity.Card;
+import proyecto.dh.resources.payment.entity.Payment;
+import proyecto.dh.resources.payment.entity.Transfer;
 import proyecto.dh.resources.reservation.entity.Reservation;
 
 import java.util.List;
@@ -48,6 +51,15 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
     private Set<Reservation> reservations;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
+    private List<Payment> payments;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
+    private List<Card> cards;
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
+    private List<Transfer> transfers;
 
     @OneToMany(mappedBy = "admin")
     private List<User> usersManaged;
