@@ -33,6 +33,13 @@ public class User {
     @Column(nullable = false)
     private String lastName;
 
+    @Column(unique = true)
+    private String phone;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    private UserAddress address;
+
     @Column(unique = true, nullable = false)
     private String email;
 

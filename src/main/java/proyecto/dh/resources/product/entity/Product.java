@@ -13,10 +13,7 @@ import proyecto.dh.resources.payment.entity.Card;
 import proyecto.dh.resources.payment.entity.Payment;
 import proyecto.dh.resources.reservation.entity.Reservation;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -53,21 +50,11 @@ public class Product {
     private List<Attachment> attachments = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "products_features",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "features_id"))
-    private Set<ProductFeature> productFeatures = new LinkedHashSet<>();
+    @JoinTable(name = "products_features", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "feature_id"))
+    private Set<CategoryFeature> features = new LinkedHashSet<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "products_policies",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "policy_id"))
-    private Set<ProductPolicy> productPolicies = new LinkedHashSet<>();
-
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "products_favorites",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "favorite_id"))
+    @JoinTable(name = "products_favorites", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "favorite_id"))
     private Set<ProductFavorite> favorites = new LinkedHashSet<>();
 
     @JoinColumn(name = "reservation_id")

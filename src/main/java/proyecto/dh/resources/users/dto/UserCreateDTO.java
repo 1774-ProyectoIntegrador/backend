@@ -1,11 +1,11 @@
 package proyecto.dh.resources.users.dto;
 
-import com.sun.xml.bind.v2.TODO;
 import lombok.Data;
 import proyecto.dh.common.enums.Role;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
@@ -18,6 +18,9 @@ public class UserCreateDTO {
     @NotEmpty(message = "El apellido es obligatorio")
     @Size(min = 2, max = 30, message = "El apellido debe tener entre 2 y 30 caracteres")
     private String lastName;
+
+    @Pattern(regexp = "\\d{10}", message = "El teléfono debe ser un número de 10 dígitos")
+    private String phone;
 
     @NotEmpty(message = "El correo electrónico es obligatorio")
     @Email(message = "El correo electrónico debe ser válido")

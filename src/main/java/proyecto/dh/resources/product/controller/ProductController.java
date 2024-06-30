@@ -35,10 +35,7 @@ public class ProductController {
      * @return una lista de todos los productos con estado HTTP 200 (OK)
      */
     @Operation(summary = "Obtener todos los productos", description = "Esta operación recupera todos los productos en el sistema.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Productos recuperados con éxito", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Productos recuperados con éxito", content = @Content(schema = @Schema(implementation = ProductDTO.class))), @ApiResponse(responseCode = "500", description = "Error interno del servidor")})
     @PermitAll
     @GetMapping()
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
@@ -54,20 +51,18 @@ public class ProductController {
      * @throws NotFoundException si el producto no se encuentra
      */
     @Operation(summary = "Obtener producto por ID", description = "Esta operación recupera un producto por su ID.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Producto recuperado con éxito", content = @Content(schema = @Schema(implementation = ProductDTO.class))),
-            @ApiResponse(responseCode = "404", description = "Producto no encontrado"),
-            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Producto recuperado con éxito", content = @Content(schema = @Schema(implementation = ProductDTO.class))), @ApiResponse(responseCode = "404", description = "Producto no encontrado"), @ApiResponse(responseCode = "500", description = "Error interno del servidor")})
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) throws NotFoundException {
         ProductDTO product = productService.findById(id);
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
+
     @GetMapping("/search")
     public List<ProductDTO> search(@RequestParam String searchText, @RequestParam(required = false) Long categoryId) throws NotFoundException {
         return productService.searchProducts(searchText, categoryId);
     }
+
     @GetMapping("/search/suggestions")
     public ResponseEntity<List<String>> getSuggestions(@RequestParam String query) {
         List<String> suggestions = productService.getSuggestions(query);
