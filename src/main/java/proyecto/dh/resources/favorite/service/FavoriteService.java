@@ -68,7 +68,7 @@ public class FavoriteService {
     }
 
     public void deleteById(Long id) throws NotFoundException {
-        ProductFavorite favorite = findByInEntity(id)
+        ProductFavorite favorite = findByEntity(id)
                 .orElseThrow(() -> new NotFoundException("Favorito con id " + id + " no encontrado"));
 
         for (Product product: favorite.getProduct()){
@@ -79,7 +79,7 @@ public class FavoriteService {
     }
 
     public ProductFavoriteDTO findById(Long id) throws NotFoundException {
-        ProductFavorite favorite = findByInEntity(id)
+        ProductFavorite favorite = findByEntity(id)
                 .orElseThrow(()-> new NotFoundException("Favorito con id " + id + " no encontrado"));
 
         return convertToDTO(favorite);
@@ -120,7 +120,7 @@ public class FavoriteService {
         return favoriteDTO;
     }
 
-    private Optional<ProductFavorite> findByInEntity(Long id){
+    private Optional<ProductFavorite> findByEntity(Long id){
         return favoriteRepository.findById(id);
     }
 
