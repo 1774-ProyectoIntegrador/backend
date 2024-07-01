@@ -1,17 +1,11 @@
 package proyecto.dh.resources.reservation.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import jakarta.transaction.Transactional;
 import proyecto.dh.common.enums.Role;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
@@ -23,6 +17,13 @@ import proyecto.dh.resources.reservation.entity.Reservation;
 import proyecto.dh.resources.reservation.repository.ReservationRepository;
 import proyecto.dh.resources.users.entity.User;
 import proyecto.dh.resources.users.repository.UserRepository;
+
+import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -58,9 +59,30 @@ public class ReservationService {
         User user = userRepository.findByEmail(currentUser.getUsername())
                 .orElseThrow(() -> new NotFoundException("Usuario no encontrado"));
 
+        Product product = productRepository.findById(reservationSaveDTO.getProductId())
+            .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
+
+        LocalDate startDate = reservationSaveDTO.getStartDate();
+        LocalDate endDate = reservationSaveDTO.getEndDate();
+
+        // Validar que la fecha de inicio no sea una fecha pasada
+        if (startDate.isBefore(LocalDate.now())) {
+            throw new BadRequestException("La fecha de inicio no puede ser anterior a la fecha actual");
+        }
+
+        // Validar que la fecha de finalización no sea anterior a la fecha de inicio
+        if (endDate.isBefore(startDate)) {
+            throw new BadRequestException("La fecha de finalización no puede ser anterior a la fecha de inicio");
+        }
+
         Reservation reservation = convertToEntity(reservationSaveDTO);
         reservation.setUser(user);
+        reservation.setProduct(product);
         reservation.setCreationDateTime(LocalDateTime.now());
+        reservation.setCancelled(false);
+
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        reservation.setAmount(product.getPrice() * daysBetween);
 
         syncReservationWithProduct(reservation, reservationSaveDTO.getProductId());
 
@@ -185,7 +207,8 @@ public class ReservationService {
         ReservationDTO reservationDTO = modelMapper.map(reservation, ReservationDTO.class);
         reservationDTO.setProductId(reservation.getProduct().getId());
         reservationDTO.setUserId(reservation.getUser().getId());
+        reservationDTO.setAmount(reservation.getAmount());
+        reservationDTO.setCancelled(reservation.isCancelled());
         return reservationDTO;
     }
-
 }
