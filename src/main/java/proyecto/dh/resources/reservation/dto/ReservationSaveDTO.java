@@ -2,6 +2,7 @@ package proyecto.dh.resources.reservation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import javax.validation.constraints.AssertTrue;
@@ -18,9 +19,11 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReservationSaveDTO {
 
+    @NotNull(message = "User ID is mandatory")
     private Long userId;
 
-    private List<Long> productIds;
+    @NotNull(message = "Product ID is mandatory")
+    private Long productId;
 
     @FutureOrPresent(message = "La fecha no puede ser anterior a al actual")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -30,7 +33,7 @@ public class ReservationSaveDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    private String paymentType;
+    private List<Long> paymentIds;
 
     private LocalDateTime creationDateTime;
 

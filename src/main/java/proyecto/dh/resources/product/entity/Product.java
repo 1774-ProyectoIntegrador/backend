@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import proyecto.dh.common.enums.RentType;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.favorite.entity.ProductFavorite;
+import proyecto.dh.resources.payment.entity.Card;
+import proyecto.dh.resources.payment.entity.Payment;
 import proyecto.dh.resources.reservation.entity.Reservation;
 
 import java.util.*;
@@ -55,10 +57,18 @@ public class Product {
     @JoinTable(name = "products_favorites", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "favorite_id"))
     private Set<ProductFavorite> favorites = new LinkedHashSet<>();
 
-    //@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JoinColumn(name = "reservation_id")
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Reservation reservation;
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "products_reservations", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "reservation_id"))
-    private Set<Reservation> reservations = new LinkedHashSet<>();
+    @JoinTable(name = "products_cards",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "payment_id"))
+    private Set<Card> cards = new LinkedHashSet<>();
+
+    @ManyToMany(mappedBy = "products", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
+    private Set<Payment> payments = new LinkedHashSet<>();
 
 
     // Métodos para sincronizar las relaciones

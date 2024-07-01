@@ -67,7 +67,7 @@ public class ProductService {
 
         setProductAttachments(product, productSaveDTO.getAttachments());
         setProductFavorites(product, productSaveDTO.getFavorites());
-        setReservations(product, productSaveDTO.getReservations());
+        setReservations(product, productSaveDTO.getReservation());
 
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
@@ -191,15 +191,13 @@ public class ProductService {
         product.setFavorites(favoriteSet);
     }
 
-    private void setReservations(Product product, List<ReservationSaveDTO> reservationSaveDTOS) {
-        Set<Reservation> reservationSet = Optional.ofNullable(reservationSaveDTOS).orElseGet(Collections::emptyList).stream().map(reservationSaveDTO -> modelMapper.map(reservationSaveDTO, Reservation.class)).peek(reservation -> {
-            if (reservation.getProduct() == null) {
-                reservation.setProduct(Set.of(product));
-            } else {
-                reservation.getProduct().add(product);
-            }
-        }).collect(Collectors.toSet());
-        product.setReservations(reservationSet);
+    private void setReservations(Product product, ReservationSaveDTO reservationSaveDTO) {
+
+        if (reservationSaveDTO != null) {
+            Reservation reservation = modelMapper.map(reservationSaveDTO, Reservation.class);
+            reservation.setProduct(product);
+            product.setReservation(reservation);
+        }
     }
 
     private void updateCategory(Product product, Long categoryId) throws NotFoundException {
@@ -260,9 +258,10 @@ public class ProductService {
             productDTO.setFavorites(favorites);
         }
 
-        if (product.getReservations() != null) {
-            List<ReservationDTO> reservations = product.getReservations().stream().map(reservation -> modelMapper.map(reservation, ReservationDTO.class)).collect(Collectors.toList());
-            productDTO.setReservations(reservations);
+        if(product.getReservation() != null) {
+            ReservationDTO reservationDTO = modelMapper.map(product.getReservation(), ReservationDTO.class);
+            productDTO.setReservation(reservationDTO);
+
         }
 
         return productDTO;

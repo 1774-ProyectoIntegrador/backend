@@ -17,7 +17,6 @@ import proyecto.dh.resources.users.repository.UserRepository;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,6 +45,9 @@ public class ReservationService {
         User user = userRepository.findById(reservationSaveDTO.getUserId())
                 .orElseThrow(()-> new NotFoundException("Usuario no encontrado"));
 
+        Product product = productRepository.findById(reservationSaveDTO.getProductId())
+                .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
+
         LocalDate startDate = reservationSaveDTO.getStartDate();
         LocalDate endDate = reservationSaveDTO.getEndDate();
 
@@ -59,11 +61,12 @@ public class ReservationService {
 
         Reservation reservation = convertToEntity(reservationSaveDTO);
         reservation.setUser(user);
+        reservation.setProduct(product);
         reservation.setCreationDateTime(LocalDateTime.now());
 
         //reservation.setCreationDateTime(LocalDateTime.now());
 
-        syncReservationWithProducts(reservation, reservationSaveDTO.getProductIds()/*, startDate, endDate*/);
+        syncReservationWithProducts(reservation, reservationSaveDTO.getProductId()/*, startDate, endDate*/);
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
@@ -76,6 +79,8 @@ public class ReservationService {
                 .orElseThrow(() -> new NotFoundException("Reserva con id: " + id + "no encontrada"));
         User user = userRepository.findById(reservationSaveDTO.getUserId())
                 .orElseThrow(()-> new NotFoundException("Usuario no encontrado"));
+        Product newProduct = productRepository.findById(reservationSaveDTO.getProductId())
+                .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
 
         LocalDate startDate = reservationSaveDTO.getStartDate();
         LocalDate endDate = reservationSaveDTO.getEndDate();
@@ -90,17 +95,26 @@ public class ReservationService {
 
 
         modelMapper.map(reservationSaveDTO, existingReservation);
+        existingReservation.setUser(user);
 
-        if(existingReservation.getProduct() == null) {
+        /*if(existingReservation.getProduct() == null) {
             existingReservation.getProduct().forEach(product -> product.getReservations().remove(existingReservation));
             existingReservation.getProduct().clear();
+        }*/
+
+        Long productId = reservationSaveDTO.getProductId();
+        if (productId != null) {
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
+            existingReservation.setProduct(product);
+            product.setReservation(existingReservation);
         }
 
         Reservation reservation = convertToEntity(reservationSaveDTO);
         reservation.setUser(user);
         reservation.setCreationDateTime(LocalDateTime.now());
 
-        syncReservationWithProducts(reservation, reservationSaveDTO.getProductIds());
+        syncReservationWithProducts(reservation, reservationSaveDTO.getProductId());
 
         Reservation sevedReservation = reservationRepository.save(existingReservation);
         return convertToDTO(sevedReservation);
@@ -123,9 +137,14 @@ public class ReservationService {
     public void deleteById(Long id) throws NotFoundException {
         Reservation reservation = findByEntity(id)
                 .orElseThrow(()-> new NotFoundException("Reserva con id: " + id + " no encontrada"));
-
+        /*
         for (Product product: reservation.getProduct()){
-            product.getReservations().remove(reservation);
+            product.getReservation().remove(reservation);
+        }*/
+
+        if (reservation.getProduct() != null) {
+
+            reservation.getProduct().setReservation(null);
         }
 
         reservationRepository.deleteById(id);
@@ -135,9 +154,9 @@ public class ReservationService {
         return modelMapper.map(reservationSaveDTO, Reservation.class);
     }
 
-    private void syncReservationWithProducts(Reservation reservation, List<Long> productIds/*, LocalDate startDate, LocalDate endDate*/) throws NotFoundException {
-        if (productIds != null){
-            for (Long productId: productIds){
+    private void syncReservationWithProducts(Reservation reservation, Long productId) throws NotFoundException {
+        if (productId != null){
+            //for (Long productId: productIds){
                 Product product = productRepository.findById(productId)
                         .orElseThrow(()-> new NotFoundException("El producto no existe"));
 
@@ -146,28 +165,34 @@ public class ReservationService {
                     throw new IllegalArgumentException("El producto " + product.getName() + " no tiene stock disponible disponible");
                 }
 
-                if (reservation.getProduct() == null) {
+                /*if (reservation.getProduct() == null) {
                     reservation.setProduct(new HashSet<>());
-                }
+                }*/
                 /*
                 boolean isProductAvailable = product.getReservations().stream()
                                 .noneMatch(r -> r.getStartDate().isBefore(endDate) && r.getEndDate().isAfter(startDate));
                 */
-                reservation.getProduct().add(product);
-                product.getReservations().add(reservation);
+                /*reservation.getProduct().add(product);
+                product.getReservation().add(reservation);*/
+
+                reservation.setProduct(product);
+                product.setReservation(reservation);
 
                 product.setStock(product.getStock() - 1);
-            }
+            //}
         }
     }
 
     private ReservationDTO convertToDTO(Reservation reservation) {
         ReservationDTO reservationDTO = modelMapper.map(reservation, ReservationDTO.class);
-        reservationDTO.setProductIds(
+        /*reservationDTO.setProductId(
                 reservation.getProduct().stream()
                         .map(Product::getId)
                         .collect(Collectors.toList())
-        );
+        );*/
+
+        reservationDTO.setProductId(reservation.getProduct() != null ? reservation.getProduct().getId() : null);
+
         reservationDTO.setUserId(reservation.getUser().getId());
         return reservationDTO;
     }

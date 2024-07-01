@@ -1,5 +1,0 @@
-ALTER TABLE users
-    ADD admin_id BIGINT;
-
-ALTER TABLE users
-    ADD CONSTRAINT FK_USERS_ON_ADMIN FOREIGN KEY (admin_id) REFERENCES users (id);
