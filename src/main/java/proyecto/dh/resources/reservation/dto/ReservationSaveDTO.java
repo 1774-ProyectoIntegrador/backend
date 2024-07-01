@@ -2,6 +2,7 @@ package proyecto.dh.resources.reservation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonRawValue;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -35,5 +36,8 @@ public class ReservationSaveDTO {
     private LocalDate endDate;
 
     private LocalDateTime creationDateTime;
+
+    @JsonRawValue
+    private String payment;
 
 }

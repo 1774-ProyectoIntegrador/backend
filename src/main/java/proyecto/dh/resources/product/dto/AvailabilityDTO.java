@@ -1,13 +1,21 @@
 package proyecto.dh.resources.product.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDate;
 import java.util.List;
 
-@Getter @Setter
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class AvailabilityDTO {
     private Long productId;
-    private List<LocalDate> occupiedDates;
+    private List<DateRange> occupiedDates;
+
+    @Getter
+    @Setter
+    public static class DateRange {
+        private LocalDate startDate;
+        private LocalDate endDate;
+    }
 }

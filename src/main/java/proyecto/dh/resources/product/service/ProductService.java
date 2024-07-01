@@ -1,18 +1,31 @@
 package proyecto.dh.resources.product.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
 import proyecto.dh.resources.attachment.dto.AttachmentDTO;
 import proyecto.dh.resources.attachment.entity.Attachment;
 import proyecto.dh.resources.attachment.service.AttachmentService;
-import proyecto.dh.resources.favorite.dto.ProductFavoriteDTO;
 import proyecto.dh.resources.favorite.dto.ProductFavoriteSaveDTO;
 import proyecto.dh.resources.favorite.entity.ProductFavorite;
 import proyecto.dh.resources.favorite.service.FavoriteService;
-import proyecto.dh.resources.product.dto.*;
+import proyecto.dh.resources.product.dto.AvailabilityDTO;
+import proyecto.dh.resources.product.dto.CategoryFeatureDTO;
+import proyecto.dh.resources.product.dto.CategoryPolicyDTO;
+import proyecto.dh.resources.product.dto.ProductDTO;
+import proyecto.dh.resources.product.dto.ProductSaveDTO;
+import proyecto.dh.resources.product.dto.ProductUpdateDTO;
 import proyecto.dh.resources.product.entity.CategoryFeature;
 import proyecto.dh.resources.product.entity.Product;
 import proyecto.dh.resources.product.entity.ProductCategory;
@@ -20,11 +33,6 @@ import proyecto.dh.resources.product.repository.CategoryFeatureRepository;
 import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
 import proyecto.dh.resources.product.repository.ProductSearchRepository;
-import proyecto.dh.resources.reservation.dto.ReservationDTO;
-
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -109,13 +117,23 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
 
-        List<LocalDate> occupiedDates = product.getReservations().stream()
-                .flatMap(reservation -> reservation.getStartDate().datesUntil(reservation.getEndDate().plusDays(1)))
-                .toList();
-
         AvailabilityDTO availabilityDTO = new AvailabilityDTO();
         availabilityDTO.setProductId(product.getId());
-        availabilityDTO.setOccupiedDates(occupiedDates);
+
+        if (product.getStock() <= 1) {
+            List<AvailabilityDTO.DateRange> occupiedDateRanges = product.getReservations().stream()
+                    .map(reservation -> {
+                        AvailabilityDTO.DateRange dateRange = new AvailabilityDTO.DateRange();
+                        dateRange.setStartDate(reservation.getStartDate());
+                        dateRange.setEndDate(reservation.getEndDate());
+                        return dateRange;
+                    })
+                    .collect(Collectors.toList());
+
+            availabilityDTO.setOccupiedDates(occupiedDateRanges);
+        } else {
+            availabilityDTO.setOccupiedDates(new ArrayList<>());
+        }
 
         return availabilityDTO;
     }
