@@ -46,8 +46,8 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{reservationId}")
-    public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId, @AuthenticationPrincipal UserDetails userDetails) throws NotFoundException, BadRequestException {
+    public ResponseEntity<String> cancelReservation(@PathVariable Long reservationId, @AuthenticationPrincipal UserDetails userDetails) throws NotFoundException, BadRequestException {
         reservationService.cancelReservation(reservationId, userDetails);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("Reserva cancelada exitosamente");
     }
 }
