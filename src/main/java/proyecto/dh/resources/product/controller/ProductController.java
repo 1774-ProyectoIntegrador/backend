@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import proyecto.dh.exceptions.handler.NotFoundException;
+import proyecto.dh.resources.product.dto.AvailabilityDTO;
 import proyecto.dh.resources.product.dto.ProductDTO;
 import proyecto.dh.resources.product.service.ProductService;
 
@@ -67,5 +68,11 @@ public class ProductController {
     public ResponseEntity<List<String>> getSuggestions(@RequestParam String query) {
         List<String> suggestions = productService.getSuggestions(query);
         return ResponseEntity.ok(suggestions);
+    }
+
+    @GetMapping("/{productId}/availability")
+    public ResponseEntity<AvailabilityDTO> getProductAvailability(@PathVariable Long productId) throws NotFoundException {
+        AvailabilityDTO availability = productService.getProductAvailability(productId);
+        return ResponseEntity.ok(availability);
     }
 }
