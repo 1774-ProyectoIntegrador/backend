@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,9 +19,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReservationSaveDTO {
 
-    private Long userId;
-
-    private List<Long> productIds;
+    @NotNull(message = "Product ID is mandatory")
+    private Long productId;
 
     @FutureOrPresent(message = "La fecha no puede ser anterior a al actual")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
@@ -30,13 +30,8 @@ public class ReservationSaveDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    private String paymentType;
+    private List<Long> paymentIds;
 
     private LocalDateTime creationDateTime;
-
-    @AssertTrue(message = "La fecha de devolución debe ser igual o posterior a la fecha de alquiler")
-    private boolean isValidEndDate() {
-        return endDate == null || !endDate.isBefore(startDate);
-    }
 
 }
