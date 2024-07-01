@@ -42,7 +42,7 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<ReservationDTO> createReservation(@Valid @RequestBody ReservationSaveDTO reservationSaveDTO, @AuthenticationPrincipal UserDetails userDetails) throws NotFoundException, BadRequestException {
         ReservationDTO createdReservation = reservationService.create(reservationSaveDTO, userDetails);
-        return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdReservation, HttpStatus.OK);
     }
 
     @DeleteMapping("/{reservationId}")
