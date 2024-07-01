@@ -55,11 +55,8 @@ public class Product {
     @JoinTable(name = "products_favorites", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "favorite_id"))
     private Set<ProductFavorite> favorites = new LinkedHashSet<>();
 
-    //@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
-    @JoinTable(name = "products_reservations", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "reservation_id"))
-    private Set<Reservation> reservations = new LinkedHashSet<>();
-
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private Set<Reservation> reservations = new HashSet<>();
 
     // Métodos para sincronizar las relaciones
     public void addAttachment(Attachment attachment) {
@@ -76,5 +73,18 @@ public class Product {
             attachments.remove(attachment);
         }
     }
+    public void addReservation(Reservation reservation) {
+        if (reservations == null) {
+            reservations = new HashSet<>();
+        }
+        reservation.setProduct(this);
+        reservations.add(reservation);
+    }
 
+    public void removeReservation(Reservation reservation) {
+        if (reservations != null) {
+            reservation.setProduct(null);
+            reservations.remove(reservation);
+        }
+    }
 }
