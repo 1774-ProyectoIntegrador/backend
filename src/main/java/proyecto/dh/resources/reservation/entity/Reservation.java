@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +21,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import proyecto.dh.resources.product.entity.Product;
+import proyecto.dh.resources.reservation.converter.JsonNodeConverter;
 import proyecto.dh.resources.users.entity.User;
 
 @Getter
@@ -54,8 +57,9 @@ public class Reservation {
     @Column(name = "amount", nullable = false)
     private Double amount;
 
-    @Column(name = "payment", nullable = false)
-    private String payment;
+    @Convert(converter = JsonNodeConverter.class)
+    @Column(name = "payment", columnDefinition = "TEXT")
+    private JsonNode payment;
 
     @Column(name = "cancelled", nullable = false)
     private boolean cancelled = false;
