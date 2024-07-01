@@ -206,6 +206,8 @@ public class ReservationService {
 
     private ReservationDTO convertToDTO(Reservation reservation) {
         ReservationDTO reservationDTO = modelMapper.map(reservation, ReservationDTO.class);
+        reservationDTO.setProductId(reservation.getProduct().getId());
+        reservationDTO.setUserId(reservation.getUser().getId());
         return reservationDTO;
     }
 }
