@@ -82,7 +82,7 @@ public class ReservationService {
         reservation.setCreationDateTime(LocalDateTime.now());
         reservation.setCancelled(false);
 
-        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate) + 1;
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
         reservation.setAmount(product.getPrice() * daysBetween);
 
         syncReservationWithProduct(reservation, reservationSaveDTO.getProductId());
