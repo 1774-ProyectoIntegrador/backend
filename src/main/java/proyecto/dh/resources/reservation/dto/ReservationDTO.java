@@ -1,10 +1,12 @@
 package proyecto.dh.resources.reservation.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -25,4 +27,6 @@ public class ReservationDTO {
     private Double amount;
 
     private boolean cancelled;
+
+    private JsonNode payment;
 }

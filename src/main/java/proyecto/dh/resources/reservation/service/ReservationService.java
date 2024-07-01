@@ -1,11 +1,19 @@
 package proyecto.dh.resources.reservation.service;
 
-import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import jakarta.transaction.Transactional;
 import proyecto.dh.common.enums.Role;
 import proyecto.dh.exceptions.handler.BadRequestException;
 import proyecto.dh.exceptions.handler.NotFoundException;
@@ -17,13 +25,6 @@ import proyecto.dh.resources.reservation.entity.Reservation;
 import proyecto.dh.resources.reservation.repository.ReservationRepository;
 import proyecto.dh.resources.users.entity.User;
 import proyecto.dh.resources.users.repository.UserRepository;
-
-import javax.validation.Valid;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -205,10 +206,6 @@ public class ReservationService {
 
     private ReservationDTO convertToDTO(Reservation reservation) {
         ReservationDTO reservationDTO = modelMapper.map(reservation, ReservationDTO.class);
-        reservationDTO.setProductId(reservation.getProduct().getId());
-        reservationDTO.setUserId(reservation.getUser().getId());
-        reservationDTO.setAmount(reservation.getAmount());
-        reservationDTO.setCancelled(reservation.isCancelled());
         return reservationDTO;
     }
 }

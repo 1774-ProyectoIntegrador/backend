@@ -1,18 +1,20 @@
 package proyecto.dh.resources.reservation.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonRawValue;
-
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
-
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,7 +39,7 @@ public class ReservationSaveDTO {
 
     private LocalDateTime creationDateTime;
 
-    @JsonRawValue
-    private String payment;
+    @NotNull(message = "Payment details are mandatory")
+    private JsonNode payment;
 
 }
