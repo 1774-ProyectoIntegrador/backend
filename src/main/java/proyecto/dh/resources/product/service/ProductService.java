@@ -257,16 +257,6 @@ public class ProductService {
             productDTO.setFeatures(features);
         }
 
-        if (product.getFavorites() != null) {
-            List<ProductFavoriteDTO> favorites = product.getFavorites().stream().map(favorite -> modelMapper.map(favorite, ProductFavoriteDTO.class)).collect(Collectors.toList());
-            productDTO.setFavorites(favorites);
-        }
-
-        if (product.getReservations() != null) {
-            List<ReservationDTO> reservations = product.getReservations().stream().map(reservation -> modelMapper.map(reservation, ReservationDTO.class)).collect(Collectors.toList());
-            productDTO.setReservations(reservations);
-        }
-
         return productDTO;
     }
 
