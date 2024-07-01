@@ -39,9 +39,6 @@ public class Reservation {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    @Column(name = "payment_type", nullable = false)
-    private String paymentType;
-
     @Column(name = "creation_date_time", nullable = false)
     private LocalDateTime creationDateTime;
 
