@@ -21,9 +21,8 @@ import proyecto.dh.resources.product.repository.ProductCategoryRepository;
 import proyecto.dh.resources.product.repository.ProductRepository;
 import proyecto.dh.resources.product.repository.ProductSearchRepository;
 import proyecto.dh.resources.reservation.dto.ReservationDTO;
-import proyecto.dh.resources.reservation.dto.ReservationSaveDTO;
-import proyecto.dh.resources.reservation.entity.Reservation;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,9 +65,6 @@ public class ProductService {
         setProductFeatures(product, productSaveDTO.getFeatureIds());
 
         setProductAttachments(product, productSaveDTO.getAttachments());
-        setProductFavorites(product, productSaveDTO.getFavorites());
-        setReservations(product, productSaveDTO.getReservations());
-
         Product savedProduct = productRepository.save(product);
         return convertToDTO(savedProduct);
     }
@@ -106,6 +102,22 @@ public class ProductService {
         Product findProduct = findByIdEntity(id);
         attachmentService.deleteAttachmentsByEntities(findProduct.getAttachments());
         productRepository.delete(findProduct);
+    }
+
+    @Transactional(readOnly = true)
+    public AvailabilityDTO getProductAvailability(Long productId) throws NotFoundException {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new NotFoundException("Producto no encontrado"));
+
+        List<LocalDate> occupiedDates = product.getReservations().stream()
+                .flatMap(reservation -> reservation.getStartDate().datesUntil(reservation.getEndDate().plusDays(1)))
+                .toList();
+
+        AvailabilityDTO availabilityDTO = new AvailabilityDTO();
+        availabilityDTO.setProductId(product.getId());
+        availabilityDTO.setOccupiedDates(occupiedDates);
+
+        return availabilityDTO;
     }
 
     /**
@@ -191,16 +203,6 @@ public class ProductService {
         product.setFavorites(favoriteSet);
     }
 
-    private void setReservations(Product product, List<ReservationSaveDTO> reservationSaveDTOS) {
-        Set<Reservation> reservationSet = Optional.ofNullable(reservationSaveDTOS).orElseGet(Collections::emptyList).stream().map(reservationSaveDTO -> modelMapper.map(reservationSaveDTO, Reservation.class)).peek(reservation -> {
-            if (reservation.getProduct() == null) {
-                reservation.setProduct(Set.of(product));
-            } else {
-                reservation.getProduct().add(product);
-            }
-        }).collect(Collectors.toSet());
-        product.setReservations(reservationSet);
-    }
 
     private void updateCategory(Product product, Long categoryId) throws NotFoundException {
         if (categoryId != null) {
@@ -253,16 +255,6 @@ public class ProductService {
         if (product.getFeatures() != null) {
             List<CategoryFeatureDTO> features = product.getFeatures().stream().map(feature -> modelMapper.map(feature, CategoryFeatureDTO.class)).collect(Collectors.toList());
             productDTO.setFeatures(features);
-        }
-
-        if (product.getFavorites() != null) {
-            List<ProductFavoriteDTO> favorites = product.getFavorites().stream().map(favorite -> modelMapper.map(favorite, ProductFavoriteDTO.class)).collect(Collectors.toList());
-            productDTO.setFavorites(favorites);
-        }
-
-        if (product.getReservations() != null) {
-            List<ReservationDTO> reservations = product.getReservations().stream().map(reservation -> modelMapper.map(reservation, ReservationDTO.class)).collect(Collectors.toList());
-            productDTO.setReservations(reservations);
         }
 
         return productDTO;

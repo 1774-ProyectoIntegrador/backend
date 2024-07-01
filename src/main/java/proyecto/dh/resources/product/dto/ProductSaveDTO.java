@@ -42,8 +42,4 @@ public class ProductSaveDTO {
     private List<Long> featureIds;
 
     private List<Long> attachments;
-
-    private List<ProductFavoriteSaveDTO> favorites;
-
-    private List<ReservationSaveDTO> reservations;
 }
